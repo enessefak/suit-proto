@@ -1,0 +1,222 @@
+syntax = "proto3";
+
+package projectsuit.restaurant.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+import "projectsuit/common/v1/common.v1.proto";
+import "projectsuit/inventory/v1/inventory.v1.proto"; // Warehouse mesajı için
+
+option go_package = "github.com/enessefak/suit-proto/gen/go/projectsuit/restaurant/v1;restaurantv1";
+option java_package = "com.projectsuit.restaurant.v1";
+option java_multiple_files = true;
+option java_outer_classname = "RestaurantProto";
+
+service RestaurantService {
+  // FloorPlanSection Komutları
+  rpc CreateFloorPlanSection(CreateFloorPlanSectionRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdateFloorPlanSection(UpdateFloorPlanSectionRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc DeleteFloorPlanSection(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // RestaurantTable Komutları
+  rpc CreateRestaurantTable(CreateRestaurantTableRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdateRestaurantTable(UpdateRestaurantTableRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc DeleteRestaurantTable(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc UpdateRestaurantTableStatus(UpdateRestaurantTableStatusRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc MergeRestaurantTables(MergeRestaurantTablesRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc SeparateRestaurantTables(SeparateRestaurantTablesRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // OrderSession Komutları
+  rpc CreateOrderSession(CreateOrderSessionRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdateOrderSession(UpdateOrderSessionRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc CloseOrderSession(CloseOrderSessionRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // FloorPlanSection Sorguları
+  rpc GetFloorPlanSection(projectsuit.common.v1.GetByIdRequest) returns (GetFloorPlanSectionResponse);
+  rpc ListFloorPlanSections(ListFloorPlanSectionsRequest) returns (ListFloorPlanSectionsResponse);
+
+  // RestaurantTable Sorguları
+  rpc GetRestaurantTable(projectsuit.common.v1.GetByIdRequest) returns (GetRestaurantTableResponse);
+  rpc ListRestaurantTables(ListRestaurantTablesRequest) returns (ListRestaurantTablesResponse);
+
+  // OrderSession Sorguları
+  rpc GetOrderSession(projectsuit.common.v1.GetByIdRequest) returns (GetOrderSessionResponse);
+  rpc ListOrderSessions(ListOrderSessionsRequest) returns (ListOrderSessionsResponse);
+}
+
+// --- Entity Mesajları ---
+message FloorPlanSection {
+  string id = 1; // UUID
+  string warehouse_id = 2;
+  optional string code = 3;
+  google.protobuf.Struct layout_map = 4;
+  int32 sort_order = 5;
+  bool is_active = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+
+  string name = 20;
+  string description = 21;
+  repeated projectsuit.common.v1.TranslationOutput all_translations = 22;
+  repeated RestaurantTable tables = 30;
+  optional projectsuit.inventory.v1.Warehouse warehouse_summary = 31;
+}
+
+message RestaurantTable {
+  string id = 1; // UUID
+  string section_id = 2;
+  string table_number = 3;
+  int32 capacity = 4;
+  optional int32 min_capacity = 5;
+  optional string shape = 6;
+  optional double pos_x = 7;
+  optional double pos_y = 8;
+  optional double width = 9;
+  optional double height = 10;
+  optional double rotation = 11;
+  string status = 12;
+  bool is_mergeable = 13;
+  optional string merged_into_table_id = 14;
+  bool is_active = 15;
+  optional string notes = 16;
+  google.protobuf.Timestamp created_at = 17;
+  google.protobuf.Timestamp updated_at = 18;
+
+  optional FloorPlanSection section_summary = 20;
+}
+
+message OrderSession {
+  string id = 1; // UUID
+  optional string table_id = 2;
+  string warehouse_id = 3;
+  optional string session_code = 4;
+  optional int32 guest_count = 5;
+  string status = 6;
+  optional string opened_by_user_id = 7;
+  optional string closed_by_user_id = 8;
+  google.protobuf.Timestamp opened_at = 9;
+  optional google.protobuf.Timestamp closed_at = 10;
+  optional string notes = 11;
+  google.protobuf.Timestamp created_at = 12;
+  google.protobuf.Timestamp updated_at = 13;
+
+  optional RestaurantTable table_details = 20;
+  optional projectsuit.inventory.v1.Warehouse warehouse_summary = 21;
+  // repeated projectsuit.order.v1.Order orders_in_session = 22; // Import edilmeli
+}
+
+// --- Komut Mesajları ---
+message CreateFloorPlanSectionRequest {
+  string warehouse_id = 1;
+  optional string code = 2;
+  optional google.protobuf.Struct layout_map = 3;
+  optional int32 sort_order = 4;
+  optional bool is_active = 5;
+  repeated projectsuit.common.v1.TranslationInput translations = 6;
+}
+message UpdateFloorPlanSectionRequest {
+  string id = 1;
+  optional string code = 2;
+  optional google.protobuf.Struct layout_map = 3;
+  optional int32 sort_order = 4;
+  optional bool is_active = 5;
+  repeated projectsuit.common.v1.TranslationInput translations_to_update = 6;
+}
+
+message CreateRestaurantTableRequest {
+  string section_id = 1;
+  string table_number = 2;
+  int32 capacity = 3;
+  optional int32 min_capacity = 4;
+  optional string shape = 5;
+  optional double pos_x = 6;
+  optional double pos_y = 7;
+  optional double width = 8;
+  optional double height = 9;
+  optional double rotation = 10;
+  optional bool is_mergeable = 11;
+  optional bool is_active = 12;
+  optional string notes = 13;
+}
+message UpdateRestaurantTableRequest {
+  string id = 1;
+  optional string table_number = 2;
+  optional int32 capacity = 3;
+  optional int32 min_capacity = 4;
+  optional string shape = 5;
+  optional double pos_x = 6;
+  optional double pos_y = 7;
+  optional double width = 8;
+  optional double height = 9;
+  optional double rotation = 10;
+  optional bool is_mergeable = 11;
+  optional bool is_active = 12;
+  optional string notes = 13;
+}
+message UpdateRestaurantTableStatusRequest {
+  string table_id = 1;
+  string new_status = 2;
+  optional string order_session_id = 3;
+}
+message MergeRestaurantTablesRequest {
+  string primary_table_id = 1;
+  repeated string secondary_table_ids = 2;
+}
+message SeparateRestaurantTablesRequest {
+  string previously_merged_table_id = 1;
+}
+
+message CreateOrderSessionRequest {
+  optional string table_id = 1;
+  string warehouse_id = 2;
+  optional int32 guest_count = 3;
+  optional string opened_by_user_id = 4;
+  optional string notes = 5;
+}
+message UpdateOrderSessionRequest {
+  string session_id = 1;
+  optional string table_id = 2;
+  optional int32 guest_count = 3;
+  optional string status = 4;
+  optional string notes = 5;
+}
+message CloseOrderSessionRequest {
+  string session_id = 1;
+  optional string closed_by_user_id = 2;
+}
+
+// --- Sorgu Mesajları ---
+message GetFloorPlanSectionResponse { FloorPlanSection section = 1; }
+message ListFloorPlanSectionsRequest {
+  projectsuit.common.v1.ListRequest base_request = 1;
+  string filter_by_warehouse_id = 2;
+}
+message ListFloorPlanSectionsResponse {
+  repeated FloorPlanSection sections = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}
+
+message GetRestaurantTableResponse { RestaurantTable table = 1; }
+message ListRestaurantTablesRequest {
+  projectsuit.common.v1.ListRequest base_request = 1;
+  optional string filter_by_section_id = 2;
+  optional string filter_by_warehouse_id = 3;
+  optional string filter_by_status = 4;
+}
+message ListRestaurantTablesResponse {
+  repeated RestaurantTable tables = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}
+
+message GetOrderSessionResponse { OrderSession session = 1; }
+message ListOrderSessionsRequest {
+  projectsuit.common.v1.ListRequest base_request = 1;
+  optional string filter_by_warehouse_id = 2;
+  optional string filter_by_table_id = 3;
+  optional string filter_by_status = 4;
+  optional projectsuit.common.v1.DateRange filter_by_opened_date_range = 5;
+}
+message ListOrderSessionsResponse {
+  repeated OrderSession sessions = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}

@@ -1,0 +1,135 @@
+syntax = "proto3";
+
+package projectsuit.customer.v1;
+
+import "google/protobuf/timestamp.proto";
+// import "google/protobuf/struct.proto"; // Eğer Customer'da JSONB alan olsaydı
+import "projectsuit/common/v1/common.v1.proto";
+
+option go_package = "github.com/enessefak/suit-proto/gen/go/projectsuit/customer/v1;customerv1";
+option java_package = "com.projectsuit.customer.v1";
+option java_multiple_files = true;
+option java_outer_classname = "CustomerProto";
+
+service CustomerService {
+  // Komutlar
+  rpc CreateCustomer(CreateCustomerRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdateCustomer(UpdateCustomerRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc DeleteCustomer(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc AddCustomerAddress(AddCustomerAddressRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdateCustomerAddress(UpdateCustomerAddressRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc DeleteCustomerAddress(DeleteCustomerAddressRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc SetDefaultCustomerAddress(SetDefaultCustomerAddressRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // Sorgular
+  rpc GetCustomer(projectsuit.common.v1.GetByIdRequest) returns (GetCustomerResponse);
+  rpc ListCustomers(ListCustomersRequest) returns (ListCustomersResponse);
+  rpc GetCustomerByEmail(GetCustomerByEmailRequest) returns (GetCustomerResponse);
+  rpc GetCustomerByPhone(GetCustomerByPhoneRequest) returns (GetCustomerResponse);
+}
+
+// --- Entity Mesajları ---
+message Customer {
+  string id = 1; // UUID
+  optional string customer_code = 2;
+  optional string first_name = 3;
+  optional string last_name = 4;
+  optional string email = 5;
+  optional string phone = 6;
+  optional string company_name = 7;
+  optional string tax_id = 8;
+  bool is_active = 9;
+  optional string notes = 10;
+  google.protobuf.Timestamp created_at = 11;
+  google.protobuf.Timestamp updated_at = 12;
+
+  repeated CustomerAddress addresses = 20;
+}
+
+message CustomerAddress {
+  string id = 1; // UUID
+  string address_type = 3; // "SHIPPING", "BILLING", "HOME", "WORK"
+  projectsuit.common.v1.Address address_details = 4;
+  bool is_default_shipping = 5;
+  bool is_default_billing = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+}
+
+// --- Komut Mesajları ---
+message CreateCustomerRequest {
+  optional string customer_code = 1;
+  optional string first_name = 2;
+  optional string last_name = 3;
+  optional string email = 4;
+  optional string phone = 5;
+  optional string company_name = 6;
+  optional string tax_id = 7;
+  optional bool is_active = 8;
+  optional string notes = 9;
+  // repeated CreateCustomerAddressInput initial_addresses = 10; // Daha karmaşık senaryolar için
+}
+
+message UpdateCustomerRequest {
+  string id = 1;
+  optional string customer_code = 2;
+  optional string first_name = 3;
+  optional string last_name = 4;
+  optional string email = 5;
+  optional string phone = 6;
+  optional string company_name = 7;
+  optional string tax_id = 8;
+  optional bool is_active = 9;
+  optional string notes = 10;
+}
+
+message AddCustomerAddressRequest {
+  string customer_id = 1;
+  string address_type = 2;
+  projectsuit.common.v1.Address address_details = 3;
+  optional bool is_default_shipping = 4;
+  optional bool is_default_billing = 5;
+}
+
+message UpdateCustomerAddressRequest {
+  string customer_address_id = 1; // customer_addresses.id
+  optional string address_type = 2;
+  optional projectsuit.common.v1.Address address_details = 3;
+  optional bool is_default_shipping = 4;
+  optional bool is_default_billing = 5;
+}
+
+message DeleteCustomerAddressRequest {
+    string customer_id = 1;
+    string customer_address_id = 2;
+}
+
+message SetDefaultCustomerAddressRequest {
+    string customer_id = 1;
+    string customer_address_id = 2;
+    string address_type_to_set_default = 3; // "SHIPPING" veya "BILLING"
+}
+
+// --- Sorgu Mesajları ---
+message GetCustomerResponse {
+  Customer customer = 1;
+}
+
+message ListCustomersRequest {
+  projectsuit.common.v1.ListRequest base_request = 1;
+}
+
+message ListCustomersResponse {
+  repeated Customer customers = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}
+
+message GetCustomerByEmailRequest {
+    string email = 1;
+    projectsuit.common.v1.LocaleInput locale_input = 2;
+}
+
+message GetCustomerByPhoneRequest {
+    string phone = 1;
+    projectsuit.common.v1.LocaleInput locale_input = 2;
+}

@@ -1,0 +1,210 @@
+syntax = "proto3";
+
+package projectsuit.inventory.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+import "projectsuit/common/v1/common.v1.proto";
+import "projectsuit/product/v1/product.v1.proto"; // Product, ProductVariant
+import "projectsuit/unit/v1/unit.v1.proto";     // Unit
+
+option go_package = "github.com/enessefak/suit-proto/gen/go/projectsuit/inventory/v1;inventoryv1";
+option java_package = "com.projectsuit.inventory.v1";
+option java_multiple_files = true;
+option java_outer_classname = "InventoryProto";
+
+service InventoryService {
+  // Warehouse (Şube/Depo) Komutları
+  rpc CreateWarehouse(CreateWarehouseRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdateWarehouse(UpdateWarehouseRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc DeleteWarehouse(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // StockLevel Komutları
+  rpc AdjustStockLevel(AdjustStockLevelRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // StockMovement Komutları
+  rpc RecordStockMovement(RecordStockMovementRequest) returns (projectsuit.common.v1.IdResponse);
+
+  // Warehouse Sorguları
+  rpc GetWarehouse(projectsuit.common.v1.GetByIdRequest) returns (GetWarehouseResponse);
+  rpc ListWarehouses(ListWarehousesRequest) returns (ListWarehousesResponse);
+
+  // StockLevel Sorguları
+  rpc GetStockLevel(GetStockLevelRequest) returns (GetStockLevelResponse);
+  rpc ListStockLevels(ListStockLevelsRequest) returns (ListStockLevelsResponse);
+
+  // StockMovement Sorguları
+  rpc ListStockMovements(ListStockMovementsRequest) returns (ListStockMovementsResponse);
+}
+
+// --- Entity Mesajları ---
+message Warehouse {
+  string id = 1;
+  string code = 2;
+  string branch_type = 3;
+  bool is_sales_outlet = 4;
+  bool is_pickup_point = 5;
+  bool is_active = 6;
+  projectsuit.common.v1.Address address = 7;
+  optional string contact_email = 8;
+  optional string contact_phone = 9;
+  google.protobuf.Struct opening_hours = 10;
+  bool can_be_sales_channel = 11;
+  optional string external_sales_channel_id = 12;
+  optional string franchisee_id = 13;
+  optional double latitude = 14;
+  optional double longitude = 15;
+  optional string timezone = 16;
+  google.protobuf.Struct configuration = 17;
+  google.protobuf.Timestamp created_at = 18;
+  google.protobuf.Timestamp updated_at = 19;
+
+  string name = 20;
+  string public_display_name = 21;
+  string delivery_instructions = 22;
+  repeated projectsuit.common.v1.TranslationOutput all_translations = 23;
+}
+
+message StockLevel {
+  string id = 1;
+  string warehouse_id = 2;
+  string product_id = 3;
+  optional string variant_id = 4;
+  string unit_id = 5;
+  string quantity = 6; // NUMERIC -> string
+  optional google.protobuf.Timestamp last_counted_at = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+
+  optional Warehouse warehouse_summary = 20;
+  optional projectsuit.product.v1.Product product_summary = 21;
+  optional projectsuit.product.v1.ProductVariant variant_summary = 22;
+  optional projectsuit.unit.v1.Unit unit_summary = 23;
+}
+
+message StockMovement {
+  string id = 1;
+  string warehouse_id = 2;
+  string product_id = 3;
+  optional string variant_id = 4;
+  string unit_id = 5;
+  string quantity_changed = 6;
+  string movement_type = 7;
+  optional string reference_document_id = 8;
+  optional string reference_document_type = 9;
+  optional string reason = 10;
+  google.protobuf.Timestamp occurred_at = 11;
+  optional string created_by_user_id = 12;
+  google.protobuf.Timestamp created_at = 13;
+
+  optional Warehouse warehouse_summary = 20;
+  optional projectsuit.product.v1.Product product_summary = 21;
+  optional projectsuit.product.v1.ProductVariant variant_summary = 22;
+  optional projectsuit.unit.v1.Unit unit_summary = 23;
+}
+
+// --- Komut Mesajları ---
+message CreateWarehouseRequest {
+  string code = 1;
+  string branch_type = 2;
+  optional bool is_sales_outlet = 3;
+  optional bool is_pickup_point = 4;
+  optional bool is_active = 5;
+  optional projectsuit.common.v1.Address address = 6;
+  optional string contact_email = 7;
+  optional string contact_phone = 8;
+  optional google.protobuf.Struct opening_hours = 9;
+  optional bool can_be_sales_channel = 10;
+  optional string external_sales_channel_id = 11;
+  optional string franchisee_id = 12;
+  optional double latitude = 13;
+  optional double longitude = 14;
+  optional string timezone = 15;
+  optional google.protobuf.Struct configuration = 16;
+  repeated projectsuit.common.v1.TranslationInput translations = 20;
+}
+message UpdateWarehouseRequest {
+  string id = 1;
+  optional string code = 2;
+  optional string branch_type = 3;
+  optional bool is_sales_outlet = 4;
+  optional bool is_pickup_point = 5;
+  optional bool is_active = 6;
+  optional projectsuit.common.v1.Address address = 7;
+  optional string contact_email = 8;
+  optional string contact_phone = 9;
+  optional google.protobuf.Struct opening_hours = 10;
+  optional bool can_be_sales_channel = 11;
+  optional string external_sales_channel_id = 12;
+  optional string franchisee_id = 13;
+  optional double latitude = 14;
+  optional double longitude = 15;
+  optional string timezone = 16;
+  optional google.protobuf.Struct configuration = 17;
+  repeated projectsuit.common.v1.TranslationInput translations_to_update = 20;
+}
+
+message AdjustStockLevelRequest {
+  string warehouse_id = 1;
+  string product_id = 2;
+  optional string variant_id = 3;
+  string unit_id = 4;
+  string new_quantity = 5;
+  string reason = 6;
+  optional string adjusted_by_user_id = 7;
+}
+
+message RecordStockMovementRequest {
+  string warehouse_id = 1;
+  string product_id = 2;
+  optional string variant_id = 3;
+  string unit_id = 4;
+  string quantity_changed = 5;
+  string movement_type = 6;
+  optional string reference_document_id = 7;
+  optional string reference_document_type = 8;
+  optional string reason = 9;
+  optional google.protobuf.Timestamp occurred_at = 10;
+  optional string created_by_user_id = 11;
+}
+
+// --- Sorgu Mesajları ---
+message GetWarehouseResponse { Warehouse warehouse = 1; }
+message ListWarehousesRequest {
+  projectsuit.common.v1.ListRequest base_request = 1;
+  optional string filter_by_branch_type = 2;
+}
+message ListWarehousesResponse {
+  repeated Warehouse warehouses = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}
+
+message GetStockLevelRequest {
+  string warehouse_id = 1;
+  string product_id = 2;
+  optional string variant_id = 3;
+  string unit_id = 4;
+  projectsuit.common.v1.LocaleInput locale_input = 5;
+}
+message GetStockLevelResponse { StockLevel stock_level = 1; }
+message ListStockLevelsRequest {
+  projectsuit.common.v1.ListRequest base_request = 1;
+  optional string filter_by_warehouse_id = 2;
+  optional string filter_by_product_id = 3;
+}
+message ListStockLevelsResponse {
+  repeated StockLevel stock_levels = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}
+
+message ListStockMovementsRequest {
+  projectsuit.common.v1.ListRequest base_request = 1;
+  optional string filter_by_warehouse_id = 2;
+  optional string filter_by_product_id = 3;
+  optional string filter_by_movement_type = 4;
+  optional projectsuit.common.v1.DateRange filter_by_occurred_date_range = 5;
+}
+message ListStockMovementsResponse {
+  repeated StockMovement stock_movements = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}

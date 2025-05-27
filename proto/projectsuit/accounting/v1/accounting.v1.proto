@@ -1,0 +1,354 @@
+syntax = "proto3";
+
+package projectsuit.accounting.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+import "projectsuit/common/v1/common.v1.proto";
+import "projectsuit/inventory/v1/inventory.v1.proto"; // Warehouse
+import "projectsuit/payment/v1/payment.v1.proto"; // PaymentMethod
+
+option go_package = "github.com/enessefak/suit-proto/gen/go/projectsuit/accounting/v1;accountingv1";
+option java_package = "com.projectsuit.accounting.v1";
+option java_multiple_files = true;
+option java_outer_classname = "AccountingProto";
+
+service AccountingService {
+  // ChartOfAccount Komutları
+  rpc CreateChartOfAccount(CreateChartOfAccountRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdateChartOfAccount(UpdateChartOfAccountRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc DeleteChartOfAccount(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // GeneralLedgerTransaction Komutları
+  rpc CreateGeneralLedgerTransaction(CreateGeneralLedgerTransactionRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc PostGeneralLedgerTransaction(PostGeneralLedgerTransactionRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc VoidGeneralLedgerTransaction(VoidGeneralLedgerTransactionRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // Vendor Komutları
+  rpc CreateVendor(CreateVendorRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdateVendor(UpdateVendorRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc DeleteVendor(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // ExpenseCategory Komutları
+  rpc CreateExpenseCategory(CreateExpenseCategoryRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdateExpenseCategory(UpdateExpenseCategoryRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc DeleteExpenseCategory(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // Expense Komutları
+  rpc CreateExpense(CreateExpenseRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdateExpense(UpdateExpenseRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc ApproveExpense(ApproveExpenseRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc RecordExpensePayment(RecordExpensePaymentRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc DeleteExpense(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // ChartOfAccount Sorguları
+  rpc GetChartOfAccount(projectsuit.common.v1.GetByIdRequest) returns (GetChartOfAccountResponse);
+  rpc ListChartOfAccounts(ListChartOfAccountsRequest) returns (ListChartOfAccountsResponse);
+
+  // GeneralLedgerTransaction Sorguları
+  rpc GetGeneralLedgerTransaction(projectsuit.common.v1.GetByIdRequest) returns (GetGeneralLedgerTransactionResponse);
+  rpc ListGeneralLedgerTransactions(ListGeneralLedgerTransactionsRequest) returns (ListGeneralLedgerTransactionsResponse);
+
+  // Vendor Sorguları
+  rpc GetVendor(projectsuit.common.v1.GetByIdRequest) returns (GetVendorResponse);
+  rpc ListVendors(ListVendorsRequest) returns (ListVendorsResponse);
+
+  // ExpenseCategory Sorguları
+  rpc GetExpenseCategory(projectsuit.common.v1.GetByIdRequest) returns (GetExpenseCategoryResponse);
+  rpc ListExpenseCategories(ListExpenseCategoriesRequest) returns (ListExpenseCategoriesResponse);
+
+  // Expense Sorguları
+  rpc GetExpense(projectsuit.common.v1.GetByIdRequest) returns (GetExpenseResponse);
+  rpc ListExpenses(ListExpensesRequest) returns (ListExpensesResponse);
+}
+
+// --- Entity Mesajları ---
+message ChartOfAccount {
+  string id = 1;
+  string account_code = 2;
+  string account_type = 3;
+  optional string parent_account_id = 4;
+  string normal_balance = 5;
+  bool is_active = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+
+  string account_name = 20;
+  string description = 21;
+  repeated projectsuit.common.v1.TranslationOutput all_translations = 22;
+}
+
+message GeneralLedgerTransaction {
+  string id = 1;
+  string transaction_date = 2; // "YYYY-MM-DD"
+  string posting_date = 3; // "YYYY-MM-DD"
+  string description = 4;
+  optional string transaction_type = 5;
+  optional string reference_document_id = 6;
+  optional string reference_document_code = 7;
+  string status = 8;
+  bool is_auto_generated = 9;
+  optional string void_reason = 10;
+  optional string created_by_user_id = 11;
+  optional string posted_by_user_id = 12;
+  google.protobuf.Timestamp created_at = 13;
+  optional google.protobuf.Timestamp posted_at = 14;
+  repeated GeneralLedgerLine lines = 20;
+}
+
+message GeneralLedgerLine {
+  string id = 1;
+  string account_id = 3;
+  projectsuit.common.v1.Money debit_amount = 4;
+  projectsuit.common.v1.Money credit_amount = 5;
+  optional string description = 6;
+  google.protobuf.Timestamp created_at = 7;
+  optional ChartOfAccount account_summary = 20;
+}
+
+message Vendor {
+  string id = 1;
+  optional string code = 2;
+  optional string contact_person = 3;
+  optional string email = 4;
+  optional string phone = 5;
+  optional projectsuit.common.v1.Address address = 6;
+  optional string tax_id = 7;
+  google.protobuf.Struct bank_account_details = 8;
+  optional string default_expense_account_id = 9;
+  bool is_active = 10;
+  google.protobuf.Timestamp created_at = 11;
+  google.protobuf.Timestamp updated_at = 12;
+
+  string name = 20;
+  string notes = 21;
+  repeated projectsuit.common.v1.TranslationOutput all_translations = 22;
+}
+
+message ExpenseCategory {
+  string id = 1;
+  optional string code = 2;
+  optional string parent_category_id = 3;
+  optional string default_expense_account_id = 4;
+  bool is_active = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+
+  string name = 20;
+  string description = 21;
+  repeated projectsuit.common.v1.TranslationOutput all_translations = 22;
+}
+
+message Expense {
+  string id = 1;
+  optional string warehouse_id = 2;
+  string expense_date = 3; // "YYYY-MM-DD"
+  optional string vendor_id = 4;
+  string expense_category_id = 5;
+  string description = 6;
+  projectsuit.common.v1.Money amount = 7;
+  projectsuit.common.v1.Money tax_amount = 8;
+  projectsuit.common.v1.Money total_amount = 9;
+  optional string payment_method_id = 10;
+  optional string payment_date = 11; // "YYYY-MM-DD"
+  optional string reference_number = 12;
+  string status = 13;
+  optional string notes = 14;
+  optional string created_by_user_id = 15;
+  optional string approved_by_user_id = 16;
+  optional string related_gl_transaction_id = 17;
+  repeated string attachment_urls = 18;
+  bool is_active = 19;
+  google.protobuf.Timestamp created_at = 20;
+  google.protobuf.Timestamp updated_at = 21;
+
+  optional projectsuit.inventory.v1.Warehouse warehouse_summary = 30;
+  optional Vendor vendor_summary = 31;
+  optional ExpenseCategory expense_category_summary = 32;
+  optional projectsuit.payment.v1.PaymentMethod payment_method_summary = 33;
+}
+
+// --- Komut Mesajları ---
+message CreateChartOfAccountRequest {
+  string account_code = 1;
+  string account_type = 2;
+  optional string parent_account_id = 3;
+  string normal_balance = 4;
+  optional bool is_active = 5;
+  repeated projectsuit.common.v1.TranslationInput translations = 6;
+}
+message UpdateChartOfAccountRequest {
+  string id = 1;
+  optional string account_code = 2;
+  optional string account_type = 3;
+  optional string parent_account_id = 4;
+  optional string normal_balance = 5;
+  optional bool is_active = 6;
+  repeated projectsuit.common.v1.TranslationInput translations_to_update = 7;
+}
+
+message CreateGeneralLedgerTransactionRequest {
+  string transaction_date = 1;
+  string description = 2;
+  optional string transaction_type = 3;
+  optional string reference_document_id = 4;
+  optional string reference_document_code = 5;
+  optional string created_by_user_id = 6;
+  repeated CreateGeneralLedgerLineInput lines = 7;
+  optional bool post_immediately = 8;
+}
+message CreateGeneralLedgerLineInput {
+  string account_id = 1;
+  string debit_amount = 2;
+  string credit_amount = 3;
+  optional string description = 4;
+}
+message PostGeneralLedgerTransactionRequest {
+  string transaction_id = 1;
+  optional string posted_by_user_id = 2;
+}
+message VoidGeneralLedgerTransactionRequest {
+  string transaction_id = 1;
+  string void_reason = 2;
+  optional string voided_by_user_id = 3;
+}
+
+message CreateVendorRequest {
+  optional string code = 1;
+  optional string email = 2;
+  optional string phone = 3;
+  optional projectsuit.common.v1.Address address = 4;
+  optional string tax_id = 5;
+  optional google.protobuf.Struct bank_account_details = 6;
+  optional string default_expense_account_id = 7;
+  optional bool is_active = 8;
+  repeated projectsuit.common.v1.TranslationInput translations = 9; // 'name', 'notes'
+}
+message UpdateVendorRequest {
+  string id = 1;
+  optional string code = 2;
+  optional string contact_person = 3; // Eklendi
+  optional string email = 4;
+  optional string phone = 5;
+  optional projectsuit.common.v1.Address address = 6;
+  optional string tax_id = 7;
+  optional google.protobuf.Struct bank_account_details = 8;
+  optional string default_expense_account_id = 9;
+  optional bool is_active = 10;
+  repeated projectsuit.common.v1.TranslationInput translations_to_update = 11;
+}
+
+message CreateExpenseCategoryRequest {
+  optional string code = 1;
+  optional string parent_category_id = 2;
+  optional string default_expense_account_id = 3;
+  optional bool is_active = 4;
+  repeated projectsuit.common.v1.TranslationInput translations = 5;
+}
+message UpdateExpenseCategoryRequest {
+  string id = 1;
+  optional string code = 2;
+  optional string parent_category_id = 3;
+  optional string default_expense_account_id = 4;
+  optional bool is_active = 5;
+  repeated projectsuit.common.v1.TranslationInput translations_to_update = 6;
+}
+
+message CreateExpenseRequest {
+  optional string warehouse_id = 1;
+  string expense_date = 2;
+  optional string vendor_id = 3;
+  string expense_category_id = 4;
+  string description = 5;
+  projectsuit.common.v1.Money amount = 6;
+  optional projectsuit.common.v1.Money tax_amount = 7;
+  optional string payment_method_id = 8;
+  optional string payment_date = 9;
+  optional string reference_number = 10;
+  optional string initial_status = 11;
+  optional string notes = 12;
+  optional string created_by_user_id = 13;
+  repeated string attachment_urls = 14;
+}
+message UpdateExpenseRequest {
+  string id = 1;
+  optional string warehouse_id = 2;
+  optional string expense_date = 3;
+  optional string vendor_id = 4;
+  optional string expense_category_id = 5;
+  optional string description = 6;
+  optional projectsuit.common.v1.Money amount = 7;
+  optional projectsuit.common.v1.Money tax_amount = 8;
+  optional string payment_method_id = 9; // Ödeme kaydı ayrı bir komutla yapılmalı
+  optional string reference_number = 10;
+  // Status güncellemeleri ayrı komutlarla (ApproveExpense)
+  optional string notes = 11;
+  repeated string attachment_urls = 12; // Liste tamamen güncellenir veya append/remove RPC'leri
+}
+message ApproveExpenseRequest {
+  string id = 1;
+  optional string approved_by_user_id = 2;
+  optional bool post_to_gl_on_approve = 3;
+}
+message RecordExpensePaymentRequest {
+    string expense_id = 1;
+    projectsuit.common.v1.Money payment_amount = 2;
+    string payment_method_id = 3;
+    string payment_date = 4;
+    optional string reference_number = 5;
+    optional string paid_by_user_id = 6;
+    optional bool post_to_gl_on_payment = 7;
+}
+
+// --- Sorgu Mesajları ---
+message GetChartOfAccountResponse { ChartOfAccount account = 1; }
+message ListChartOfAccountsRequest {
+  projectsuit.common.v1.ListRequest base_request = 1;
+  optional string filter_by_account_type = 2;
+  optional string filter_by_parent_id = 3;
+}
+message ListChartOfAccountsResponse {
+  repeated ChartOfAccount accounts = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}
+
+message GetGeneralLedgerTransactionResponse { GeneralLedgerTransaction transaction = 1; }
+message ListGeneralLedgerTransactionsRequest {
+  projectsuit.common.v1.ListRequest base_request = 1;
+  optional projectsuit.common.v1.DateRange filter_by_transaction_date_range = 2;
+  optional projectsuit.common.v1.DateRange filter_by_posting_date_range = 3;
+  optional string filter_by_status = 4;
+  optional string filter_by_account_id = 5;
+}
+message ListGeneralLedgerTransactionsResponse {
+  repeated GeneralLedgerTransaction transactions = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}
+
+message GetVendorResponse { Vendor vendor = 1; }
+message ListVendorsRequest { projectsuit.common.v1.ListRequest base_request = 1; }
+message ListVendorsResponse {
+  repeated Vendor vendors = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}
+
+message GetExpenseCategoryResponse { ExpenseCategory category = 1; }
+message ListExpenseCategoriesRequest { projectsuit.common.v1.ListRequest base_request = 1; }
+message ListExpenseCategoriesResponse {
+  repeated ExpenseCategory categories = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}
+
+message GetExpenseResponse { Expense expense = 1; }
+message ListExpensesRequest {
+  projectsuit.common.v1.ListRequest base_request = 1;
+  optional string filter_by_warehouse_id = 2;
+  optional string filter_by_vendor_id = 3;
+  optional string filter_by_expense_category_id = 4;
+  optional projectsuit.common.v1.DateRange filter_by_expense_date_range = 5;
+  optional string filter_by_status = 6;
+}
+message ListExpensesResponse {
+  repeated Expense expenses = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}

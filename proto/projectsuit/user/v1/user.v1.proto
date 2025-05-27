@@ -1,0 +1,111 @@
+syntax = "proto3";
+
+package projectsuit.user.v1;
+
+import "google/protobuf/timestamp.proto";
+import "projectsuit/common/v1/common.v1.proto";
+
+option go_package = "github.com/enessefak/suit-proto/gen/go/projectsuit/user/v1;userv1";
+option java_package = "com.projectsuit.user.v1";
+option java_multiple_files = true;
+option java_outer_classname = "UserProto";
+
+// Kullanıcı, Rol ve İzin yönetimi için servis.
+// Detaylı yetkilendirme (permissions) bu servisin dışında,
+// belki bir policy engine veya her servisin kendi içinde de ele alınabilir.
+service UserService {
+  // User Komutları
+  rpc CreateUser(CreateUserRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdateUser(UpdateUserRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc DeleteUser(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc SetUserPassword(SetUserPasswordRequest) returns (projectsuit.common.v1.MutateResponse);
+  // rpc AssignRoleToUser(AssignRoleToUserRequest) returns (projectsuit.common.v1.MutateResponse);
+  // rpc RemoveRoleFromUser(RemoveRoleFromUserRequest) returns (projectsuit.common.v1.MutateResponse);
+  // rpc AssignUserToWarehouse(AssignUserToWarehouseRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // Role Komutları (Basit düzeyde)
+  // rpc CreateRole(CreateRoleRequest) returns (projectsuit.common.v1.IdResponse);
+  // rpc UpdateRole(UpdateRoleRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // User Sorguları
+  rpc GetUser(projectsuit.common.v1.GetByIdRequest) returns (GetUserResponse);
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
+  rpc GetUserByUsername(GetUserByUsernameRequest) returns (GetUserResponse); // Veya email
+
+  // Authentication (ayrı bir auth.v1.proto'da olabilir)
+  // rpc AuthenticateUser(AuthenticateUserRequest) returns (AuthenticateUserResponse);
+  // rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
+}
+
+// --- Entity Mesajları ---
+message User {
+  string id = 1; // UUID
+  string username = 2; // Sisteme giriş adı
+  optional string email = 3;
+  optional string first_name = 4;
+  optional string last_name = 5;
+  optional string phone_number = 6;
+  bool is_active = 7; // Kullanıcı aktif mi?
+  bool is_system_admin = 8; // Tüm yetkilere sahip admin mi?
+  optional google.protobuf.Timestamp last_login_at = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+
+  // repeated Role roles = 20; // Kullanıcının rolleri
+  // repeated string warehouse_ids_assigned_to = 21; // Atandığı şubeler
+}
+
+/* // Basit Rol Tanımı (Opsiyonel)
+message Role {
+    string id = 1;
+    string code = 2; // "ADMIN", "MANAGER", "CASHIER"
+    string name = 3;
+    // repeated string permissions = 4; // Bu role ait izinler (string listesi)
+}
+*/
+
+// --- Komut Mesajları ---
+message CreateUserRequest {
+  string username = 1;
+  string password = 2; // İlk şifre (hashlenmeden önce)
+  optional string email = 3;
+  optional string first_name = 4;
+  optional string last_name = 5;
+  optional string phone_number = 6;
+  optional bool is_active = 7;
+  optional bool is_system_admin = 8;
+  // repeated string initial_role_codes = 9;
+  // repeated string initial_warehouse_ids = 10;
+}
+message UpdateUserRequest {
+  string id = 1;
+  optional string username = 2;
+  optional string email = 3;
+  optional string first_name = 4;
+  optional string last_name = 5;
+  optional string phone_number = 6;
+  optional bool is_active = 7;
+  optional bool is_system_admin = 8;
+}
+message SetUserPasswordRequest {
+    string user_id = 1;
+    string new_password = 2;
+    // optional string old_password = 3; // Doğrulama için (opsiyonel)
+}
+
+// --- Sorgu Mesajları ---
+message GetUserResponse { User user = 1; }
+message ListUsersRequest {
+  projectsuit.common.v1.ListRequest base_request = 1;
+  // optional string filter_by_role_code = 2;
+  // optional string filter_by_warehouse_id = 3;
+}
+message ListUsersResponse {
+  repeated User users = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}
+message GetUserByUsernameRequest {
+    string username = 1;
+    projectsuit.common.v1.LocaleInput locale_input = 2; // Gerekirse
+}
+

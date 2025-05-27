@@ -7,12 +7,36 @@ impl serde::Serialize for CreateUnitRequest {
     {
         use serde::ser::SerializeStruct;
         let mut len = 0;
-        if self.unit.is_some() {
+        if !self.code.is_empty() {
+            len += 1;
+        }
+        if self.base_unit_id.is_some() {
+            len += 1;
+        }
+        if !self.conversion_factor.is_empty() {
+            len += 1;
+        }
+        if self.is_active.is_some() {
+            len += 1;
+        }
+        if !self.translations.is_empty() {
             len += 1;
         }
         let mut struct_ser = serializer.serialize_struct("projectsuit.unit.v1.CreateUnitRequest", len)?;
-        if let Some(v) = self.unit.as_ref() {
-            struct_ser.serialize_field("unit", v)?;
+        if !self.code.is_empty() {
+            struct_ser.serialize_field("code", &self.code)?;
+        }
+        if let Some(v) = self.base_unit_id.as_ref() {
+            struct_ser.serialize_field("baseUnitId", v)?;
+        }
+        if !self.conversion_factor.is_empty() {
+            struct_ser.serialize_field("conversionFactor", &self.conversion_factor)?;
+        }
+        if let Some(v) = self.is_active.as_ref() {
+            struct_ser.serialize_field("isActive", v)?;
+        }
+        if !self.translations.is_empty() {
+            struct_ser.serialize_field("translations", &self.translations)?;
         }
         struct_ser.end()
     }
@@ -24,12 +48,23 @@ impl<'de> serde::Deserialize<'de> for CreateUnitRequest {
         D: serde::Deserializer<'de>,
     {
         const FIELDS: &[&str] = &[
-            "unit",
+            "code",
+            "base_unit_id",
+            "baseUnitId",
+            "conversion_factor",
+            "conversionFactor",
+            "is_active",
+            "isActive",
+            "translations",
         ];
 
         #[allow(clippy::enum_variant_names)]
         enum GeneratedField {
-            Unit,
+            Code,
+            BaseUnitId,
+            ConversionFactor,
+            IsActive,
+            Translations,
         }
         impl<'de> serde::Deserialize<'de> for GeneratedField {
             fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
@@ -51,7 +86,11 @@ impl<'de> serde::Deserialize<'de> for CreateUnitRequest {
                         E: serde::de::Error,
                     {
                         match value {
-                            "unit" => Ok(GeneratedField::Unit),
+                            "code" => Ok(GeneratedField::Code),
+                            "baseUnitId" | "base_unit_id" => Ok(GeneratedField::BaseUnitId),
+                            "conversionFactor" | "conversion_factor" => Ok(GeneratedField::ConversionFactor),
+                            "isActive" | "is_active" => Ok(GeneratedField::IsActive),
+                            "translations" => Ok(GeneratedField::Translations),
                             _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
                         }
                     }
@@ -71,387 +110,55 @@ impl<'de> serde::Deserialize<'de> for CreateUnitRequest {
                 where
                     V: serde::de::MapAccess<'de>,
             {
-                let mut unit__ = None;
+                let mut code__ = None;
+                let mut base_unit_id__ = None;
+                let mut conversion_factor__ = None;
+                let mut is_active__ = None;
+                let mut translations__ = None;
                 while let Some(k) = map_.next_key()? {
                     match k {
-                        GeneratedField::Unit => {
-                            if unit__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("unit"));
+                        GeneratedField::Code => {
+                            if code__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("code"));
                             }
-                            unit__ = map_.next_value()?;
+                            code__ = Some(map_.next_value()?);
+                        }
+                        GeneratedField::BaseUnitId => {
+                            if base_unit_id__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("baseUnitId"));
+                            }
+                            base_unit_id__ = map_.next_value()?;
+                        }
+                        GeneratedField::ConversionFactor => {
+                            if conversion_factor__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("conversionFactor"));
+                            }
+                            conversion_factor__ = Some(map_.next_value()?);
+                        }
+                        GeneratedField::IsActive => {
+                            if is_active__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("isActive"));
+                            }
+                            is_active__ = map_.next_value()?;
+                        }
+                        GeneratedField::Translations => {
+                            if translations__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("translations"));
+                            }
+                            translations__ = Some(map_.next_value()?);
                         }
                     }
                 }
                 Ok(CreateUnitRequest {
-                    unit: unit__,
+                    code: code__.unwrap_or_default(),
+                    base_unit_id: base_unit_id__,
+                    conversion_factor: conversion_factor__.unwrap_or_default(),
+                    is_active: is_active__,
+                    translations: translations__.unwrap_or_default(),
                 })
             }
         }
         deserializer.deserialize_struct("projectsuit.unit.v1.CreateUnitRequest", FIELDS, GeneratedVisitor)
-    }
-}
-impl serde::Serialize for CreateUnitResponse {
-    #[allow(deprecated)]
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        use serde::ser::SerializeStruct;
-        let mut len = 0;
-        if !self.id.is_empty() {
-            len += 1;
-        }
-        let mut struct_ser = serializer.serialize_struct("projectsuit.unit.v1.CreateUnitResponse", len)?;
-        if !self.id.is_empty() {
-            struct_ser.serialize_field("id", &self.id)?;
-        }
-        struct_ser.end()
-    }
-}
-impl<'de> serde::Deserialize<'de> for CreateUnitResponse {
-    #[allow(deprecated)]
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        const FIELDS: &[&str] = &[
-            "id",
-        ];
-
-        #[allow(clippy::enum_variant_names)]
-        enum GeneratedField {
-            Id,
-        }
-        impl<'de> serde::Deserialize<'de> for GeneratedField {
-            fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
-            where
-                D: serde::Deserializer<'de>,
-            {
-                struct GeneratedVisitor;
-
-                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-                    type Value = GeneratedField;
-
-                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                        write!(formatter, "expected one of: {:?}", &FIELDS)
-                    }
-
-                    #[allow(unused_variables)]
-                    fn visit_str<E>(self, value: &str) -> std::result::Result<GeneratedField, E>
-                    where
-                        E: serde::de::Error,
-                    {
-                        match value {
-                            "id" => Ok(GeneratedField::Id),
-                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
-                        }
-                    }
-                }
-                deserializer.deserialize_identifier(GeneratedVisitor)
-            }
-        }
-        struct GeneratedVisitor;
-        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-            type Value = CreateUnitResponse;
-
-            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                formatter.write_str("struct projectsuit.unit.v1.CreateUnitResponse")
-            }
-
-            fn visit_map<V>(self, mut map_: V) -> std::result::Result<CreateUnitResponse, V::Error>
-                where
-                    V: serde::de::MapAccess<'de>,
-            {
-                let mut id__ = None;
-                while let Some(k) = map_.next_key()? {
-                    match k {
-                        GeneratedField::Id => {
-                            if id__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("id"));
-                            }
-                            id__ = Some(map_.next_value()?);
-                        }
-                    }
-                }
-                Ok(CreateUnitResponse {
-                    id: id__.unwrap_or_default(),
-                })
-            }
-        }
-        deserializer.deserialize_struct("projectsuit.unit.v1.CreateUnitResponse", FIELDS, GeneratedVisitor)
-    }
-}
-impl serde::Serialize for DeleteUnitRequest {
-    #[allow(deprecated)]
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        use serde::ser::SerializeStruct;
-        let mut len = 0;
-        if !self.id.is_empty() {
-            len += 1;
-        }
-        let mut struct_ser = serializer.serialize_struct("projectsuit.unit.v1.DeleteUnitRequest", len)?;
-        if !self.id.is_empty() {
-            struct_ser.serialize_field("id", &self.id)?;
-        }
-        struct_ser.end()
-    }
-}
-impl<'de> serde::Deserialize<'de> for DeleteUnitRequest {
-    #[allow(deprecated)]
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        const FIELDS: &[&str] = &[
-            "id",
-        ];
-
-        #[allow(clippy::enum_variant_names)]
-        enum GeneratedField {
-            Id,
-        }
-        impl<'de> serde::Deserialize<'de> for GeneratedField {
-            fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
-            where
-                D: serde::Deserializer<'de>,
-            {
-                struct GeneratedVisitor;
-
-                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-                    type Value = GeneratedField;
-
-                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                        write!(formatter, "expected one of: {:?}", &FIELDS)
-                    }
-
-                    #[allow(unused_variables)]
-                    fn visit_str<E>(self, value: &str) -> std::result::Result<GeneratedField, E>
-                    where
-                        E: serde::de::Error,
-                    {
-                        match value {
-                            "id" => Ok(GeneratedField::Id),
-                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
-                        }
-                    }
-                }
-                deserializer.deserialize_identifier(GeneratedVisitor)
-            }
-        }
-        struct GeneratedVisitor;
-        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-            type Value = DeleteUnitRequest;
-
-            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                formatter.write_str("struct projectsuit.unit.v1.DeleteUnitRequest")
-            }
-
-            fn visit_map<V>(self, mut map_: V) -> std::result::Result<DeleteUnitRequest, V::Error>
-                where
-                    V: serde::de::MapAccess<'de>,
-            {
-                let mut id__ = None;
-                while let Some(k) = map_.next_key()? {
-                    match k {
-                        GeneratedField::Id => {
-                            if id__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("id"));
-                            }
-                            id__ = Some(map_.next_value()?);
-                        }
-                    }
-                }
-                Ok(DeleteUnitRequest {
-                    id: id__.unwrap_or_default(),
-                })
-            }
-        }
-        deserializer.deserialize_struct("projectsuit.unit.v1.DeleteUnitRequest", FIELDS, GeneratedVisitor)
-    }
-}
-impl serde::Serialize for DeleteUnitResponse {
-    #[allow(deprecated)]
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        use serde::ser::SerializeStruct;
-        let mut len = 0;
-        if self.success {
-            len += 1;
-        }
-        let mut struct_ser = serializer.serialize_struct("projectsuit.unit.v1.DeleteUnitResponse", len)?;
-        if self.success {
-            struct_ser.serialize_field("success", &self.success)?;
-        }
-        struct_ser.end()
-    }
-}
-impl<'de> serde::Deserialize<'de> for DeleteUnitResponse {
-    #[allow(deprecated)]
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        const FIELDS: &[&str] = &[
-            "success",
-        ];
-
-        #[allow(clippy::enum_variant_names)]
-        enum GeneratedField {
-            Success,
-        }
-        impl<'de> serde::Deserialize<'de> for GeneratedField {
-            fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
-            where
-                D: serde::Deserializer<'de>,
-            {
-                struct GeneratedVisitor;
-
-                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-                    type Value = GeneratedField;
-
-                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                        write!(formatter, "expected one of: {:?}", &FIELDS)
-                    }
-
-                    #[allow(unused_variables)]
-                    fn visit_str<E>(self, value: &str) -> std::result::Result<GeneratedField, E>
-                    where
-                        E: serde::de::Error,
-                    {
-                        match value {
-                            "success" => Ok(GeneratedField::Success),
-                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
-                        }
-                    }
-                }
-                deserializer.deserialize_identifier(GeneratedVisitor)
-            }
-        }
-        struct GeneratedVisitor;
-        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-            type Value = DeleteUnitResponse;
-
-            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                formatter.write_str("struct projectsuit.unit.v1.DeleteUnitResponse")
-            }
-
-            fn visit_map<V>(self, mut map_: V) -> std::result::Result<DeleteUnitResponse, V::Error>
-                where
-                    V: serde::de::MapAccess<'de>,
-            {
-                let mut success__ = None;
-                while let Some(k) = map_.next_key()? {
-                    match k {
-                        GeneratedField::Success => {
-                            if success__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("success"));
-                            }
-                            success__ = Some(map_.next_value()?);
-                        }
-                    }
-                }
-                Ok(DeleteUnitResponse {
-                    success: success__.unwrap_or_default(),
-                })
-            }
-        }
-        deserializer.deserialize_struct("projectsuit.unit.v1.DeleteUnitResponse", FIELDS, GeneratedVisitor)
-    }
-}
-impl serde::Serialize for GetUnitRequest {
-    #[allow(deprecated)]
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        use serde::ser::SerializeStruct;
-        let mut len = 0;
-        if !self.id.is_empty() {
-            len += 1;
-        }
-        let mut struct_ser = serializer.serialize_struct("projectsuit.unit.v1.GetUnitRequest", len)?;
-        if !self.id.is_empty() {
-            struct_ser.serialize_field("id", &self.id)?;
-        }
-        struct_ser.end()
-    }
-}
-impl<'de> serde::Deserialize<'de> for GetUnitRequest {
-    #[allow(deprecated)]
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        const FIELDS: &[&str] = &[
-            "id",
-        ];
-
-        #[allow(clippy::enum_variant_names)]
-        enum GeneratedField {
-            Id,
-        }
-        impl<'de> serde::Deserialize<'de> for GeneratedField {
-            fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
-            where
-                D: serde::Deserializer<'de>,
-            {
-                struct GeneratedVisitor;
-
-                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-                    type Value = GeneratedField;
-
-                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                        write!(formatter, "expected one of: {:?}", &FIELDS)
-                    }
-
-                    #[allow(unused_variables)]
-                    fn visit_str<E>(self, value: &str) -> std::result::Result<GeneratedField, E>
-                    where
-                        E: serde::de::Error,
-                    {
-                        match value {
-                            "id" => Ok(GeneratedField::Id),
-                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
-                        }
-                    }
-                }
-                deserializer.deserialize_identifier(GeneratedVisitor)
-            }
-        }
-        struct GeneratedVisitor;
-        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-            type Value = GetUnitRequest;
-
-            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                formatter.write_str("struct projectsuit.unit.v1.GetUnitRequest")
-            }
-
-            fn visit_map<V>(self, mut map_: V) -> std::result::Result<GetUnitRequest, V::Error>
-                where
-                    V: serde::de::MapAccess<'de>,
-            {
-                let mut id__ = None;
-                while let Some(k) = map_.next_key()? {
-                    match k {
-                        GeneratedField::Id => {
-                            if id__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("id"));
-                            }
-                            id__ = Some(map_.next_value()?);
-                        }
-                    }
-                }
-                Ok(GetUnitRequest {
-                    id: id__.unwrap_or_default(),
-                })
-            }
-        }
-        deserializer.deserialize_struct("projectsuit.unit.v1.GetUnitRequest", FIELDS, GeneratedVisitor)
     }
 }
 impl serde::Serialize for GetUnitResponse {
@@ -553,18 +260,12 @@ impl serde::Serialize for ListUnitsRequest {
     {
         use serde::ser::SerializeStruct;
         let mut len = 0;
-        if self.page != 0 {
-            len += 1;
-        }
-        if self.page_size != 0 {
+        if self.base_request.is_some() {
             len += 1;
         }
         let mut struct_ser = serializer.serialize_struct("projectsuit.unit.v1.ListUnitsRequest", len)?;
-        if self.page != 0 {
-            struct_ser.serialize_field("page", &self.page)?;
-        }
-        if self.page_size != 0 {
-            struct_ser.serialize_field("pageSize", &self.page_size)?;
+        if let Some(v) = self.base_request.as_ref() {
+            struct_ser.serialize_field("baseRequest", v)?;
         }
         struct_ser.end()
     }
@@ -576,15 +277,13 @@ impl<'de> serde::Deserialize<'de> for ListUnitsRequest {
         D: serde::Deserializer<'de>,
     {
         const FIELDS: &[&str] = &[
-            "page",
-            "page_size",
-            "pageSize",
+            "base_request",
+            "baseRequest",
         ];
 
         #[allow(clippy::enum_variant_names)]
         enum GeneratedField {
-            Page,
-            PageSize,
+            BaseRequest,
         }
         impl<'de> serde::Deserialize<'de> for GeneratedField {
             fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
@@ -606,8 +305,7 @@ impl<'de> serde::Deserialize<'de> for ListUnitsRequest {
                         E: serde::de::Error,
                     {
                         match value {
-                            "page" => Ok(GeneratedField::Page),
-                            "pageSize" | "page_size" => Ok(GeneratedField::PageSize),
+                            "baseRequest" | "base_request" => Ok(GeneratedField::BaseRequest),
                             _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
                         }
                     }
@@ -627,31 +325,19 @@ impl<'de> serde::Deserialize<'de> for ListUnitsRequest {
                 where
                     V: serde::de::MapAccess<'de>,
             {
-                let mut page__ = None;
-                let mut page_size__ = None;
+                let mut base_request__ = None;
                 while let Some(k) = map_.next_key()? {
                     match k {
-                        GeneratedField::Page => {
-                            if page__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("page"));
+                        GeneratedField::BaseRequest => {
+                            if base_request__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("baseRequest"));
                             }
-                            page__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
-                        }
-                        GeneratedField::PageSize => {
-                            if page_size__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("pageSize"));
-                            }
-                            page_size__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
+                            base_request__ = map_.next_value()?;
                         }
                     }
                 }
                 Ok(ListUnitsRequest {
-                    page: page__.unwrap_or_default(),
-                    page_size: page_size__.unwrap_or_default(),
+                    base_request: base_request__,
                 })
             }
         }
@@ -666,18 +352,18 @@ impl serde::Serialize for ListUnitsResponse {
     {
         use serde::ser::SerializeStruct;
         let mut len = 0;
-        if !self.items.is_empty() {
+        if !self.units.is_empty() {
             len += 1;
         }
-        if self.total != 0 {
+        if self.pagination.is_some() {
             len += 1;
         }
         let mut struct_ser = serializer.serialize_struct("projectsuit.unit.v1.ListUnitsResponse", len)?;
-        if !self.items.is_empty() {
-            struct_ser.serialize_field("items", &self.items)?;
+        if !self.units.is_empty() {
+            struct_ser.serialize_field("units", &self.units)?;
         }
-        if self.total != 0 {
-            struct_ser.serialize_field("total", &self.total)?;
+        if let Some(v) = self.pagination.as_ref() {
+            struct_ser.serialize_field("pagination", v)?;
         }
         struct_ser.end()
     }
@@ -689,14 +375,14 @@ impl<'de> serde::Deserialize<'de> for ListUnitsResponse {
         D: serde::Deserializer<'de>,
     {
         const FIELDS: &[&str] = &[
-            "items",
-            "total",
+            "units",
+            "pagination",
         ];
 
         #[allow(clippy::enum_variant_names)]
         enum GeneratedField {
-            Items,
-            Total,
+            Units,
+            Pagination,
         }
         impl<'de> serde::Deserialize<'de> for GeneratedField {
             fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
@@ -718,8 +404,8 @@ impl<'de> serde::Deserialize<'de> for ListUnitsResponse {
                         E: serde::de::Error,
                     {
                         match value {
-                            "items" => Ok(GeneratedField::Items),
-                            "total" => Ok(GeneratedField::Total),
+                            "units" => Ok(GeneratedField::Units),
+                            "pagination" => Ok(GeneratedField::Pagination),
                             _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
                         }
                     }
@@ -739,29 +425,27 @@ impl<'de> serde::Deserialize<'de> for ListUnitsResponse {
                 where
                     V: serde::de::MapAccess<'de>,
             {
-                let mut items__ = None;
-                let mut total__ = None;
+                let mut units__ = None;
+                let mut pagination__ = None;
                 while let Some(k) = map_.next_key()? {
                     match k {
-                        GeneratedField::Items => {
-                            if items__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("items"));
+                        GeneratedField::Units => {
+                            if units__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("units"));
                             }
-                            items__ = Some(map_.next_value()?);
+                            units__ = Some(map_.next_value()?);
                         }
-                        GeneratedField::Total => {
-                            if total__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("total"));
+                        GeneratedField::Pagination => {
+                            if pagination__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("pagination"));
                             }
-                            total__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
+                            pagination__ = map_.next_value()?;
                         }
                     }
                 }
                 Ok(ListUnitsResponse {
-                    items: items__.unwrap_or_default(),
-                    total: total__.unwrap_or_default(),
+                    units: units__.unwrap_or_default(),
+                    pagination: pagination__,
                 })
             }
         }
@@ -782,22 +466,28 @@ impl serde::Serialize for Unit {
         if !self.code.is_empty() {
             len += 1;
         }
-        if self.name.is_some() {
+        if self.base_unit_id.is_some() {
             len += 1;
         }
-        if !self.base_unit_id.is_empty() {
-            len += 1;
-        }
-        if self.conversion_factor != 0. {
+        if !self.conversion_factor.is_empty() {
             len += 1;
         }
         if self.is_active {
             len += 1;
         }
-        if self.created_at != 0 {
+        if self.created_at.is_some() {
             len += 1;
         }
-        if self.updated_at != 0 {
+        if self.updated_at.is_some() {
+            len += 1;
+        }
+        if !self.name.is_empty() {
+            len += 1;
+        }
+        if !self.short_name.is_empty() {
+            len += 1;
+        }
+        if !self.all_translations.is_empty() {
             len += 1;
         }
         let mut struct_ser = serializer.serialize_struct("projectsuit.unit.v1.Unit", len)?;
@@ -807,27 +497,29 @@ impl serde::Serialize for Unit {
         if !self.code.is_empty() {
             struct_ser.serialize_field("code", &self.code)?;
         }
-        if let Some(v) = self.name.as_ref() {
-            struct_ser.serialize_field("name", v)?;
+        if let Some(v) = self.base_unit_id.as_ref() {
+            struct_ser.serialize_field("baseUnitId", v)?;
         }
-        if !self.base_unit_id.is_empty() {
-            struct_ser.serialize_field("baseUnitId", &self.base_unit_id)?;
-        }
-        if self.conversion_factor != 0. {
+        if !self.conversion_factor.is_empty() {
             struct_ser.serialize_field("conversionFactor", &self.conversion_factor)?;
         }
         if self.is_active {
             struct_ser.serialize_field("isActive", &self.is_active)?;
         }
-        if self.created_at != 0 {
-            #[allow(clippy::needless_borrow)]
-            #[allow(clippy::needless_borrows_for_generic_args)]
-            struct_ser.serialize_field("createdAt", ToString::to_string(&self.created_at).as_str())?;
+        if let Some(v) = self.created_at.as_ref() {
+            struct_ser.serialize_field("createdAt", v)?;
         }
-        if self.updated_at != 0 {
-            #[allow(clippy::needless_borrow)]
-            #[allow(clippy::needless_borrows_for_generic_args)]
-            struct_ser.serialize_field("updatedAt", ToString::to_string(&self.updated_at).as_str())?;
+        if let Some(v) = self.updated_at.as_ref() {
+            struct_ser.serialize_field("updatedAt", v)?;
+        }
+        if !self.name.is_empty() {
+            struct_ser.serialize_field("name", &self.name)?;
+        }
+        if !self.short_name.is_empty() {
+            struct_ser.serialize_field("shortName", &self.short_name)?;
+        }
+        if !self.all_translations.is_empty() {
+            struct_ser.serialize_field("allTranslations", &self.all_translations)?;
         }
         struct_ser.end()
     }
@@ -841,7 +533,6 @@ impl<'de> serde::Deserialize<'de> for Unit {
         const FIELDS: &[&str] = &[
             "id",
             "code",
-            "name",
             "base_unit_id",
             "baseUnitId",
             "conversion_factor",
@@ -852,18 +543,25 @@ impl<'de> serde::Deserialize<'de> for Unit {
             "createdAt",
             "updated_at",
             "updatedAt",
+            "name",
+            "short_name",
+            "shortName",
+            "all_translations",
+            "allTranslations",
         ];
 
         #[allow(clippy::enum_variant_names)]
         enum GeneratedField {
             Id,
             Code,
-            Name,
             BaseUnitId,
             ConversionFactor,
             IsActive,
             CreatedAt,
             UpdatedAt,
+            Name,
+            ShortName,
+            AllTranslations,
         }
         impl<'de> serde::Deserialize<'de> for GeneratedField {
             fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
@@ -887,12 +585,14 @@ impl<'de> serde::Deserialize<'de> for Unit {
                         match value {
                             "id" => Ok(GeneratedField::Id),
                             "code" => Ok(GeneratedField::Code),
-                            "name" => Ok(GeneratedField::Name),
                             "baseUnitId" | "base_unit_id" => Ok(GeneratedField::BaseUnitId),
                             "conversionFactor" | "conversion_factor" => Ok(GeneratedField::ConversionFactor),
                             "isActive" | "is_active" => Ok(GeneratedField::IsActive),
                             "createdAt" | "created_at" => Ok(GeneratedField::CreatedAt),
                             "updatedAt" | "updated_at" => Ok(GeneratedField::UpdatedAt),
+                            "name" => Ok(GeneratedField::Name),
+                            "shortName" | "short_name" => Ok(GeneratedField::ShortName),
+                            "allTranslations" | "all_translations" => Ok(GeneratedField::AllTranslations),
                             _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
                         }
                     }
@@ -914,12 +614,14 @@ impl<'de> serde::Deserialize<'de> for Unit {
             {
                 let mut id__ = None;
                 let mut code__ = None;
-                let mut name__ = None;
                 let mut base_unit_id__ = None;
                 let mut conversion_factor__ = None;
                 let mut is_active__ = None;
                 let mut created_at__ = None;
                 let mut updated_at__ = None;
+                let mut name__ = None;
+                let mut short_name__ = None;
+                let mut all_translations__ = None;
                 while let Some(k) = map_.next_key()? {
                     match k {
                         GeneratedField::Id => {
@@ -934,25 +636,17 @@ impl<'de> serde::Deserialize<'de> for Unit {
                             }
                             code__ = Some(map_.next_value()?);
                         }
-                        GeneratedField::Name => {
-                            if name__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("name"));
-                            }
-                            name__ = map_.next_value()?;
-                        }
                         GeneratedField::BaseUnitId => {
                             if base_unit_id__.is_some() {
                                 return Err(serde::de::Error::duplicate_field("baseUnitId"));
                             }
-                            base_unit_id__ = Some(map_.next_value()?);
+                            base_unit_id__ = map_.next_value()?;
                         }
                         GeneratedField::ConversionFactor => {
                             if conversion_factor__.is_some() {
                                 return Err(serde::de::Error::duplicate_field("conversionFactor"));
                             }
-                            conversion_factor__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
+                            conversion_factor__ = Some(map_.next_value()?);
                         }
                         GeneratedField::IsActive => {
                             if is_active__.is_some() {
@@ -964,422 +658,49 @@ impl<'de> serde::Deserialize<'de> for Unit {
                             if created_at__.is_some() {
                                 return Err(serde::de::Error::duplicate_field("createdAt"));
                             }
-                            created_at__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
+                            created_at__ = map_.next_value()?;
                         }
                         GeneratedField::UpdatedAt => {
                             if updated_at__.is_some() {
                                 return Err(serde::de::Error::duplicate_field("updatedAt"));
                             }
-                            updated_at__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
+                            updated_at__ = map_.next_value()?;
+                        }
+                        GeneratedField::Name => {
+                            if name__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("name"));
+                            }
+                            name__ = Some(map_.next_value()?);
+                        }
+                        GeneratedField::ShortName => {
+                            if short_name__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("shortName"));
+                            }
+                            short_name__ = Some(map_.next_value()?);
+                        }
+                        GeneratedField::AllTranslations => {
+                            if all_translations__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("allTranslations"));
+                            }
+                            all_translations__ = Some(map_.next_value()?);
                         }
                     }
                 }
                 Ok(Unit {
                     id: id__.unwrap_or_default(),
                     code: code__.unwrap_or_default(),
-                    name: name__,
-                    base_unit_id: base_unit_id__.unwrap_or_default(),
+                    base_unit_id: base_unit_id__,
                     conversion_factor: conversion_factor__.unwrap_or_default(),
                     is_active: is_active__.unwrap_or_default(),
-                    created_at: created_at__.unwrap_or_default(),
-                    updated_at: updated_at__.unwrap_or_default(),
+                    created_at: created_at__,
+                    updated_at: updated_at__,
+                    name: name__.unwrap_or_default(),
+                    short_name: short_name__.unwrap_or_default(),
+                    all_translations: all_translations__.unwrap_or_default(),
                 })
             }
         }
         deserializer.deserialize_struct("projectsuit.unit.v1.Unit", FIELDS, GeneratedVisitor)
-    }
-}
-impl serde::Serialize for UnitInput {
-    #[allow(deprecated)]
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        use serde::ser::SerializeStruct;
-        let mut len = 0;
-        if !self.code.is_empty() {
-            len += 1;
-        }
-        if self.name.is_some() {
-            len += 1;
-        }
-        if !self.base_unit_id.is_empty() {
-            len += 1;
-        }
-        if self.conversion_factor != 0. {
-            len += 1;
-        }
-        if self.is_active {
-            len += 1;
-        }
-        let mut struct_ser = serializer.serialize_struct("projectsuit.unit.v1.UnitInput", len)?;
-        if !self.code.is_empty() {
-            struct_ser.serialize_field("code", &self.code)?;
-        }
-        if let Some(v) = self.name.as_ref() {
-            struct_ser.serialize_field("name", v)?;
-        }
-        if !self.base_unit_id.is_empty() {
-            struct_ser.serialize_field("baseUnitId", &self.base_unit_id)?;
-        }
-        if self.conversion_factor != 0. {
-            struct_ser.serialize_field("conversionFactor", &self.conversion_factor)?;
-        }
-        if self.is_active {
-            struct_ser.serialize_field("isActive", &self.is_active)?;
-        }
-        struct_ser.end()
-    }
-}
-impl<'de> serde::Deserialize<'de> for UnitInput {
-    #[allow(deprecated)]
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        const FIELDS: &[&str] = &[
-            "code",
-            "name",
-            "base_unit_id",
-            "baseUnitId",
-            "conversion_factor",
-            "conversionFactor",
-            "is_active",
-            "isActive",
-        ];
-
-        #[allow(clippy::enum_variant_names)]
-        enum GeneratedField {
-            Code,
-            Name,
-            BaseUnitId,
-            ConversionFactor,
-            IsActive,
-        }
-        impl<'de> serde::Deserialize<'de> for GeneratedField {
-            fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
-            where
-                D: serde::Deserializer<'de>,
-            {
-                struct GeneratedVisitor;
-
-                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-                    type Value = GeneratedField;
-
-                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                        write!(formatter, "expected one of: {:?}", &FIELDS)
-                    }
-
-                    #[allow(unused_variables)]
-                    fn visit_str<E>(self, value: &str) -> std::result::Result<GeneratedField, E>
-                    where
-                        E: serde::de::Error,
-                    {
-                        match value {
-                            "code" => Ok(GeneratedField::Code),
-                            "name" => Ok(GeneratedField::Name),
-                            "baseUnitId" | "base_unit_id" => Ok(GeneratedField::BaseUnitId),
-                            "conversionFactor" | "conversion_factor" => Ok(GeneratedField::ConversionFactor),
-                            "isActive" | "is_active" => Ok(GeneratedField::IsActive),
-                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
-                        }
-                    }
-                }
-                deserializer.deserialize_identifier(GeneratedVisitor)
-            }
-        }
-        struct GeneratedVisitor;
-        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-            type Value = UnitInput;
-
-            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                formatter.write_str("struct projectsuit.unit.v1.UnitInput")
-            }
-
-            fn visit_map<V>(self, mut map_: V) -> std::result::Result<UnitInput, V::Error>
-                where
-                    V: serde::de::MapAccess<'de>,
-            {
-                let mut code__ = None;
-                let mut name__ = None;
-                let mut base_unit_id__ = None;
-                let mut conversion_factor__ = None;
-                let mut is_active__ = None;
-                while let Some(k) = map_.next_key()? {
-                    match k {
-                        GeneratedField::Code => {
-                            if code__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("code"));
-                            }
-                            code__ = Some(map_.next_value()?);
-                        }
-                        GeneratedField::Name => {
-                            if name__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("name"));
-                            }
-                            name__ = map_.next_value()?;
-                        }
-                        GeneratedField::BaseUnitId => {
-                            if base_unit_id__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("baseUnitId"));
-                            }
-                            base_unit_id__ = Some(map_.next_value()?);
-                        }
-                        GeneratedField::ConversionFactor => {
-                            if conversion_factor__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("conversionFactor"));
-                            }
-                            conversion_factor__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
-                        }
-                        GeneratedField::IsActive => {
-                            if is_active__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("isActive"));
-                            }
-                            is_active__ = Some(map_.next_value()?);
-                        }
-                    }
-                }
-                Ok(UnitInput {
-                    code: code__.unwrap_or_default(),
-                    name: name__,
-                    base_unit_id: base_unit_id__.unwrap_or_default(),
-                    conversion_factor: conversion_factor__.unwrap_or_default(),
-                    is_active: is_active__.unwrap_or_default(),
-                })
-            }
-        }
-        deserializer.deserialize_struct("projectsuit.unit.v1.UnitInput", FIELDS, GeneratedVisitor)
-    }
-}
-impl serde::Serialize for UnitView {
-    #[allow(deprecated)]
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        use serde::ser::SerializeStruct;
-        let mut len = 0;
-        if !self.id.is_empty() {
-            len += 1;
-        }
-        if !self.code.is_empty() {
-            len += 1;
-        }
-        if self.name.is_some() {
-            len += 1;
-        }
-        if !self.base_unit_id.is_empty() {
-            len += 1;
-        }
-        if self.conversion_factor != 0. {
-            len += 1;
-        }
-        if self.is_active {
-            len += 1;
-        }
-        if self.created_at != 0 {
-            len += 1;
-        }
-        if self.updated_at != 0 {
-            len += 1;
-        }
-        let mut struct_ser = serializer.serialize_struct("projectsuit.unit.v1.UnitView", len)?;
-        if !self.id.is_empty() {
-            struct_ser.serialize_field("id", &self.id)?;
-        }
-        if !self.code.is_empty() {
-            struct_ser.serialize_field("code", &self.code)?;
-        }
-        if let Some(v) = self.name.as_ref() {
-            struct_ser.serialize_field("name", v)?;
-        }
-        if !self.base_unit_id.is_empty() {
-            struct_ser.serialize_field("baseUnitId", &self.base_unit_id)?;
-        }
-        if self.conversion_factor != 0. {
-            struct_ser.serialize_field("conversionFactor", &self.conversion_factor)?;
-        }
-        if self.is_active {
-            struct_ser.serialize_field("isActive", &self.is_active)?;
-        }
-        if self.created_at != 0 {
-            #[allow(clippy::needless_borrow)]
-            #[allow(clippy::needless_borrows_for_generic_args)]
-            struct_ser.serialize_field("createdAt", ToString::to_string(&self.created_at).as_str())?;
-        }
-        if self.updated_at != 0 {
-            #[allow(clippy::needless_borrow)]
-            #[allow(clippy::needless_borrows_for_generic_args)]
-            struct_ser.serialize_field("updatedAt", ToString::to_string(&self.updated_at).as_str())?;
-        }
-        struct_ser.end()
-    }
-}
-impl<'de> serde::Deserialize<'de> for UnitView {
-    #[allow(deprecated)]
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        const FIELDS: &[&str] = &[
-            "id",
-            "code",
-            "name",
-            "base_unit_id",
-            "baseUnitId",
-            "conversion_factor",
-            "conversionFactor",
-            "is_active",
-            "isActive",
-            "created_at",
-            "createdAt",
-            "updated_at",
-            "updatedAt",
-        ];
-
-        #[allow(clippy::enum_variant_names)]
-        enum GeneratedField {
-            Id,
-            Code,
-            Name,
-            BaseUnitId,
-            ConversionFactor,
-            IsActive,
-            CreatedAt,
-            UpdatedAt,
-        }
-        impl<'de> serde::Deserialize<'de> for GeneratedField {
-            fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
-            where
-                D: serde::Deserializer<'de>,
-            {
-                struct GeneratedVisitor;
-
-                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-                    type Value = GeneratedField;
-
-                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                        write!(formatter, "expected one of: {:?}", &FIELDS)
-                    }
-
-                    #[allow(unused_variables)]
-                    fn visit_str<E>(self, value: &str) -> std::result::Result<GeneratedField, E>
-                    where
-                        E: serde::de::Error,
-                    {
-                        match value {
-                            "id" => Ok(GeneratedField::Id),
-                            "code" => Ok(GeneratedField::Code),
-                            "name" => Ok(GeneratedField::Name),
-                            "baseUnitId" | "base_unit_id" => Ok(GeneratedField::BaseUnitId),
-                            "conversionFactor" | "conversion_factor" => Ok(GeneratedField::ConversionFactor),
-                            "isActive" | "is_active" => Ok(GeneratedField::IsActive),
-                            "createdAt" | "created_at" => Ok(GeneratedField::CreatedAt),
-                            "updatedAt" | "updated_at" => Ok(GeneratedField::UpdatedAt),
-                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
-                        }
-                    }
-                }
-                deserializer.deserialize_identifier(GeneratedVisitor)
-            }
-        }
-        struct GeneratedVisitor;
-        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-            type Value = UnitView;
-
-            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                formatter.write_str("struct projectsuit.unit.v1.UnitView")
-            }
-
-            fn visit_map<V>(self, mut map_: V) -> std::result::Result<UnitView, V::Error>
-                where
-                    V: serde::de::MapAccess<'de>,
-            {
-                let mut id__ = None;
-                let mut code__ = None;
-                let mut name__ = None;
-                let mut base_unit_id__ = None;
-                let mut conversion_factor__ = None;
-                let mut is_active__ = None;
-                let mut created_at__ = None;
-                let mut updated_at__ = None;
-                while let Some(k) = map_.next_key()? {
-                    match k {
-                        GeneratedField::Id => {
-                            if id__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("id"));
-                            }
-                            id__ = Some(map_.next_value()?);
-                        }
-                        GeneratedField::Code => {
-                            if code__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("code"));
-                            }
-                            code__ = Some(map_.next_value()?);
-                        }
-                        GeneratedField::Name => {
-                            if name__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("name"));
-                            }
-                            name__ = map_.next_value()?;
-                        }
-                        GeneratedField::BaseUnitId => {
-                            if base_unit_id__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("baseUnitId"));
-                            }
-                            base_unit_id__ = Some(map_.next_value()?);
-                        }
-                        GeneratedField::ConversionFactor => {
-                            if conversion_factor__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("conversionFactor"));
-                            }
-                            conversion_factor__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
-                        }
-                        GeneratedField::IsActive => {
-                            if is_active__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("isActive"));
-                            }
-                            is_active__ = Some(map_.next_value()?);
-                        }
-                        GeneratedField::CreatedAt => {
-                            if created_at__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("createdAt"));
-                            }
-                            created_at__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
-                        }
-                        GeneratedField::UpdatedAt => {
-                            if updated_at__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("updatedAt"));
-                            }
-                            updated_at__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
-                        }
-                    }
-                }
-                Ok(UnitView {
-                    id: id__.unwrap_or_default(),
-                    code: code__.unwrap_or_default(),
-                    name: name__,
-                    base_unit_id: base_unit_id__.unwrap_or_default(),
-                    conversion_factor: conversion_factor__.unwrap_or_default(),
-                    is_active: is_active__.unwrap_or_default(),
-                    created_at: created_at__.unwrap_or_default(),
-                    updated_at: updated_at__.unwrap_or_default(),
-                })
-            }
-        }
-        deserializer.deserialize_struct("projectsuit.unit.v1.UnitView", FIELDS, GeneratedVisitor)
     }
 }
 impl serde::Serialize for UpdateUnitRequest {
@@ -1393,15 +714,39 @@ impl serde::Serialize for UpdateUnitRequest {
         if !self.id.is_empty() {
             len += 1;
         }
-        if self.unit.is_some() {
+        if self.code.is_some() {
+            len += 1;
+        }
+        if self.base_unit_id.is_some() {
+            len += 1;
+        }
+        if self.conversion_factor.is_some() {
+            len += 1;
+        }
+        if self.is_active.is_some() {
+            len += 1;
+        }
+        if !self.translations_to_update.is_empty() {
             len += 1;
         }
         let mut struct_ser = serializer.serialize_struct("projectsuit.unit.v1.UpdateUnitRequest", len)?;
         if !self.id.is_empty() {
             struct_ser.serialize_field("id", &self.id)?;
         }
-        if let Some(v) = self.unit.as_ref() {
-            struct_ser.serialize_field("unit", v)?;
+        if let Some(v) = self.code.as_ref() {
+            struct_ser.serialize_field("code", v)?;
+        }
+        if let Some(v) = self.base_unit_id.as_ref() {
+            struct_ser.serialize_field("baseUnitId", v)?;
+        }
+        if let Some(v) = self.conversion_factor.as_ref() {
+            struct_ser.serialize_field("conversionFactor", v)?;
+        }
+        if let Some(v) = self.is_active.as_ref() {
+            struct_ser.serialize_field("isActive", v)?;
+        }
+        if !self.translations_to_update.is_empty() {
+            struct_ser.serialize_field("translationsToUpdate", &self.translations_to_update)?;
         }
         struct_ser.end()
     }
@@ -1414,13 +759,25 @@ impl<'de> serde::Deserialize<'de> for UpdateUnitRequest {
     {
         const FIELDS: &[&str] = &[
             "id",
-            "unit",
+            "code",
+            "base_unit_id",
+            "baseUnitId",
+            "conversion_factor",
+            "conversionFactor",
+            "is_active",
+            "isActive",
+            "translations_to_update",
+            "translationsToUpdate",
         ];
 
         #[allow(clippy::enum_variant_names)]
         enum GeneratedField {
             Id,
-            Unit,
+            Code,
+            BaseUnitId,
+            ConversionFactor,
+            IsActive,
+            TranslationsToUpdate,
         }
         impl<'de> serde::Deserialize<'de> for GeneratedField {
             fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
@@ -1443,7 +800,11 @@ impl<'de> serde::Deserialize<'de> for UpdateUnitRequest {
                     {
                         match value {
                             "id" => Ok(GeneratedField::Id),
-                            "unit" => Ok(GeneratedField::Unit),
+                            "code" => Ok(GeneratedField::Code),
+                            "baseUnitId" | "base_unit_id" => Ok(GeneratedField::BaseUnitId),
+                            "conversionFactor" | "conversion_factor" => Ok(GeneratedField::ConversionFactor),
+                            "isActive" | "is_active" => Ok(GeneratedField::IsActive),
+                            "translationsToUpdate" | "translations_to_update" => Ok(GeneratedField::TranslationsToUpdate),
                             _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
                         }
                     }
@@ -1464,7 +825,11 @@ impl<'de> serde::Deserialize<'de> for UpdateUnitRequest {
                     V: serde::de::MapAccess<'de>,
             {
                 let mut id__ = None;
-                let mut unit__ = None;
+                let mut code__ = None;
+                let mut base_unit_id__ = None;
+                let mut conversion_factor__ = None;
+                let mut is_active__ = None;
+                let mut translations_to_update__ = None;
                 while let Some(k) = map_.next_key()? {
                     match k {
                         GeneratedField::Id => {
@@ -1473,111 +838,48 @@ impl<'de> serde::Deserialize<'de> for UpdateUnitRequest {
                             }
                             id__ = Some(map_.next_value()?);
                         }
-                        GeneratedField::Unit => {
-                            if unit__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("unit"));
+                        GeneratedField::Code => {
+                            if code__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("code"));
                             }
-                            unit__ = map_.next_value()?;
+                            code__ = map_.next_value()?;
+                        }
+                        GeneratedField::BaseUnitId => {
+                            if base_unit_id__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("baseUnitId"));
+                            }
+                            base_unit_id__ = map_.next_value()?;
+                        }
+                        GeneratedField::ConversionFactor => {
+                            if conversion_factor__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("conversionFactor"));
+                            }
+                            conversion_factor__ = map_.next_value()?;
+                        }
+                        GeneratedField::IsActive => {
+                            if is_active__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("isActive"));
+                            }
+                            is_active__ = map_.next_value()?;
+                        }
+                        GeneratedField::TranslationsToUpdate => {
+                            if translations_to_update__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("translationsToUpdate"));
+                            }
+                            translations_to_update__ = Some(map_.next_value()?);
                         }
                     }
                 }
                 Ok(UpdateUnitRequest {
                     id: id__.unwrap_or_default(),
-                    unit: unit__,
+                    code: code__,
+                    base_unit_id: base_unit_id__,
+                    conversion_factor: conversion_factor__,
+                    is_active: is_active__,
+                    translations_to_update: translations_to_update__.unwrap_or_default(),
                 })
             }
         }
         deserializer.deserialize_struct("projectsuit.unit.v1.UpdateUnitRequest", FIELDS, GeneratedVisitor)
-    }
-}
-impl serde::Serialize for UpdateUnitResponse {
-    #[allow(deprecated)]
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        use serde::ser::SerializeStruct;
-        let mut len = 0;
-        if self.success {
-            len += 1;
-        }
-        let mut struct_ser = serializer.serialize_struct("projectsuit.unit.v1.UpdateUnitResponse", len)?;
-        if self.success {
-            struct_ser.serialize_field("success", &self.success)?;
-        }
-        struct_ser.end()
-    }
-}
-impl<'de> serde::Deserialize<'de> for UpdateUnitResponse {
-    #[allow(deprecated)]
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        const FIELDS: &[&str] = &[
-            "success",
-        ];
-
-        #[allow(clippy::enum_variant_names)]
-        enum GeneratedField {
-            Success,
-        }
-        impl<'de> serde::Deserialize<'de> for GeneratedField {
-            fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
-            where
-                D: serde::Deserializer<'de>,
-            {
-                struct GeneratedVisitor;
-
-                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-                    type Value = GeneratedField;
-
-                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                        write!(formatter, "expected one of: {:?}", &FIELDS)
-                    }
-
-                    #[allow(unused_variables)]
-                    fn visit_str<E>(self, value: &str) -> std::result::Result<GeneratedField, E>
-                    where
-                        E: serde::de::Error,
-                    {
-                        match value {
-                            "success" => Ok(GeneratedField::Success),
-                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
-                        }
-                    }
-                }
-                deserializer.deserialize_identifier(GeneratedVisitor)
-            }
-        }
-        struct GeneratedVisitor;
-        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-            type Value = UpdateUnitResponse;
-
-            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                formatter.write_str("struct projectsuit.unit.v1.UpdateUnitResponse")
-            }
-
-            fn visit_map<V>(self, mut map_: V) -> std::result::Result<UpdateUnitResponse, V::Error>
-                where
-                    V: serde::de::MapAccess<'de>,
-            {
-                let mut success__ = None;
-                while let Some(k) = map_.next_key()? {
-                    match k {
-                        GeneratedField::Success => {
-                            if success__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("success"));
-                            }
-                            success__ = Some(map_.next_value()?);
-                        }
-                    }
-                }
-                Ok(UpdateUnitResponse {
-                    success: success__.unwrap_or_default(),
-                })
-            }
-        }
-        deserializer.deserialize_struct("projectsuit.unit.v1.UpdateUnitResponse", FIELDS, GeneratedVisitor)
     }
 }

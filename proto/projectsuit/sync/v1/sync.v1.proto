@@ -6,21 +6,21 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/struct.proto";
 import "projectsuit/common/v1/common.v1.proto";
 
-import "projectsuit.unit.v1/unit.v1.proto";
-import "projectsuit.category.v1/category.v1.proto";
-import "projectsuit.product.v1/product.v1.proto";
-import "projectsuit.material.v1/material.v1.proto";
-import "projectsuit.tax.v1/tax.v1.proto";
-import "projectsuit.menu.v1/menu.v1.proto";
-import "projectsuit.pricing.v1/pricing.v1.proto";
-import "projectsuit.order.v1/order.v1.proto";
-import "projectsuit.customer.v1/customer.v1.proto";
-import "projectsuit.inventory.v1/inventory.v1.proto";
-import "projectsuit.device.v1/device.v1.proto";
-import "projectsuit.restaurant.v1/restaurant.v1.proto";
-import "projectsuit.hotel.v1/hotel.v1.proto";
-import "projectsuit.accounting.v1/accounting.v1.proto";
-import "projectsuit.payment.v1/payment.v1.proto"; // payment.v1.proto eklendi
+import "projectsuit/unit/v1/unit.v1.proto";
+import "projectsuit/category/v1/category.v1.proto";
+import "projectsuit/product/v1/product.v1.proto";
+import "projectsuit/material/v1/material.v1.proto";
+import "projectsuit/tax/v1/tax.v1.proto";
+import "projectsuit/menu/v1/menu.v1.proto";
+import "projectsuit/pricing/v1/pricing.v1.proto";
+import "projectsuit/order/v1/order.v1.proto";
+import "projectsuit/customer/v1/customer.v1.proto";
+import "projectsuit/inventory/v1/inventory.v1.proto";
+import "projectsuit/device/v1/device.v1.proto";
+import "projectsuit/restaurant/v1/restaurant.v1.proto";
+import "projectsuit/hotel/v1/hotel.v1.proto";
+import "projectsuit/accounting/v1/accounting.v1.proto";
+import "projectsuit/payment/v1/payment.v1.proto"; // payment.v1.proto eklendi
 
 
 option go_package = "github.com/enessefak/suit-proto/gen/go/projectsuit/sync/v1;syncv1";

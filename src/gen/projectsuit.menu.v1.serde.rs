@@ -1,5 +1,5 @@
 // @generated
-impl serde::Serialize for CreateMenuRequest {
+impl serde::Serialize for AddItemToMenuRequest {
     #[allow(deprecated)]
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
     where
@@ -7,29 +7,74 @@ impl serde::Serialize for CreateMenuRequest {
     {
         use serde::ser::SerializeStruct;
         let mut len = 0;
-        if self.menu.is_some() {
+        if !self.menu_id.is_empty() {
             len += 1;
         }
-        let mut struct_ser = serializer.serialize_struct("projectsuit.menu.v1.CreateMenuRequest", len)?;
-        if let Some(v) = self.menu.as_ref() {
-            struct_ser.serialize_field("menu", v)?;
+        if self.product_id.is_some() {
+            len += 1;
+        }
+        if self.variant_id.is_some() {
+            len += 1;
+        }
+        if !self.quantity.is_empty() {
+            len += 1;
+        }
+        if self.optional_item.is_some() {
+            len += 1;
+        }
+        if self.sort_order.is_some() {
+            len += 1;
+        }
+        let mut struct_ser = serializer.serialize_struct("projectsuit.menu.v1.AddItemToMenuRequest", len)?;
+        if !self.menu_id.is_empty() {
+            struct_ser.serialize_field("menuId", &self.menu_id)?;
+        }
+        if let Some(v) = self.product_id.as_ref() {
+            struct_ser.serialize_field("productId", v)?;
+        }
+        if let Some(v) = self.variant_id.as_ref() {
+            struct_ser.serialize_field("variantId", v)?;
+        }
+        if !self.quantity.is_empty() {
+            struct_ser.serialize_field("quantity", &self.quantity)?;
+        }
+        if let Some(v) = self.optional_item.as_ref() {
+            struct_ser.serialize_field("optionalItem", v)?;
+        }
+        if let Some(v) = self.sort_order.as_ref() {
+            struct_ser.serialize_field("sortOrder", v)?;
         }
         struct_ser.end()
     }
 }
-impl<'de> serde::Deserialize<'de> for CreateMenuRequest {
+impl<'de> serde::Deserialize<'de> for AddItemToMenuRequest {
     #[allow(deprecated)]
     fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
     {
         const FIELDS: &[&str] = &[
-            "menu",
+            "menu_id",
+            "menuId",
+            "product_id",
+            "productId",
+            "variant_id",
+            "variantId",
+            "quantity",
+            "optional_item",
+            "optionalItem",
+            "sort_order",
+            "sortOrder",
         ];
 
         #[allow(clippy::enum_variant_names)]
         enum GeneratedField {
-            Menu,
+            MenuId,
+            ProductId,
+            VariantId,
+            Quantity,
+            OptionalItem,
+            SortOrder,
         }
         impl<'de> serde::Deserialize<'de> for GeneratedField {
             fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
@@ -51,7 +96,164 @@ impl<'de> serde::Deserialize<'de> for CreateMenuRequest {
                         E: serde::de::Error,
                     {
                         match value {
-                            "menu" => Ok(GeneratedField::Menu),
+                            "menuId" | "menu_id" => Ok(GeneratedField::MenuId),
+                            "productId" | "product_id" => Ok(GeneratedField::ProductId),
+                            "variantId" | "variant_id" => Ok(GeneratedField::VariantId),
+                            "quantity" => Ok(GeneratedField::Quantity),
+                            "optionalItem" | "optional_item" => Ok(GeneratedField::OptionalItem),
+                            "sortOrder" | "sort_order" => Ok(GeneratedField::SortOrder),
+                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
+                        }
+                    }
+                }
+                deserializer.deserialize_identifier(GeneratedVisitor)
+            }
+        }
+        struct GeneratedVisitor;
+        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
+            type Value = AddItemToMenuRequest;
+
+            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                formatter.write_str("struct projectsuit.menu.v1.AddItemToMenuRequest")
+            }
+
+            fn visit_map<V>(self, mut map_: V) -> std::result::Result<AddItemToMenuRequest, V::Error>
+                where
+                    V: serde::de::MapAccess<'de>,
+            {
+                let mut menu_id__ = None;
+                let mut product_id__ = None;
+                let mut variant_id__ = None;
+                let mut quantity__ = None;
+                let mut optional_item__ = None;
+                let mut sort_order__ = None;
+                while let Some(k) = map_.next_key()? {
+                    match k {
+                        GeneratedField::MenuId => {
+                            if menu_id__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("menuId"));
+                            }
+                            menu_id__ = Some(map_.next_value()?);
+                        }
+                        GeneratedField::ProductId => {
+                            if product_id__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("productId"));
+                            }
+                            product_id__ = map_.next_value()?;
+                        }
+                        GeneratedField::VariantId => {
+                            if variant_id__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("variantId"));
+                            }
+                            variant_id__ = map_.next_value()?;
+                        }
+                        GeneratedField::Quantity => {
+                            if quantity__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("quantity"));
+                            }
+                            quantity__ = Some(map_.next_value()?);
+                        }
+                        GeneratedField::OptionalItem => {
+                            if optional_item__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("optionalItem"));
+                            }
+                            optional_item__ = map_.next_value()?;
+                        }
+                        GeneratedField::SortOrder => {
+                            if sort_order__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("sortOrder"));
+                            }
+                            sort_order__ = 
+                                map_.next_value::<::std::option::Option<::pbjson::private::NumberDeserialize<_>>>()?.map(|x| x.0)
+                            ;
+                        }
+                    }
+                }
+                Ok(AddItemToMenuRequest {
+                    menu_id: menu_id__.unwrap_or_default(),
+                    product_id: product_id__,
+                    variant_id: variant_id__,
+                    quantity: quantity__.unwrap_or_default(),
+                    optional_item: optional_item__,
+                    sort_order: sort_order__,
+                })
+            }
+        }
+        deserializer.deserialize_struct("projectsuit.menu.v1.AddItemToMenuRequest", FIELDS, GeneratedVisitor)
+    }
+}
+impl serde::Serialize for CreateMenuRequest {
+    #[allow(deprecated)]
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        use serde::ser::SerializeStruct;
+        let mut len = 0;
+        if !self.code.is_empty() {
+            len += 1;
+        }
+        if self.is_active.is_some() {
+            len += 1;
+        }
+        if !self.translations.is_empty() {
+            len += 1;
+        }
+        let mut struct_ser = serializer.serialize_struct("projectsuit.menu.v1.CreateMenuRequest", len)?;
+        if !self.code.is_empty() {
+            struct_ser.serialize_field("code", &self.code)?;
+        }
+        if let Some(v) = self.is_active.as_ref() {
+            struct_ser.serialize_field("isActive", v)?;
+        }
+        if !self.translations.is_empty() {
+            struct_ser.serialize_field("translations", &self.translations)?;
+        }
+        struct_ser.end()
+    }
+}
+impl<'de> serde::Deserialize<'de> for CreateMenuRequest {
+    #[allow(deprecated)]
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        const FIELDS: &[&str] = &[
+            "code",
+            "is_active",
+            "isActive",
+            "translations",
+        ];
+
+        #[allow(clippy::enum_variant_names)]
+        enum GeneratedField {
+            Code,
+            IsActive,
+            Translations,
+        }
+        impl<'de> serde::Deserialize<'de> for GeneratedField {
+            fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
+            where
+                D: serde::Deserializer<'de>,
+            {
+                struct GeneratedVisitor;
+
+                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
+                    type Value = GeneratedField;
+
+                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                        write!(formatter, "expected one of: {:?}", &FIELDS)
+                    }
+
+                    #[allow(unused_variables)]
+                    fn visit_str<E>(self, value: &str) -> std::result::Result<GeneratedField, E>
+                    where
+                        E: serde::de::Error,
+                    {
+                        match value {
+                            "code" => Ok(GeneratedField::Code),
+                            "isActive" | "is_active" => Ok(GeneratedField::IsActive),
+                            "translations" => Ok(GeneratedField::Translations),
                             _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
                         }
                     }
@@ -71,296 +273,39 @@ impl<'de> serde::Deserialize<'de> for CreateMenuRequest {
                 where
                     V: serde::de::MapAccess<'de>,
             {
-                let mut menu__ = None;
+                let mut code__ = None;
+                let mut is_active__ = None;
+                let mut translations__ = None;
                 while let Some(k) = map_.next_key()? {
                     match k {
-                        GeneratedField::Menu => {
-                            if menu__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("menu"));
+                        GeneratedField::Code => {
+                            if code__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("code"));
                             }
-                            menu__ = map_.next_value()?;
+                            code__ = Some(map_.next_value()?);
+                        }
+                        GeneratedField::IsActive => {
+                            if is_active__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("isActive"));
+                            }
+                            is_active__ = map_.next_value()?;
+                        }
+                        GeneratedField::Translations => {
+                            if translations__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("translations"));
+                            }
+                            translations__ = Some(map_.next_value()?);
                         }
                     }
                 }
                 Ok(CreateMenuRequest {
-                    menu: menu__,
+                    code: code__.unwrap_or_default(),
+                    is_active: is_active__,
+                    translations: translations__.unwrap_or_default(),
                 })
             }
         }
         deserializer.deserialize_struct("projectsuit.menu.v1.CreateMenuRequest", FIELDS, GeneratedVisitor)
-    }
-}
-impl serde::Serialize for CreateMenuResponse {
-    #[allow(deprecated)]
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        use serde::ser::SerializeStruct;
-        let mut len = 0;
-        if !self.id.is_empty() {
-            len += 1;
-        }
-        let mut struct_ser = serializer.serialize_struct("projectsuit.menu.v1.CreateMenuResponse", len)?;
-        if !self.id.is_empty() {
-            struct_ser.serialize_field("id", &self.id)?;
-        }
-        struct_ser.end()
-    }
-}
-impl<'de> serde::Deserialize<'de> for CreateMenuResponse {
-    #[allow(deprecated)]
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        const FIELDS: &[&str] = &[
-            "id",
-        ];
-
-        #[allow(clippy::enum_variant_names)]
-        enum GeneratedField {
-            Id,
-        }
-        impl<'de> serde::Deserialize<'de> for GeneratedField {
-            fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
-            where
-                D: serde::Deserializer<'de>,
-            {
-                struct GeneratedVisitor;
-
-                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-                    type Value = GeneratedField;
-
-                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                        write!(formatter, "expected one of: {:?}", &FIELDS)
-                    }
-
-                    #[allow(unused_variables)]
-                    fn visit_str<E>(self, value: &str) -> std::result::Result<GeneratedField, E>
-                    where
-                        E: serde::de::Error,
-                    {
-                        match value {
-                            "id" => Ok(GeneratedField::Id),
-                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
-                        }
-                    }
-                }
-                deserializer.deserialize_identifier(GeneratedVisitor)
-            }
-        }
-        struct GeneratedVisitor;
-        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-            type Value = CreateMenuResponse;
-
-            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                formatter.write_str("struct projectsuit.menu.v1.CreateMenuResponse")
-            }
-
-            fn visit_map<V>(self, mut map_: V) -> std::result::Result<CreateMenuResponse, V::Error>
-                where
-                    V: serde::de::MapAccess<'de>,
-            {
-                let mut id__ = None;
-                while let Some(k) = map_.next_key()? {
-                    match k {
-                        GeneratedField::Id => {
-                            if id__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("id"));
-                            }
-                            id__ = Some(map_.next_value()?);
-                        }
-                    }
-                }
-                Ok(CreateMenuResponse {
-                    id: id__.unwrap_or_default(),
-                })
-            }
-        }
-        deserializer.deserialize_struct("projectsuit.menu.v1.CreateMenuResponse", FIELDS, GeneratedVisitor)
-    }
-}
-impl serde::Serialize for DeleteMenuRequest {
-    #[allow(deprecated)]
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        use serde::ser::SerializeStruct;
-        let mut len = 0;
-        if !self.id.is_empty() {
-            len += 1;
-        }
-        let mut struct_ser = serializer.serialize_struct("projectsuit.menu.v1.DeleteMenuRequest", len)?;
-        if !self.id.is_empty() {
-            struct_ser.serialize_field("id", &self.id)?;
-        }
-        struct_ser.end()
-    }
-}
-impl<'de> serde::Deserialize<'de> for DeleteMenuRequest {
-    #[allow(deprecated)]
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        const FIELDS: &[&str] = &[
-            "id",
-        ];
-
-        #[allow(clippy::enum_variant_names)]
-        enum GeneratedField {
-            Id,
-        }
-        impl<'de> serde::Deserialize<'de> for GeneratedField {
-            fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
-            where
-                D: serde::Deserializer<'de>,
-            {
-                struct GeneratedVisitor;
-
-                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-                    type Value = GeneratedField;
-
-                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                        write!(formatter, "expected one of: {:?}", &FIELDS)
-                    }
-
-                    #[allow(unused_variables)]
-                    fn visit_str<E>(self, value: &str) -> std::result::Result<GeneratedField, E>
-                    where
-                        E: serde::de::Error,
-                    {
-                        match value {
-                            "id" => Ok(GeneratedField::Id),
-                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
-                        }
-                    }
-                }
-                deserializer.deserialize_identifier(GeneratedVisitor)
-            }
-        }
-        struct GeneratedVisitor;
-        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-            type Value = DeleteMenuRequest;
-
-            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                formatter.write_str("struct projectsuit.menu.v1.DeleteMenuRequest")
-            }
-
-            fn visit_map<V>(self, mut map_: V) -> std::result::Result<DeleteMenuRequest, V::Error>
-                where
-                    V: serde::de::MapAccess<'de>,
-            {
-                let mut id__ = None;
-                while let Some(k) = map_.next_key()? {
-                    match k {
-                        GeneratedField::Id => {
-                            if id__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("id"));
-                            }
-                            id__ = Some(map_.next_value()?);
-                        }
-                    }
-                }
-                Ok(DeleteMenuRequest {
-                    id: id__.unwrap_or_default(),
-                })
-            }
-        }
-        deserializer.deserialize_struct("projectsuit.menu.v1.DeleteMenuRequest", FIELDS, GeneratedVisitor)
-    }
-}
-impl serde::Serialize for DeleteMenuResponse {
-    #[allow(deprecated)]
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        use serde::ser::SerializeStruct;
-        let mut len = 0;
-        if self.success {
-            len += 1;
-        }
-        let mut struct_ser = serializer.serialize_struct("projectsuit.menu.v1.DeleteMenuResponse", len)?;
-        if self.success {
-            struct_ser.serialize_field("success", &self.success)?;
-        }
-        struct_ser.end()
-    }
-}
-impl<'de> serde::Deserialize<'de> for DeleteMenuResponse {
-    #[allow(deprecated)]
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        const FIELDS: &[&str] = &[
-            "success",
-        ];
-
-        #[allow(clippy::enum_variant_names)]
-        enum GeneratedField {
-            Success,
-        }
-        impl<'de> serde::Deserialize<'de> for GeneratedField {
-            fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
-            where
-                D: serde::Deserializer<'de>,
-            {
-                struct GeneratedVisitor;
-
-                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-                    type Value = GeneratedField;
-
-                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                        write!(formatter, "expected one of: {:?}", &FIELDS)
-                    }
-
-                    #[allow(unused_variables)]
-                    fn visit_str<E>(self, value: &str) -> std::result::Result<GeneratedField, E>
-                    where
-                        E: serde::de::Error,
-                    {
-                        match value {
-                            "success" => Ok(GeneratedField::Success),
-                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
-                        }
-                    }
-                }
-                deserializer.deserialize_identifier(GeneratedVisitor)
-            }
-        }
-        struct GeneratedVisitor;
-        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-            type Value = DeleteMenuResponse;
-
-            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                formatter.write_str("struct projectsuit.menu.v1.DeleteMenuResponse")
-            }
-
-            fn visit_map<V>(self, mut map_: V) -> std::result::Result<DeleteMenuResponse, V::Error>
-                where
-                    V: serde::de::MapAccess<'de>,
-            {
-                let mut success__ = None;
-                while let Some(k) = map_.next_key()? {
-                    match k {
-                        GeneratedField::Success => {
-                            if success__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("success"));
-                            }
-                            success__ = Some(map_.next_value()?);
-                        }
-                    }
-                }
-                Ok(DeleteMenuResponse {
-                    success: success__.unwrap_or_default(),
-                })
-            }
-        }
-        deserializer.deserialize_struct("projectsuit.menu.v1.DeleteMenuResponse", FIELDS, GeneratedVisitor)
     }
 }
 impl serde::Serialize for GetMenuRequest {
@@ -374,9 +319,27 @@ impl serde::Serialize for GetMenuRequest {
         if !self.id.is_empty() {
             len += 1;
         }
+        if self.locale_input.is_some() {
+            len += 1;
+        }
+        if self.include_items {
+            len += 1;
+        }
+        if self.include_item_details {
+            len += 1;
+        }
         let mut struct_ser = serializer.serialize_struct("projectsuit.menu.v1.GetMenuRequest", len)?;
         if !self.id.is_empty() {
             struct_ser.serialize_field("id", &self.id)?;
+        }
+        if let Some(v) = self.locale_input.as_ref() {
+            struct_ser.serialize_field("localeInput", v)?;
+        }
+        if self.include_items {
+            struct_ser.serialize_field("includeItems", &self.include_items)?;
+        }
+        if self.include_item_details {
+            struct_ser.serialize_field("includeItemDetails", &self.include_item_details)?;
         }
         struct_ser.end()
     }
@@ -389,11 +352,20 @@ impl<'de> serde::Deserialize<'de> for GetMenuRequest {
     {
         const FIELDS: &[&str] = &[
             "id",
+            "locale_input",
+            "localeInput",
+            "include_items",
+            "includeItems",
+            "include_item_details",
+            "includeItemDetails",
         ];
 
         #[allow(clippy::enum_variant_names)]
         enum GeneratedField {
             Id,
+            LocaleInput,
+            IncludeItems,
+            IncludeItemDetails,
         }
         impl<'de> serde::Deserialize<'de> for GeneratedField {
             fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
@@ -416,6 +388,9 @@ impl<'de> serde::Deserialize<'de> for GetMenuRequest {
                     {
                         match value {
                             "id" => Ok(GeneratedField::Id),
+                            "localeInput" | "locale_input" => Ok(GeneratedField::LocaleInput),
+                            "includeItems" | "include_items" => Ok(GeneratedField::IncludeItems),
+                            "includeItemDetails" | "include_item_details" => Ok(GeneratedField::IncludeItemDetails),
                             _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
                         }
                     }
@@ -436,6 +411,9 @@ impl<'de> serde::Deserialize<'de> for GetMenuRequest {
                     V: serde::de::MapAccess<'de>,
             {
                 let mut id__ = None;
+                let mut locale_input__ = None;
+                let mut include_items__ = None;
+                let mut include_item_details__ = None;
                 while let Some(k) = map_.next_key()? {
                     match k {
                         GeneratedField::Id => {
@@ -444,10 +422,31 @@ impl<'de> serde::Deserialize<'de> for GetMenuRequest {
                             }
                             id__ = Some(map_.next_value()?);
                         }
+                        GeneratedField::LocaleInput => {
+                            if locale_input__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("localeInput"));
+                            }
+                            locale_input__ = map_.next_value()?;
+                        }
+                        GeneratedField::IncludeItems => {
+                            if include_items__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("includeItems"));
+                            }
+                            include_items__ = Some(map_.next_value()?);
+                        }
+                        GeneratedField::IncludeItemDetails => {
+                            if include_item_details__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("includeItemDetails"));
+                            }
+                            include_item_details__ = Some(map_.next_value()?);
+                        }
                     }
                 }
                 Ok(GetMenuRequest {
                     id: id__.unwrap_or_default(),
+                    locale_input: locale_input__,
+                    include_items: include_items__.unwrap_or_default(),
+                    include_item_details: include_item_details__.unwrap_or_default(),
                 })
             }
         }
@@ -553,18 +552,12 @@ impl serde::Serialize for ListMenusRequest {
     {
         use serde::ser::SerializeStruct;
         let mut len = 0;
-        if self.page != 0 {
-            len += 1;
-        }
-        if self.page_size != 0 {
+        if self.base_request.is_some() {
             len += 1;
         }
         let mut struct_ser = serializer.serialize_struct("projectsuit.menu.v1.ListMenusRequest", len)?;
-        if self.page != 0 {
-            struct_ser.serialize_field("page", &self.page)?;
-        }
-        if self.page_size != 0 {
-            struct_ser.serialize_field("pageSize", &self.page_size)?;
+        if let Some(v) = self.base_request.as_ref() {
+            struct_ser.serialize_field("baseRequest", v)?;
         }
         struct_ser.end()
     }
@@ -576,15 +569,13 @@ impl<'de> serde::Deserialize<'de> for ListMenusRequest {
         D: serde::Deserializer<'de>,
     {
         const FIELDS: &[&str] = &[
-            "page",
-            "page_size",
-            "pageSize",
+            "base_request",
+            "baseRequest",
         ];
 
         #[allow(clippy::enum_variant_names)]
         enum GeneratedField {
-            Page,
-            PageSize,
+            BaseRequest,
         }
         impl<'de> serde::Deserialize<'de> for GeneratedField {
             fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
@@ -606,8 +597,7 @@ impl<'de> serde::Deserialize<'de> for ListMenusRequest {
                         E: serde::de::Error,
                     {
                         match value {
-                            "page" => Ok(GeneratedField::Page),
-                            "pageSize" | "page_size" => Ok(GeneratedField::PageSize),
+                            "baseRequest" | "base_request" => Ok(GeneratedField::BaseRequest),
                             _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
                         }
                     }
@@ -627,31 +617,19 @@ impl<'de> serde::Deserialize<'de> for ListMenusRequest {
                 where
                     V: serde::de::MapAccess<'de>,
             {
-                let mut page__ = None;
-                let mut page_size__ = None;
+                let mut base_request__ = None;
                 while let Some(k) = map_.next_key()? {
                     match k {
-                        GeneratedField::Page => {
-                            if page__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("page"));
+                        GeneratedField::BaseRequest => {
+                            if base_request__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("baseRequest"));
                             }
-                            page__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
-                        }
-                        GeneratedField::PageSize => {
-                            if page_size__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("pageSize"));
-                            }
-                            page_size__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
+                            base_request__ = map_.next_value()?;
                         }
                     }
                 }
                 Ok(ListMenusRequest {
-                    page: page__.unwrap_or_default(),
-                    page_size: page_size__.unwrap_or_default(),
+                    base_request: base_request__,
                 })
             }
         }
@@ -666,18 +644,18 @@ impl serde::Serialize for ListMenusResponse {
     {
         use serde::ser::SerializeStruct;
         let mut len = 0;
-        if !self.items.is_empty() {
+        if !self.menus.is_empty() {
             len += 1;
         }
-        if self.total != 0 {
+        if self.pagination.is_some() {
             len += 1;
         }
         let mut struct_ser = serializer.serialize_struct("projectsuit.menu.v1.ListMenusResponse", len)?;
-        if !self.items.is_empty() {
-            struct_ser.serialize_field("items", &self.items)?;
+        if !self.menus.is_empty() {
+            struct_ser.serialize_field("menus", &self.menus)?;
         }
-        if self.total != 0 {
-            struct_ser.serialize_field("total", &self.total)?;
+        if let Some(v) = self.pagination.as_ref() {
+            struct_ser.serialize_field("pagination", v)?;
         }
         struct_ser.end()
     }
@@ -689,14 +667,14 @@ impl<'de> serde::Deserialize<'de> for ListMenusResponse {
         D: serde::Deserializer<'de>,
     {
         const FIELDS: &[&str] = &[
-            "items",
-            "total",
+            "menus",
+            "pagination",
         ];
 
         #[allow(clippy::enum_variant_names)]
         enum GeneratedField {
-            Items,
-            Total,
+            Menus,
+            Pagination,
         }
         impl<'de> serde::Deserialize<'de> for GeneratedField {
             fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
@@ -718,8 +696,8 @@ impl<'de> serde::Deserialize<'de> for ListMenusResponse {
                         E: serde::de::Error,
                     {
                         match value {
-                            "items" => Ok(GeneratedField::Items),
-                            "total" => Ok(GeneratedField::Total),
+                            "menus" => Ok(GeneratedField::Menus),
+                            "pagination" => Ok(GeneratedField::Pagination),
                             _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
                         }
                     }
@@ -739,29 +717,27 @@ impl<'de> serde::Deserialize<'de> for ListMenusResponse {
                 where
                     V: serde::de::MapAccess<'de>,
             {
-                let mut items__ = None;
-                let mut total__ = None;
+                let mut menus__ = None;
+                let mut pagination__ = None;
                 while let Some(k) = map_.next_key()? {
                     match k {
-                        GeneratedField::Items => {
-                            if items__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("items"));
+                        GeneratedField::Menus => {
+                            if menus__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("menus"));
                             }
-                            items__ = Some(map_.next_value()?);
+                            menus__ = Some(map_.next_value()?);
                         }
-                        GeneratedField::Total => {
-                            if total__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("total"));
+                        GeneratedField::Pagination => {
+                            if pagination__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("pagination"));
                             }
-                            total__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
+                            pagination__ = map_.next_value()?;
                         }
                     }
                 }
                 Ok(ListMenusResponse {
-                    items: items__.unwrap_or_default(),
-                    total: total__.unwrap_or_default(),
+                    menus: menus__.unwrap_or_default(),
+                    pagination: pagination__,
                 })
             }
         }
@@ -779,43 +755,57 @@ impl serde::Serialize for Menu {
         if !self.id.is_empty() {
             len += 1;
         }
-        if self.name.is_some() {
-            len += 1;
-        }
-        if !self.sections.is_empty() {
+        if !self.code.is_empty() {
             len += 1;
         }
         if self.is_active {
             len += 1;
         }
-        if self.created_at != 0 {
+        if self.created_at.is_some() {
             len += 1;
         }
-        if self.updated_at != 0 {
+        if self.updated_at.is_some() {
+            len += 1;
+        }
+        if !self.name.is_empty() {
+            len += 1;
+        }
+        if !self.description.is_empty() {
+            len += 1;
+        }
+        if !self.all_translations.is_empty() {
+            len += 1;
+        }
+        if !self.items.is_empty() {
             len += 1;
         }
         let mut struct_ser = serializer.serialize_struct("projectsuit.menu.v1.Menu", len)?;
         if !self.id.is_empty() {
             struct_ser.serialize_field("id", &self.id)?;
         }
-        if let Some(v) = self.name.as_ref() {
-            struct_ser.serialize_field("name", v)?;
-        }
-        if !self.sections.is_empty() {
-            struct_ser.serialize_field("sections", &self.sections)?;
+        if !self.code.is_empty() {
+            struct_ser.serialize_field("code", &self.code)?;
         }
         if self.is_active {
             struct_ser.serialize_field("isActive", &self.is_active)?;
         }
-        if self.created_at != 0 {
-            #[allow(clippy::needless_borrow)]
-            #[allow(clippy::needless_borrows_for_generic_args)]
-            struct_ser.serialize_field("createdAt", ToString::to_string(&self.created_at).as_str())?;
+        if let Some(v) = self.created_at.as_ref() {
+            struct_ser.serialize_field("createdAt", v)?;
         }
-        if self.updated_at != 0 {
-            #[allow(clippy::needless_borrow)]
-            #[allow(clippy::needless_borrows_for_generic_args)]
-            struct_ser.serialize_field("updatedAt", ToString::to_string(&self.updated_at).as_str())?;
+        if let Some(v) = self.updated_at.as_ref() {
+            struct_ser.serialize_field("updatedAt", v)?;
+        }
+        if !self.name.is_empty() {
+            struct_ser.serialize_field("name", &self.name)?;
+        }
+        if !self.description.is_empty() {
+            struct_ser.serialize_field("description", &self.description)?;
+        }
+        if !self.all_translations.is_empty() {
+            struct_ser.serialize_field("allTranslations", &self.all_translations)?;
+        }
+        if !self.items.is_empty() {
+            struct_ser.serialize_field("items", &self.items)?;
         }
         struct_ser.end()
     }
@@ -828,24 +818,31 @@ impl<'de> serde::Deserialize<'de> for Menu {
     {
         const FIELDS: &[&str] = &[
             "id",
-            "name",
-            "sections",
+            "code",
             "is_active",
             "isActive",
             "created_at",
             "createdAt",
             "updated_at",
             "updatedAt",
+            "name",
+            "description",
+            "all_translations",
+            "allTranslations",
+            "items",
         ];
 
         #[allow(clippy::enum_variant_names)]
         enum GeneratedField {
             Id,
-            Name,
-            Sections,
+            Code,
             IsActive,
             CreatedAt,
             UpdatedAt,
+            Name,
+            Description,
+            AllTranslations,
+            Items,
         }
         impl<'de> serde::Deserialize<'de> for GeneratedField {
             fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
@@ -868,11 +865,14 @@ impl<'de> serde::Deserialize<'de> for Menu {
                     {
                         match value {
                             "id" => Ok(GeneratedField::Id),
-                            "name" => Ok(GeneratedField::Name),
-                            "sections" => Ok(GeneratedField::Sections),
+                            "code" => Ok(GeneratedField::Code),
                             "isActive" | "is_active" => Ok(GeneratedField::IsActive),
                             "createdAt" | "created_at" => Ok(GeneratedField::CreatedAt),
                             "updatedAt" | "updated_at" => Ok(GeneratedField::UpdatedAt),
+                            "name" => Ok(GeneratedField::Name),
+                            "description" => Ok(GeneratedField::Description),
+                            "allTranslations" | "all_translations" => Ok(GeneratedField::AllTranslations),
+                            "items" => Ok(GeneratedField::Items),
                             _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
                         }
                     }
@@ -893,11 +893,14 @@ impl<'de> serde::Deserialize<'de> for Menu {
                     V: serde::de::MapAccess<'de>,
             {
                 let mut id__ = None;
-                let mut name__ = None;
-                let mut sections__ = None;
+                let mut code__ = None;
                 let mut is_active__ = None;
                 let mut created_at__ = None;
                 let mut updated_at__ = None;
+                let mut name__ = None;
+                let mut description__ = None;
+                let mut all_translations__ = None;
+                let mut items__ = None;
                 while let Some(k) = map_.next_key()? {
                     match k {
                         GeneratedField::Id => {
@@ -906,17 +909,11 @@ impl<'de> serde::Deserialize<'de> for Menu {
                             }
                             id__ = Some(map_.next_value()?);
                         }
-                        GeneratedField::Name => {
-                            if name__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("name"));
+                        GeneratedField::Code => {
+                            if code__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("code"));
                             }
-                            name__ = map_.next_value()?;
-                        }
-                        GeneratedField::Sections => {
-                            if sections__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("sections"));
-                            }
-                            sections__ = Some(map_.next_value()?);
+                            code__ = Some(map_.next_value()?);
                         }
                         GeneratedField::IsActive => {
                             if is_active__.is_some() {
@@ -928,34 +925,57 @@ impl<'de> serde::Deserialize<'de> for Menu {
                             if created_at__.is_some() {
                                 return Err(serde::de::Error::duplicate_field("createdAt"));
                             }
-                            created_at__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
+                            created_at__ = map_.next_value()?;
                         }
                         GeneratedField::UpdatedAt => {
                             if updated_at__.is_some() {
                                 return Err(serde::de::Error::duplicate_field("updatedAt"));
                             }
-                            updated_at__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
+                            updated_at__ = map_.next_value()?;
+                        }
+                        GeneratedField::Name => {
+                            if name__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("name"));
+                            }
+                            name__ = Some(map_.next_value()?);
+                        }
+                        GeneratedField::Description => {
+                            if description__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("description"));
+                            }
+                            description__ = Some(map_.next_value()?);
+                        }
+                        GeneratedField::AllTranslations => {
+                            if all_translations__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("allTranslations"));
+                            }
+                            all_translations__ = Some(map_.next_value()?);
+                        }
+                        GeneratedField::Items => {
+                            if items__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("items"));
+                            }
+                            items__ = Some(map_.next_value()?);
                         }
                     }
                 }
                 Ok(Menu {
                     id: id__.unwrap_or_default(),
-                    name: name__,
-                    sections: sections__.unwrap_or_default(),
+                    code: code__.unwrap_or_default(),
                     is_active: is_active__.unwrap_or_default(),
-                    created_at: created_at__.unwrap_or_default(),
-                    updated_at: updated_at__.unwrap_or_default(),
+                    created_at: created_at__,
+                    updated_at: updated_at__,
+                    name: name__.unwrap_or_default(),
+                    description: description__.unwrap_or_default(),
+                    all_translations: all_translations__.unwrap_or_default(),
+                    items: items__.unwrap_or_default(),
                 })
             }
         }
         deserializer.deserialize_struct("projectsuit.menu.v1.Menu", FIELDS, GeneratedVisitor)
     }
 }
-impl serde::Serialize for MenuInput {
+impl serde::Serialize for MenuItem {
     #[allow(deprecated)]
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
     where
@@ -963,747 +983,109 @@ impl serde::Serialize for MenuInput {
     {
         use serde::ser::SerializeStruct;
         let mut len = 0;
-        if !self.code.is_empty() {
+        if !self.id.is_empty() {
             len += 1;
         }
-        if self.name.is_some() {
+        if self.product_id.is_some() {
             len += 1;
         }
-        if self.description.is_some() {
+        if self.variant_id.is_some() {
             len += 1;
         }
-        if !self.items.is_empty() {
+        if !self.quantity.is_empty() {
             len += 1;
         }
-        if self.is_active {
-            len += 1;
-        }
-        let mut struct_ser = serializer.serialize_struct("projectsuit.menu.v1.MenuInput", len)?;
-        if !self.code.is_empty() {
-            struct_ser.serialize_field("code", &self.code)?;
-        }
-        if let Some(v) = self.name.as_ref() {
-            struct_ser.serialize_field("name", v)?;
-        }
-        if let Some(v) = self.description.as_ref() {
-            struct_ser.serialize_field("description", v)?;
-        }
-        if !self.items.is_empty() {
-            struct_ser.serialize_field("items", &self.items)?;
-        }
-        if self.is_active {
-            struct_ser.serialize_field("isActive", &self.is_active)?;
-        }
-        struct_ser.end()
-    }
-}
-impl<'de> serde::Deserialize<'de> for MenuInput {
-    #[allow(deprecated)]
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        const FIELDS: &[&str] = &[
-            "code",
-            "name",
-            "description",
-            "items",
-            "is_active",
-            "isActive",
-        ];
-
-        #[allow(clippy::enum_variant_names)]
-        enum GeneratedField {
-            Code,
-            Name,
-            Description,
-            Items,
-            IsActive,
-        }
-        impl<'de> serde::Deserialize<'de> for GeneratedField {
-            fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
-            where
-                D: serde::Deserializer<'de>,
-            {
-                struct GeneratedVisitor;
-
-                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-                    type Value = GeneratedField;
-
-                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                        write!(formatter, "expected one of: {:?}", &FIELDS)
-                    }
-
-                    #[allow(unused_variables)]
-                    fn visit_str<E>(self, value: &str) -> std::result::Result<GeneratedField, E>
-                    where
-                        E: serde::de::Error,
-                    {
-                        match value {
-                            "code" => Ok(GeneratedField::Code),
-                            "name" => Ok(GeneratedField::Name),
-                            "description" => Ok(GeneratedField::Description),
-                            "items" => Ok(GeneratedField::Items),
-                            "isActive" | "is_active" => Ok(GeneratedField::IsActive),
-                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
-                        }
-                    }
-                }
-                deserializer.deserialize_identifier(GeneratedVisitor)
-            }
-        }
-        struct GeneratedVisitor;
-        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-            type Value = MenuInput;
-
-            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                formatter.write_str("struct projectsuit.menu.v1.MenuInput")
-            }
-
-            fn visit_map<V>(self, mut map_: V) -> std::result::Result<MenuInput, V::Error>
-                where
-                    V: serde::de::MapAccess<'de>,
-            {
-                let mut code__ = None;
-                let mut name__ = None;
-                let mut description__ = None;
-                let mut items__ = None;
-                let mut is_active__ = None;
-                while let Some(k) = map_.next_key()? {
-                    match k {
-                        GeneratedField::Code => {
-                            if code__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("code"));
-                            }
-                            code__ = Some(map_.next_value()?);
-                        }
-                        GeneratedField::Name => {
-                            if name__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("name"));
-                            }
-                            name__ = map_.next_value()?;
-                        }
-                        GeneratedField::Description => {
-                            if description__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("description"));
-                            }
-                            description__ = map_.next_value()?;
-                        }
-                        GeneratedField::Items => {
-                            if items__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("items"));
-                            }
-                            items__ = Some(map_.next_value()?);
-                        }
-                        GeneratedField::IsActive => {
-                            if is_active__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("isActive"));
-                            }
-                            is_active__ = Some(map_.next_value()?);
-                        }
-                    }
-                }
-                Ok(MenuInput {
-                    code: code__.unwrap_or_default(),
-                    name: name__,
-                    description: description__,
-                    items: items__.unwrap_or_default(),
-                    is_active: is_active__.unwrap_or_default(),
-                })
-            }
-        }
-        deserializer.deserialize_struct("projectsuit.menu.v1.MenuInput", FIELDS, GeneratedVisitor)
-    }
-}
-impl serde::Serialize for MenuItemInput {
-    #[allow(deprecated)]
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        use serde::ser::SerializeStruct;
-        let mut len = 0;
-        if !self.product_id.is_empty() {
-            len += 1;
-        }
-        if !self.variant_id.is_empty() {
-            len += 1;
-        }
-        if self.quantity != 0. {
-            len += 1;
-        }
-        if self.optional {
+        if self.optional_item {
             len += 1;
         }
         if self.sort_order != 0 {
             len += 1;
         }
-        let mut struct_ser = serializer.serialize_struct("projectsuit.menu.v1.MenuItemInput", len)?;
-        if !self.product_id.is_empty() {
-            struct_ser.serialize_field("productId", &self.product_id)?;
+        if self.created_at.is_some() {
+            len += 1;
         }
-        if !self.variant_id.is_empty() {
-            struct_ser.serialize_field("variantId", &self.variant_id)?;
+        if self.updated_at.is_some() {
+            len += 1;
         }
-        if self.quantity != 0. {
+        if self.product_details.is_some() {
+            len += 1;
+        }
+        if self.variant_details.is_some() {
+            len += 1;
+        }
+        let mut struct_ser = serializer.serialize_struct("projectsuit.menu.v1.MenuItem", len)?;
+        if !self.id.is_empty() {
+            struct_ser.serialize_field("id", &self.id)?;
+        }
+        if let Some(v) = self.product_id.as_ref() {
+            struct_ser.serialize_field("productId", v)?;
+        }
+        if let Some(v) = self.variant_id.as_ref() {
+            struct_ser.serialize_field("variantId", v)?;
+        }
+        if !self.quantity.is_empty() {
             struct_ser.serialize_field("quantity", &self.quantity)?;
         }
-        if self.optional {
-            struct_ser.serialize_field("optional", &self.optional)?;
+        if self.optional_item {
+            struct_ser.serialize_field("optionalItem", &self.optional_item)?;
         }
         if self.sort_order != 0 {
             struct_ser.serialize_field("sortOrder", &self.sort_order)?;
         }
+        if let Some(v) = self.created_at.as_ref() {
+            struct_ser.serialize_field("createdAt", v)?;
+        }
+        if let Some(v) = self.updated_at.as_ref() {
+            struct_ser.serialize_field("updatedAt", v)?;
+        }
+        if let Some(v) = self.product_details.as_ref() {
+            struct_ser.serialize_field("productDetails", v)?;
+        }
+        if let Some(v) = self.variant_details.as_ref() {
+            struct_ser.serialize_field("variantDetails", v)?;
+        }
         struct_ser.end()
     }
 }
-impl<'de> serde::Deserialize<'de> for MenuItemInput {
+impl<'de> serde::Deserialize<'de> for MenuItem {
     #[allow(deprecated)]
     fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
     {
         const FIELDS: &[&str] = &[
+            "id",
             "product_id",
             "productId",
             "variant_id",
             "variantId",
             "quantity",
-            "optional",
+            "optional_item",
+            "optionalItem",
             "sort_order",
             "sortOrder",
-        ];
-
-        #[allow(clippy::enum_variant_names)]
-        enum GeneratedField {
-            ProductId,
-            VariantId,
-            Quantity,
-            Optional,
-            SortOrder,
-        }
-        impl<'de> serde::Deserialize<'de> for GeneratedField {
-            fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
-            where
-                D: serde::Deserializer<'de>,
-            {
-                struct GeneratedVisitor;
-
-                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-                    type Value = GeneratedField;
-
-                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                        write!(formatter, "expected one of: {:?}", &FIELDS)
-                    }
-
-                    #[allow(unused_variables)]
-                    fn visit_str<E>(self, value: &str) -> std::result::Result<GeneratedField, E>
-                    where
-                        E: serde::de::Error,
-                    {
-                        match value {
-                            "productId" | "product_id" => Ok(GeneratedField::ProductId),
-                            "variantId" | "variant_id" => Ok(GeneratedField::VariantId),
-                            "quantity" => Ok(GeneratedField::Quantity),
-                            "optional" => Ok(GeneratedField::Optional),
-                            "sortOrder" | "sort_order" => Ok(GeneratedField::SortOrder),
-                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
-                        }
-                    }
-                }
-                deserializer.deserialize_identifier(GeneratedVisitor)
-            }
-        }
-        struct GeneratedVisitor;
-        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-            type Value = MenuItemInput;
-
-            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                formatter.write_str("struct projectsuit.menu.v1.MenuItemInput")
-            }
-
-            fn visit_map<V>(self, mut map_: V) -> std::result::Result<MenuItemInput, V::Error>
-                where
-                    V: serde::de::MapAccess<'de>,
-            {
-                let mut product_id__ = None;
-                let mut variant_id__ = None;
-                let mut quantity__ = None;
-                let mut optional__ = None;
-                let mut sort_order__ = None;
-                while let Some(k) = map_.next_key()? {
-                    match k {
-                        GeneratedField::ProductId => {
-                            if product_id__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("productId"));
-                            }
-                            product_id__ = Some(map_.next_value()?);
-                        }
-                        GeneratedField::VariantId => {
-                            if variant_id__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("variantId"));
-                            }
-                            variant_id__ = Some(map_.next_value()?);
-                        }
-                        GeneratedField::Quantity => {
-                            if quantity__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("quantity"));
-                            }
-                            quantity__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
-                        }
-                        GeneratedField::Optional => {
-                            if optional__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("optional"));
-                            }
-                            optional__ = Some(map_.next_value()?);
-                        }
-                        GeneratedField::SortOrder => {
-                            if sort_order__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("sortOrder"));
-                            }
-                            sort_order__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
-                        }
-                    }
-                }
-                Ok(MenuItemInput {
-                    product_id: product_id__.unwrap_or_default(),
-                    variant_id: variant_id__.unwrap_or_default(),
-                    quantity: quantity__.unwrap_or_default(),
-                    optional: optional__.unwrap_or_default(),
-                    sort_order: sort_order__.unwrap_or_default(),
-                })
-            }
-        }
-        deserializer.deserialize_struct("projectsuit.menu.v1.MenuItemInput", FIELDS, GeneratedVisitor)
-    }
-}
-impl serde::Serialize for MenuItemView {
-    #[allow(deprecated)]
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        use serde::ser::SerializeStruct;
-        let mut len = 0;
-        if self.product.is_some() {
-            len += 1;
-        }
-        if !self.variant_id.is_empty() {
-            len += 1;
-        }
-        if self.quantity != 0. {
-            len += 1;
-        }
-        if self.optional {
-            len += 1;
-        }
-        if self.sort_order != 0 {
-            len += 1;
-        }
-        let mut struct_ser = serializer.serialize_struct("projectsuit.menu.v1.MenuItemView", len)?;
-        if let Some(v) = self.product.as_ref() {
-            struct_ser.serialize_field("product", v)?;
-        }
-        if !self.variant_id.is_empty() {
-            struct_ser.serialize_field("variantId", &self.variant_id)?;
-        }
-        if self.quantity != 0. {
-            struct_ser.serialize_field("quantity", &self.quantity)?;
-        }
-        if self.optional {
-            struct_ser.serialize_field("optional", &self.optional)?;
-        }
-        if self.sort_order != 0 {
-            struct_ser.serialize_field("sortOrder", &self.sort_order)?;
-        }
-        struct_ser.end()
-    }
-}
-impl<'de> serde::Deserialize<'de> for MenuItemView {
-    #[allow(deprecated)]
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        const FIELDS: &[&str] = &[
-            "product",
-            "variant_id",
-            "variantId",
-            "quantity",
-            "optional",
-            "sort_order",
-            "sortOrder",
-        ];
-
-        #[allow(clippy::enum_variant_names)]
-        enum GeneratedField {
-            Product,
-            VariantId,
-            Quantity,
-            Optional,
-            SortOrder,
-        }
-        impl<'de> serde::Deserialize<'de> for GeneratedField {
-            fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
-            where
-                D: serde::Deserializer<'de>,
-            {
-                struct GeneratedVisitor;
-
-                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-                    type Value = GeneratedField;
-
-                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                        write!(formatter, "expected one of: {:?}", &FIELDS)
-                    }
-
-                    #[allow(unused_variables)]
-                    fn visit_str<E>(self, value: &str) -> std::result::Result<GeneratedField, E>
-                    where
-                        E: serde::de::Error,
-                    {
-                        match value {
-                            "product" => Ok(GeneratedField::Product),
-                            "variantId" | "variant_id" => Ok(GeneratedField::VariantId),
-                            "quantity" => Ok(GeneratedField::Quantity),
-                            "optional" => Ok(GeneratedField::Optional),
-                            "sortOrder" | "sort_order" => Ok(GeneratedField::SortOrder),
-                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
-                        }
-                    }
-                }
-                deserializer.deserialize_identifier(GeneratedVisitor)
-            }
-        }
-        struct GeneratedVisitor;
-        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-            type Value = MenuItemView;
-
-            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                formatter.write_str("struct projectsuit.menu.v1.MenuItemView")
-            }
-
-            fn visit_map<V>(self, mut map_: V) -> std::result::Result<MenuItemView, V::Error>
-                where
-                    V: serde::de::MapAccess<'de>,
-            {
-                let mut product__ = None;
-                let mut variant_id__ = None;
-                let mut quantity__ = None;
-                let mut optional__ = None;
-                let mut sort_order__ = None;
-                while let Some(k) = map_.next_key()? {
-                    match k {
-                        GeneratedField::Product => {
-                            if product__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("product"));
-                            }
-                            product__ = map_.next_value()?;
-                        }
-                        GeneratedField::VariantId => {
-                            if variant_id__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("variantId"));
-                            }
-                            variant_id__ = Some(map_.next_value()?);
-                        }
-                        GeneratedField::Quantity => {
-                            if quantity__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("quantity"));
-                            }
-                            quantity__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
-                        }
-                        GeneratedField::Optional => {
-                            if optional__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("optional"));
-                            }
-                            optional__ = Some(map_.next_value()?);
-                        }
-                        GeneratedField::SortOrder => {
-                            if sort_order__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("sortOrder"));
-                            }
-                            sort_order__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
-                        }
-                    }
-                }
-                Ok(MenuItemView {
-                    product: product__,
-                    variant_id: variant_id__.unwrap_or_default(),
-                    quantity: quantity__.unwrap_or_default(),
-                    optional: optional__.unwrap_or_default(),
-                    sort_order: sort_order__.unwrap_or_default(),
-                })
-            }
-        }
-        deserializer.deserialize_struct("projectsuit.menu.v1.MenuItemView", FIELDS, GeneratedVisitor)
-    }
-}
-impl serde::Serialize for MenuSection {
-    #[allow(deprecated)]
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        use serde::ser::SerializeStruct;
-        let mut len = 0;
-        if !self.id.is_empty() {
-            len += 1;
-        }
-        if self.title.is_some() {
-            len += 1;
-        }
-        if !self.product_ids.is_empty() {
-            len += 1;
-        }
-        if self.sort_order != 0 {
-            len += 1;
-        }
-        if self.is_active {
-            len += 1;
-        }
-        let mut struct_ser = serializer.serialize_struct("projectsuit.menu.v1.MenuSection", len)?;
-        if !self.id.is_empty() {
-            struct_ser.serialize_field("id", &self.id)?;
-        }
-        if let Some(v) = self.title.as_ref() {
-            struct_ser.serialize_field("title", v)?;
-        }
-        if !self.product_ids.is_empty() {
-            struct_ser.serialize_field("productIds", &self.product_ids)?;
-        }
-        if self.sort_order != 0 {
-            struct_ser.serialize_field("sortOrder", &self.sort_order)?;
-        }
-        if self.is_active {
-            struct_ser.serialize_field("isActive", &self.is_active)?;
-        }
-        struct_ser.end()
-    }
-}
-impl<'de> serde::Deserialize<'de> for MenuSection {
-    #[allow(deprecated)]
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        const FIELDS: &[&str] = &[
-            "id",
-            "title",
-            "product_ids",
-            "productIds",
-            "sort_order",
-            "sortOrder",
-            "is_active",
-            "isActive",
-        ];
-
-        #[allow(clippy::enum_variant_names)]
-        enum GeneratedField {
-            Id,
-            Title,
-            ProductIds,
-            SortOrder,
-            IsActive,
-        }
-        impl<'de> serde::Deserialize<'de> for GeneratedField {
-            fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
-            where
-                D: serde::Deserializer<'de>,
-            {
-                struct GeneratedVisitor;
-
-                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-                    type Value = GeneratedField;
-
-                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                        write!(formatter, "expected one of: {:?}", &FIELDS)
-                    }
-
-                    #[allow(unused_variables)]
-                    fn visit_str<E>(self, value: &str) -> std::result::Result<GeneratedField, E>
-                    where
-                        E: serde::de::Error,
-                    {
-                        match value {
-                            "id" => Ok(GeneratedField::Id),
-                            "title" => Ok(GeneratedField::Title),
-                            "productIds" | "product_ids" => Ok(GeneratedField::ProductIds),
-                            "sortOrder" | "sort_order" => Ok(GeneratedField::SortOrder),
-                            "isActive" | "is_active" => Ok(GeneratedField::IsActive),
-                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
-                        }
-                    }
-                }
-                deserializer.deserialize_identifier(GeneratedVisitor)
-            }
-        }
-        struct GeneratedVisitor;
-        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-            type Value = MenuSection;
-
-            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                formatter.write_str("struct projectsuit.menu.v1.MenuSection")
-            }
-
-            fn visit_map<V>(self, mut map_: V) -> std::result::Result<MenuSection, V::Error>
-                where
-                    V: serde::de::MapAccess<'de>,
-            {
-                let mut id__ = None;
-                let mut title__ = None;
-                let mut product_ids__ = None;
-                let mut sort_order__ = None;
-                let mut is_active__ = None;
-                while let Some(k) = map_.next_key()? {
-                    match k {
-                        GeneratedField::Id => {
-                            if id__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("id"));
-                            }
-                            id__ = Some(map_.next_value()?);
-                        }
-                        GeneratedField::Title => {
-                            if title__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("title"));
-                            }
-                            title__ = map_.next_value()?;
-                        }
-                        GeneratedField::ProductIds => {
-                            if product_ids__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("productIds"));
-                            }
-                            product_ids__ = Some(map_.next_value()?);
-                        }
-                        GeneratedField::SortOrder => {
-                            if sort_order__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("sortOrder"));
-                            }
-                            sort_order__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
-                        }
-                        GeneratedField::IsActive => {
-                            if is_active__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("isActive"));
-                            }
-                            is_active__ = Some(map_.next_value()?);
-                        }
-                    }
-                }
-                Ok(MenuSection {
-                    id: id__.unwrap_or_default(),
-                    title: title__,
-                    product_ids: product_ids__.unwrap_or_default(),
-                    sort_order: sort_order__.unwrap_or_default(),
-                    is_active: is_active__.unwrap_or_default(),
-                })
-            }
-        }
-        deserializer.deserialize_struct("projectsuit.menu.v1.MenuSection", FIELDS, GeneratedVisitor)
-    }
-}
-impl serde::Serialize for MenuView {
-    #[allow(deprecated)]
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        use serde::ser::SerializeStruct;
-        let mut len = 0;
-        if !self.id.is_empty() {
-            len += 1;
-        }
-        if !self.code.is_empty() {
-            len += 1;
-        }
-        if self.name.is_some() {
-            len += 1;
-        }
-        if self.description.is_some() {
-            len += 1;
-        }
-        if !self.items.is_empty() {
-            len += 1;
-        }
-        if self.is_active {
-            len += 1;
-        }
-        if self.created_at != 0 {
-            len += 1;
-        }
-        if self.updated_at != 0 {
-            len += 1;
-        }
-        let mut struct_ser = serializer.serialize_struct("projectsuit.menu.v1.MenuView", len)?;
-        if !self.id.is_empty() {
-            struct_ser.serialize_field("id", &self.id)?;
-        }
-        if !self.code.is_empty() {
-            struct_ser.serialize_field("code", &self.code)?;
-        }
-        if let Some(v) = self.name.as_ref() {
-            struct_ser.serialize_field("name", v)?;
-        }
-        if let Some(v) = self.description.as_ref() {
-            struct_ser.serialize_field("description", v)?;
-        }
-        if !self.items.is_empty() {
-            struct_ser.serialize_field("items", &self.items)?;
-        }
-        if self.is_active {
-            struct_ser.serialize_field("isActive", &self.is_active)?;
-        }
-        if self.created_at != 0 {
-            #[allow(clippy::needless_borrow)]
-            #[allow(clippy::needless_borrows_for_generic_args)]
-            struct_ser.serialize_field("createdAt", ToString::to_string(&self.created_at).as_str())?;
-        }
-        if self.updated_at != 0 {
-            #[allow(clippy::needless_borrow)]
-            #[allow(clippy::needless_borrows_for_generic_args)]
-            struct_ser.serialize_field("updatedAt", ToString::to_string(&self.updated_at).as_str())?;
-        }
-        struct_ser.end()
-    }
-}
-impl<'de> serde::Deserialize<'de> for MenuView {
-    #[allow(deprecated)]
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        const FIELDS: &[&str] = &[
-            "id",
-            "code",
-            "name",
-            "description",
-            "items",
-            "is_active",
-            "isActive",
             "created_at",
             "createdAt",
             "updated_at",
             "updatedAt",
+            "product_details",
+            "productDetails",
+            "variant_details",
+            "variantDetails",
         ];
 
         #[allow(clippy::enum_variant_names)]
         enum GeneratedField {
             Id,
-            Code,
-            Name,
-            Description,
-            Items,
-            IsActive,
+            ProductId,
+            VariantId,
+            Quantity,
+            OptionalItem,
+            SortOrder,
             CreatedAt,
             UpdatedAt,
+            ProductDetails,
+            VariantDetails,
         }
         impl<'de> serde::Deserialize<'de> for GeneratedField {
             fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
@@ -1726,13 +1108,15 @@ impl<'de> serde::Deserialize<'de> for MenuView {
                     {
                         match value {
                             "id" => Ok(GeneratedField::Id),
-                            "code" => Ok(GeneratedField::Code),
-                            "name" => Ok(GeneratedField::Name),
-                            "description" => Ok(GeneratedField::Description),
-                            "items" => Ok(GeneratedField::Items),
-                            "isActive" | "is_active" => Ok(GeneratedField::IsActive),
+                            "productId" | "product_id" => Ok(GeneratedField::ProductId),
+                            "variantId" | "variant_id" => Ok(GeneratedField::VariantId),
+                            "quantity" => Ok(GeneratedField::Quantity),
+                            "optionalItem" | "optional_item" => Ok(GeneratedField::OptionalItem),
+                            "sortOrder" | "sort_order" => Ok(GeneratedField::SortOrder),
                             "createdAt" | "created_at" => Ok(GeneratedField::CreatedAt),
                             "updatedAt" | "updated_at" => Ok(GeneratedField::UpdatedAt),
+                            "productDetails" | "product_details" => Ok(GeneratedField::ProductDetails),
+                            "variantDetails" | "variant_details" => Ok(GeneratedField::VariantDetails),
                             _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
                         }
                     }
@@ -1742,24 +1126,26 @@ impl<'de> serde::Deserialize<'de> for MenuView {
         }
         struct GeneratedVisitor;
         impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-            type Value = MenuView;
+            type Value = MenuItem;
 
             fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                formatter.write_str("struct projectsuit.menu.v1.MenuView")
+                formatter.write_str("struct projectsuit.menu.v1.MenuItem")
             }
 
-            fn visit_map<V>(self, mut map_: V) -> std::result::Result<MenuView, V::Error>
+            fn visit_map<V>(self, mut map_: V) -> std::result::Result<MenuItem, V::Error>
                 where
                     V: serde::de::MapAccess<'de>,
             {
                 let mut id__ = None;
-                let mut code__ = None;
-                let mut name__ = None;
-                let mut description__ = None;
-                let mut items__ = None;
-                let mut is_active__ = None;
+                let mut product_id__ = None;
+                let mut variant_id__ = None;
+                let mut quantity__ = None;
+                let mut optional_item__ = None;
+                let mut sort_order__ = None;
                 let mut created_at__ = None;
                 let mut updated_at__ = None;
+                let mut product_details__ = None;
+                let mut variant_details__ = None;
                 while let Some(k) = map_.next_key()? {
                     match k {
                         GeneratedField::Id => {
@@ -1768,67 +1154,226 @@ impl<'de> serde::Deserialize<'de> for MenuView {
                             }
                             id__ = Some(map_.next_value()?);
                         }
-                        GeneratedField::Code => {
-                            if code__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("code"));
+                        GeneratedField::ProductId => {
+                            if product_id__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("productId"));
                             }
-                            code__ = Some(map_.next_value()?);
+                            product_id__ = map_.next_value()?;
                         }
-                        GeneratedField::Name => {
-                            if name__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("name"));
+                        GeneratedField::VariantId => {
+                            if variant_id__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("variantId"));
                             }
-                            name__ = map_.next_value()?;
+                            variant_id__ = map_.next_value()?;
                         }
-                        GeneratedField::Description => {
-                            if description__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("description"));
+                        GeneratedField::Quantity => {
+                            if quantity__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("quantity"));
                             }
-                            description__ = map_.next_value()?;
+                            quantity__ = Some(map_.next_value()?);
                         }
-                        GeneratedField::Items => {
-                            if items__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("items"));
+                        GeneratedField::OptionalItem => {
+                            if optional_item__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("optionalItem"));
                             }
-                            items__ = Some(map_.next_value()?);
+                            optional_item__ = Some(map_.next_value()?);
                         }
-                        GeneratedField::IsActive => {
-                            if is_active__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("isActive"));
+                        GeneratedField::SortOrder => {
+                            if sort_order__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("sortOrder"));
                             }
-                            is_active__ = Some(map_.next_value()?);
+                            sort_order__ = 
+                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
+                            ;
                         }
                         GeneratedField::CreatedAt => {
                             if created_at__.is_some() {
                                 return Err(serde::de::Error::duplicate_field("createdAt"));
                             }
-                            created_at__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
+                            created_at__ = map_.next_value()?;
                         }
                         GeneratedField::UpdatedAt => {
                             if updated_at__.is_some() {
                                 return Err(serde::de::Error::duplicate_field("updatedAt"));
                             }
-                            updated_at__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
+                            updated_at__ = map_.next_value()?;
+                        }
+                        GeneratedField::ProductDetails => {
+                            if product_details__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("productDetails"));
+                            }
+                            product_details__ = map_.next_value()?;
+                        }
+                        GeneratedField::VariantDetails => {
+                            if variant_details__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("variantDetails"));
+                            }
+                            variant_details__ = map_.next_value()?;
+                        }
+                    }
+                }
+                Ok(MenuItem {
+                    id: id__.unwrap_or_default(),
+                    product_id: product_id__,
+                    variant_id: variant_id__,
+                    quantity: quantity__.unwrap_or_default(),
+                    optional_item: optional_item__.unwrap_or_default(),
+                    sort_order: sort_order__.unwrap_or_default(),
+                    created_at: created_at__,
+                    updated_at: updated_at__,
+                    product_details: product_details__,
+                    variant_details: variant_details__,
+                })
+            }
+        }
+        deserializer.deserialize_struct("projectsuit.menu.v1.MenuItem", FIELDS, GeneratedVisitor)
+    }
+}
+impl serde::Serialize for UpdateMenuItemRequest {
+    #[allow(deprecated)]
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        use serde::ser::SerializeStruct;
+        let mut len = 0;
+        if !self.menu_item_id.is_empty() {
+            len += 1;
+        }
+        if self.quantity.is_some() {
+            len += 1;
+        }
+        if self.optional_item.is_some() {
+            len += 1;
+        }
+        if self.sort_order.is_some() {
+            len += 1;
+        }
+        let mut struct_ser = serializer.serialize_struct("projectsuit.menu.v1.UpdateMenuItemRequest", len)?;
+        if !self.menu_item_id.is_empty() {
+            struct_ser.serialize_field("menuItemId", &self.menu_item_id)?;
+        }
+        if let Some(v) = self.quantity.as_ref() {
+            struct_ser.serialize_field("quantity", v)?;
+        }
+        if let Some(v) = self.optional_item.as_ref() {
+            struct_ser.serialize_field("optionalItem", v)?;
+        }
+        if let Some(v) = self.sort_order.as_ref() {
+            struct_ser.serialize_field("sortOrder", v)?;
+        }
+        struct_ser.end()
+    }
+}
+impl<'de> serde::Deserialize<'de> for UpdateMenuItemRequest {
+    #[allow(deprecated)]
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        const FIELDS: &[&str] = &[
+            "menu_item_id",
+            "menuItemId",
+            "quantity",
+            "optional_item",
+            "optionalItem",
+            "sort_order",
+            "sortOrder",
+        ];
+
+        #[allow(clippy::enum_variant_names)]
+        enum GeneratedField {
+            MenuItemId,
+            Quantity,
+            OptionalItem,
+            SortOrder,
+        }
+        impl<'de> serde::Deserialize<'de> for GeneratedField {
+            fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
+            where
+                D: serde::Deserializer<'de>,
+            {
+                struct GeneratedVisitor;
+
+                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
+                    type Value = GeneratedField;
+
+                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                        write!(formatter, "expected one of: {:?}", &FIELDS)
+                    }
+
+                    #[allow(unused_variables)]
+                    fn visit_str<E>(self, value: &str) -> std::result::Result<GeneratedField, E>
+                    where
+                        E: serde::de::Error,
+                    {
+                        match value {
+                            "menuItemId" | "menu_item_id" => Ok(GeneratedField::MenuItemId),
+                            "quantity" => Ok(GeneratedField::Quantity),
+                            "optionalItem" | "optional_item" => Ok(GeneratedField::OptionalItem),
+                            "sortOrder" | "sort_order" => Ok(GeneratedField::SortOrder),
+                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
+                        }
+                    }
+                }
+                deserializer.deserialize_identifier(GeneratedVisitor)
+            }
+        }
+        struct GeneratedVisitor;
+        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
+            type Value = UpdateMenuItemRequest;
+
+            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                formatter.write_str("struct projectsuit.menu.v1.UpdateMenuItemRequest")
+            }
+
+            fn visit_map<V>(self, mut map_: V) -> std::result::Result<UpdateMenuItemRequest, V::Error>
+                where
+                    V: serde::de::MapAccess<'de>,
+            {
+                let mut menu_item_id__ = None;
+                let mut quantity__ = None;
+                let mut optional_item__ = None;
+                let mut sort_order__ = None;
+                while let Some(k) = map_.next_key()? {
+                    match k {
+                        GeneratedField::MenuItemId => {
+                            if menu_item_id__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("menuItemId"));
+                            }
+                            menu_item_id__ = Some(map_.next_value()?);
+                        }
+                        GeneratedField::Quantity => {
+                            if quantity__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("quantity"));
+                            }
+                            quantity__ = map_.next_value()?;
+                        }
+                        GeneratedField::OptionalItem => {
+                            if optional_item__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("optionalItem"));
+                            }
+                            optional_item__ = map_.next_value()?;
+                        }
+                        GeneratedField::SortOrder => {
+                            if sort_order__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("sortOrder"));
+                            }
+                            sort_order__ = 
+                                map_.next_value::<::std::option::Option<::pbjson::private::NumberDeserialize<_>>>()?.map(|x| x.0)
                             ;
                         }
                     }
                 }
-                Ok(MenuView {
-                    id: id__.unwrap_or_default(),
-                    code: code__.unwrap_or_default(),
-                    name: name__,
-                    description: description__,
-                    items: items__.unwrap_or_default(),
-                    is_active: is_active__.unwrap_or_default(),
-                    created_at: created_at__.unwrap_or_default(),
-                    updated_at: updated_at__.unwrap_or_default(),
+                Ok(UpdateMenuItemRequest {
+                    menu_item_id: menu_item_id__.unwrap_or_default(),
+                    quantity: quantity__,
+                    optional_item: optional_item__,
+                    sort_order: sort_order__,
                 })
             }
         }
-        deserializer.deserialize_struct("projectsuit.menu.v1.MenuView", FIELDS, GeneratedVisitor)
+        deserializer.deserialize_struct("projectsuit.menu.v1.UpdateMenuItemRequest", FIELDS, GeneratedVisitor)
     }
 }
 impl serde::Serialize for UpdateMenuRequest {
@@ -1842,15 +1387,27 @@ impl serde::Serialize for UpdateMenuRequest {
         if !self.id.is_empty() {
             len += 1;
         }
-        if self.menu.is_some() {
+        if self.code.is_some() {
+            len += 1;
+        }
+        if self.is_active.is_some() {
+            len += 1;
+        }
+        if !self.translations_to_update.is_empty() {
             len += 1;
         }
         let mut struct_ser = serializer.serialize_struct("projectsuit.menu.v1.UpdateMenuRequest", len)?;
         if !self.id.is_empty() {
             struct_ser.serialize_field("id", &self.id)?;
         }
-        if let Some(v) = self.menu.as_ref() {
-            struct_ser.serialize_field("menu", v)?;
+        if let Some(v) = self.code.as_ref() {
+            struct_ser.serialize_field("code", v)?;
+        }
+        if let Some(v) = self.is_active.as_ref() {
+            struct_ser.serialize_field("isActive", v)?;
+        }
+        if !self.translations_to_update.is_empty() {
+            struct_ser.serialize_field("translationsToUpdate", &self.translations_to_update)?;
         }
         struct_ser.end()
     }
@@ -1863,13 +1420,19 @@ impl<'de> serde::Deserialize<'de> for UpdateMenuRequest {
     {
         const FIELDS: &[&str] = &[
             "id",
-            "menu",
+            "code",
+            "is_active",
+            "isActive",
+            "translations_to_update",
+            "translationsToUpdate",
         ];
 
         #[allow(clippy::enum_variant_names)]
         enum GeneratedField {
             Id,
-            Menu,
+            Code,
+            IsActive,
+            TranslationsToUpdate,
         }
         impl<'de> serde::Deserialize<'de> for GeneratedField {
             fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
@@ -1892,7 +1455,9 @@ impl<'de> serde::Deserialize<'de> for UpdateMenuRequest {
                     {
                         match value {
                             "id" => Ok(GeneratedField::Id),
-                            "menu" => Ok(GeneratedField::Menu),
+                            "code" => Ok(GeneratedField::Code),
+                            "isActive" | "is_active" => Ok(GeneratedField::IsActive),
+                            "translationsToUpdate" | "translations_to_update" => Ok(GeneratedField::TranslationsToUpdate),
                             _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
                         }
                     }
@@ -1913,7 +1478,9 @@ impl<'de> serde::Deserialize<'de> for UpdateMenuRequest {
                     V: serde::de::MapAccess<'de>,
             {
                 let mut id__ = None;
-                let mut menu__ = None;
+                let mut code__ = None;
+                let mut is_active__ = None;
+                let mut translations_to_update__ = None;
                 while let Some(k) = map_.next_key()? {
                     match k {
                         GeneratedField::Id => {
@@ -1922,111 +1489,34 @@ impl<'de> serde::Deserialize<'de> for UpdateMenuRequest {
                             }
                             id__ = Some(map_.next_value()?);
                         }
-                        GeneratedField::Menu => {
-                            if menu__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("menu"));
+                        GeneratedField::Code => {
+                            if code__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("code"));
                             }
-                            menu__ = map_.next_value()?;
+                            code__ = map_.next_value()?;
+                        }
+                        GeneratedField::IsActive => {
+                            if is_active__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("isActive"));
+                            }
+                            is_active__ = map_.next_value()?;
+                        }
+                        GeneratedField::TranslationsToUpdate => {
+                            if translations_to_update__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("translationsToUpdate"));
+                            }
+                            translations_to_update__ = Some(map_.next_value()?);
                         }
                     }
                 }
                 Ok(UpdateMenuRequest {
                     id: id__.unwrap_or_default(),
-                    menu: menu__,
+                    code: code__,
+                    is_active: is_active__,
+                    translations_to_update: translations_to_update__.unwrap_or_default(),
                 })
             }
         }
         deserializer.deserialize_struct("projectsuit.menu.v1.UpdateMenuRequest", FIELDS, GeneratedVisitor)
-    }
-}
-impl serde::Serialize for UpdateMenuResponse {
-    #[allow(deprecated)]
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        use serde::ser::SerializeStruct;
-        let mut len = 0;
-        if self.success {
-            len += 1;
-        }
-        let mut struct_ser = serializer.serialize_struct("projectsuit.menu.v1.UpdateMenuResponse", len)?;
-        if self.success {
-            struct_ser.serialize_field("success", &self.success)?;
-        }
-        struct_ser.end()
-    }
-}
-impl<'de> serde::Deserialize<'de> for UpdateMenuResponse {
-    #[allow(deprecated)]
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        const FIELDS: &[&str] = &[
-            "success",
-        ];
-
-        #[allow(clippy::enum_variant_names)]
-        enum GeneratedField {
-            Success,
-        }
-        impl<'de> serde::Deserialize<'de> for GeneratedField {
-            fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
-            where
-                D: serde::Deserializer<'de>,
-            {
-                struct GeneratedVisitor;
-
-                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-                    type Value = GeneratedField;
-
-                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                        write!(formatter, "expected one of: {:?}", &FIELDS)
-                    }
-
-                    #[allow(unused_variables)]
-                    fn visit_str<E>(self, value: &str) -> std::result::Result<GeneratedField, E>
-                    where
-                        E: serde::de::Error,
-                    {
-                        match value {
-                            "success" => Ok(GeneratedField::Success),
-                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
-                        }
-                    }
-                }
-                deserializer.deserialize_identifier(GeneratedVisitor)
-            }
-        }
-        struct GeneratedVisitor;
-        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-            type Value = UpdateMenuResponse;
-
-            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                formatter.write_str("struct projectsuit.menu.v1.UpdateMenuResponse")
-            }
-
-            fn visit_map<V>(self, mut map_: V) -> std::result::Result<UpdateMenuResponse, V::Error>
-                where
-                    V: serde::de::MapAccess<'de>,
-            {
-                let mut success__ = None;
-                while let Some(k) = map_.next_key()? {
-                    match k {
-                        GeneratedField::Success => {
-                            if success__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("success"));
-                            }
-                            success__ = Some(map_.next_value()?);
-                        }
-                    }
-                }
-                Ok(UpdateMenuResponse {
-                    success: success__.unwrap_or_default(),
-                })
-            }
-        }
-        deserializer.deserialize_struct("projectsuit.menu.v1.UpdateMenuResponse", FIELDS, GeneratedVisitor)
     }
 }

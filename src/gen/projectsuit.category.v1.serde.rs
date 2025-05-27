@@ -10,55 +10,81 @@ impl serde::Serialize for Category {
         if !self.id.is_empty() {
             len += 1;
         }
-        if self.name.is_some() {
+        if self.parent_id.is_some() {
             len += 1;
         }
-        if self.description.is_some() {
+        if self.code.is_some() {
             len += 1;
         }
-        if !self.parent_id.is_empty() {
+        if self.image_url.is_some() {
             len += 1;
         }
-        if !self.image_url.is_empty() {
+        if self.icon_url.is_some() {
+            len += 1;
+        }
+        if self.sort_order != 0 {
             len += 1;
         }
         if self.is_active {
             len += 1;
         }
-        if self.created_at != 0 {
+        if self.created_at.is_some() {
             len += 1;
         }
-        if self.updated_at != 0 {
+        if self.updated_at.is_some() {
+            len += 1;
+        }
+        if !self.name.is_empty() {
+            len += 1;
+        }
+        if !self.description.is_empty() {
+            len += 1;
+        }
+        if !self.slug.is_empty() {
+            len += 1;
+        }
+        if !self.all_translations.is_empty() {
             len += 1;
         }
         let mut struct_ser = serializer.serialize_struct("projectsuit.category.v1.Category", len)?;
         if !self.id.is_empty() {
             struct_ser.serialize_field("id", &self.id)?;
         }
-        if let Some(v) = self.name.as_ref() {
-            struct_ser.serialize_field("name", v)?;
+        if let Some(v) = self.parent_id.as_ref() {
+            struct_ser.serialize_field("parentId", v)?;
         }
-        if let Some(v) = self.description.as_ref() {
-            struct_ser.serialize_field("description", v)?;
+        if let Some(v) = self.code.as_ref() {
+            struct_ser.serialize_field("code", v)?;
         }
-        if !self.parent_id.is_empty() {
-            struct_ser.serialize_field("parentId", &self.parent_id)?;
+        if let Some(v) = self.image_url.as_ref() {
+            struct_ser.serialize_field("imageUrl", v)?;
         }
-        if !self.image_url.is_empty() {
-            struct_ser.serialize_field("imageUrl", &self.image_url)?;
+        if let Some(v) = self.icon_url.as_ref() {
+            struct_ser.serialize_field("iconUrl", v)?;
+        }
+        if self.sort_order != 0 {
+            struct_ser.serialize_field("sortOrder", &self.sort_order)?;
         }
         if self.is_active {
             struct_ser.serialize_field("isActive", &self.is_active)?;
         }
-        if self.created_at != 0 {
-            #[allow(clippy::needless_borrow)]
-            #[allow(clippy::needless_borrows_for_generic_args)]
-            struct_ser.serialize_field("createdAt", ToString::to_string(&self.created_at).as_str())?;
+        if let Some(v) = self.created_at.as_ref() {
+            struct_ser.serialize_field("createdAt", v)?;
         }
-        if self.updated_at != 0 {
-            #[allow(clippy::needless_borrow)]
-            #[allow(clippy::needless_borrows_for_generic_args)]
-            struct_ser.serialize_field("updatedAt", ToString::to_string(&self.updated_at).as_str())?;
+        if let Some(v) = self.updated_at.as_ref() {
+            struct_ser.serialize_field("updatedAt", v)?;
+        }
+        if !self.name.is_empty() {
+            struct_ser.serialize_field("name", &self.name)?;
+        }
+        if !self.description.is_empty() {
+            struct_ser.serialize_field("description", &self.description)?;
+        }
+        if !self.slug.is_empty() {
+            struct_ser.serialize_field("slug", &self.slug)?;
+        }
+        if !self.all_translations.is_empty() {
+            struct_ser.serialize_field("allTranslations", &self.all_translations)?;
         }
         struct_ser.end()
     }
@@ -71,30 +97,43 @@ impl<'de> serde::Deserialize<'de> for Category {
     {
         const FIELDS: &[&str] = &[
             "id",
-            "name",
-            "description",
             "parent_id",
             "parentId",
+            "code",
             "image_url",
             "imageUrl",
+            "icon_url",
+            "iconUrl",
+            "sort_order",
+            "sortOrder",
             "is_active",
             "isActive",
             "created_at",
             "createdAt",
             "updated_at",
             "updatedAt",
+            "name",
+            "description",
+            "slug",
+            "all_translations",
+            "allTranslations",
         ];
 
         #[allow(clippy::enum_variant_names)]
         enum GeneratedField {
             Id,
-            Name,
-            Description,
             ParentId,
+            Code,
             ImageUrl,
+            IconUrl,
+            SortOrder,
             IsActive,
             CreatedAt,
             UpdatedAt,
+            Name,
+            Description,
+            Slug,
+            AllTranslations,
         }
         impl<'de> serde::Deserialize<'de> for GeneratedField {
             fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
@@ -117,13 +156,18 @@ impl<'de> serde::Deserialize<'de> for Category {
                     {
                         match value {
                             "id" => Ok(GeneratedField::Id),
-                            "name" => Ok(GeneratedField::Name),
-                            "description" => Ok(GeneratedField::Description),
                             "parentId" | "parent_id" => Ok(GeneratedField::ParentId),
+                            "code" => Ok(GeneratedField::Code),
                             "imageUrl" | "image_url" => Ok(GeneratedField::ImageUrl),
+                            "iconUrl" | "icon_url" => Ok(GeneratedField::IconUrl),
+                            "sortOrder" | "sort_order" => Ok(GeneratedField::SortOrder),
                             "isActive" | "is_active" => Ok(GeneratedField::IsActive),
                             "createdAt" | "created_at" => Ok(GeneratedField::CreatedAt),
                             "updatedAt" | "updated_at" => Ok(GeneratedField::UpdatedAt),
+                            "name" => Ok(GeneratedField::Name),
+                            "description" => Ok(GeneratedField::Description),
+                            "slug" => Ok(GeneratedField::Slug),
+                            "allTranslations" | "all_translations" => Ok(GeneratedField::AllTranslations),
                             _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
                         }
                     }
@@ -144,13 +188,18 @@ impl<'de> serde::Deserialize<'de> for Category {
                     V: serde::de::MapAccess<'de>,
             {
                 let mut id__ = None;
-                let mut name__ = None;
-                let mut description__ = None;
                 let mut parent_id__ = None;
+                let mut code__ = None;
                 let mut image_url__ = None;
+                let mut icon_url__ = None;
+                let mut sort_order__ = None;
                 let mut is_active__ = None;
                 let mut created_at__ = None;
                 let mut updated_at__ = None;
+                let mut name__ = None;
+                let mut description__ = None;
+                let mut slug__ = None;
+                let mut all_translations__ = None;
                 while let Some(k) = map_.next_key()? {
                     match k {
                         GeneratedField::Id => {
@@ -159,29 +208,37 @@ impl<'de> serde::Deserialize<'de> for Category {
                             }
                             id__ = Some(map_.next_value()?);
                         }
-                        GeneratedField::Name => {
-                            if name__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("name"));
-                            }
-                            name__ = map_.next_value()?;
-                        }
-                        GeneratedField::Description => {
-                            if description__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("description"));
-                            }
-                            description__ = map_.next_value()?;
-                        }
                         GeneratedField::ParentId => {
                             if parent_id__.is_some() {
                                 return Err(serde::de::Error::duplicate_field("parentId"));
                             }
-                            parent_id__ = Some(map_.next_value()?);
+                            parent_id__ = map_.next_value()?;
+                        }
+                        GeneratedField::Code => {
+                            if code__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("code"));
+                            }
+                            code__ = map_.next_value()?;
                         }
                         GeneratedField::ImageUrl => {
                             if image_url__.is_some() {
                                 return Err(serde::de::Error::duplicate_field("imageUrl"));
                             }
-                            image_url__ = Some(map_.next_value()?);
+                            image_url__ = map_.next_value()?;
+                        }
+                        GeneratedField::IconUrl => {
+                            if icon_url__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("iconUrl"));
+                            }
+                            icon_url__ = map_.next_value()?;
+                        }
+                        GeneratedField::SortOrder => {
+                            if sort_order__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("sortOrder"));
+                            }
+                            sort_order__ = 
+                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
+                            ;
                         }
                         GeneratedField::IsActive => {
                             if is_active__.is_some() {
@@ -193,418 +250,58 @@ impl<'de> serde::Deserialize<'de> for Category {
                             if created_at__.is_some() {
                                 return Err(serde::de::Error::duplicate_field("createdAt"));
                             }
-                            created_at__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
+                            created_at__ = map_.next_value()?;
                         }
                         GeneratedField::UpdatedAt => {
                             if updated_at__.is_some() {
                                 return Err(serde::de::Error::duplicate_field("updatedAt"));
                             }
-                            updated_at__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
+                            updated_at__ = map_.next_value()?;
+                        }
+                        GeneratedField::Name => {
+                            if name__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("name"));
+                            }
+                            name__ = Some(map_.next_value()?);
+                        }
+                        GeneratedField::Description => {
+                            if description__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("description"));
+                            }
+                            description__ = Some(map_.next_value()?);
+                        }
+                        GeneratedField::Slug => {
+                            if slug__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("slug"));
+                            }
+                            slug__ = Some(map_.next_value()?);
+                        }
+                        GeneratedField::AllTranslations => {
+                            if all_translations__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("allTranslations"));
+                            }
+                            all_translations__ = Some(map_.next_value()?);
                         }
                     }
                 }
                 Ok(Category {
                     id: id__.unwrap_or_default(),
-                    name: name__,
-                    description: description__,
-                    parent_id: parent_id__.unwrap_or_default(),
-                    image_url: image_url__.unwrap_or_default(),
+                    parent_id: parent_id__,
+                    code: code__,
+                    image_url: image_url__,
+                    icon_url: icon_url__,
+                    sort_order: sort_order__.unwrap_or_default(),
                     is_active: is_active__.unwrap_or_default(),
-                    created_at: created_at__.unwrap_or_default(),
-                    updated_at: updated_at__.unwrap_or_default(),
+                    created_at: created_at__,
+                    updated_at: updated_at__,
+                    name: name__.unwrap_or_default(),
+                    description: description__.unwrap_or_default(),
+                    slug: slug__.unwrap_or_default(),
+                    all_translations: all_translations__.unwrap_or_default(),
                 })
             }
         }
         deserializer.deserialize_struct("projectsuit.category.v1.Category", FIELDS, GeneratedVisitor)
-    }
-}
-impl serde::Serialize for CategoryInput {
-    #[allow(deprecated)]
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        use serde::ser::SerializeStruct;
-        let mut len = 0;
-        if self.name.is_some() {
-            len += 1;
-        }
-        if self.description.is_some() {
-            len += 1;
-        }
-        if !self.parent_id.is_empty() {
-            len += 1;
-        }
-        if !self.image_url.is_empty() {
-            len += 1;
-        }
-        if self.is_active {
-            len += 1;
-        }
-        let mut struct_ser = serializer.serialize_struct("projectsuit.category.v1.CategoryInput", len)?;
-        if let Some(v) = self.name.as_ref() {
-            struct_ser.serialize_field("name", v)?;
-        }
-        if let Some(v) = self.description.as_ref() {
-            struct_ser.serialize_field("description", v)?;
-        }
-        if !self.parent_id.is_empty() {
-            struct_ser.serialize_field("parentId", &self.parent_id)?;
-        }
-        if !self.image_url.is_empty() {
-            struct_ser.serialize_field("imageUrl", &self.image_url)?;
-        }
-        if self.is_active {
-            struct_ser.serialize_field("isActive", &self.is_active)?;
-        }
-        struct_ser.end()
-    }
-}
-impl<'de> serde::Deserialize<'de> for CategoryInput {
-    #[allow(deprecated)]
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        const FIELDS: &[&str] = &[
-            "name",
-            "description",
-            "parent_id",
-            "parentId",
-            "image_url",
-            "imageUrl",
-            "is_active",
-            "isActive",
-        ];
-
-        #[allow(clippy::enum_variant_names)]
-        enum GeneratedField {
-            Name,
-            Description,
-            ParentId,
-            ImageUrl,
-            IsActive,
-        }
-        impl<'de> serde::Deserialize<'de> for GeneratedField {
-            fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
-            where
-                D: serde::Deserializer<'de>,
-            {
-                struct GeneratedVisitor;
-
-                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-                    type Value = GeneratedField;
-
-                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                        write!(formatter, "expected one of: {:?}", &FIELDS)
-                    }
-
-                    #[allow(unused_variables)]
-                    fn visit_str<E>(self, value: &str) -> std::result::Result<GeneratedField, E>
-                    where
-                        E: serde::de::Error,
-                    {
-                        match value {
-                            "name" => Ok(GeneratedField::Name),
-                            "description" => Ok(GeneratedField::Description),
-                            "parentId" | "parent_id" => Ok(GeneratedField::ParentId),
-                            "imageUrl" | "image_url" => Ok(GeneratedField::ImageUrl),
-                            "isActive" | "is_active" => Ok(GeneratedField::IsActive),
-                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
-                        }
-                    }
-                }
-                deserializer.deserialize_identifier(GeneratedVisitor)
-            }
-        }
-        struct GeneratedVisitor;
-        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-            type Value = CategoryInput;
-
-            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                formatter.write_str("struct projectsuit.category.v1.CategoryInput")
-            }
-
-            fn visit_map<V>(self, mut map_: V) -> std::result::Result<CategoryInput, V::Error>
-                where
-                    V: serde::de::MapAccess<'de>,
-            {
-                let mut name__ = None;
-                let mut description__ = None;
-                let mut parent_id__ = None;
-                let mut image_url__ = None;
-                let mut is_active__ = None;
-                while let Some(k) = map_.next_key()? {
-                    match k {
-                        GeneratedField::Name => {
-                            if name__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("name"));
-                            }
-                            name__ = map_.next_value()?;
-                        }
-                        GeneratedField::Description => {
-                            if description__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("description"));
-                            }
-                            description__ = map_.next_value()?;
-                        }
-                        GeneratedField::ParentId => {
-                            if parent_id__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("parentId"));
-                            }
-                            parent_id__ = Some(map_.next_value()?);
-                        }
-                        GeneratedField::ImageUrl => {
-                            if image_url__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("imageUrl"));
-                            }
-                            image_url__ = Some(map_.next_value()?);
-                        }
-                        GeneratedField::IsActive => {
-                            if is_active__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("isActive"));
-                            }
-                            is_active__ = Some(map_.next_value()?);
-                        }
-                    }
-                }
-                Ok(CategoryInput {
-                    name: name__,
-                    description: description__,
-                    parent_id: parent_id__.unwrap_or_default(),
-                    image_url: image_url__.unwrap_or_default(),
-                    is_active: is_active__.unwrap_or_default(),
-                })
-            }
-        }
-        deserializer.deserialize_struct("projectsuit.category.v1.CategoryInput", FIELDS, GeneratedVisitor)
-    }
-}
-impl serde::Serialize for CategoryView {
-    #[allow(deprecated)]
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        use serde::ser::SerializeStruct;
-        let mut len = 0;
-        if !self.id.is_empty() {
-            len += 1;
-        }
-        if !self.parent_id.is_empty() {
-            len += 1;
-        }
-        if self.name.is_some() {
-            len += 1;
-        }
-        if self.description.is_some() {
-            len += 1;
-        }
-        if !self.image_url.is_empty() {
-            len += 1;
-        }
-        if self.is_active {
-            len += 1;
-        }
-        if self.created_at != 0 {
-            len += 1;
-        }
-        if self.updated_at != 0 {
-            len += 1;
-        }
-        let mut struct_ser = serializer.serialize_struct("projectsuit.category.v1.CategoryView", len)?;
-        if !self.id.is_empty() {
-            struct_ser.serialize_field("id", &self.id)?;
-        }
-        if !self.parent_id.is_empty() {
-            struct_ser.serialize_field("parentId", &self.parent_id)?;
-        }
-        if let Some(v) = self.name.as_ref() {
-            struct_ser.serialize_field("name", v)?;
-        }
-        if let Some(v) = self.description.as_ref() {
-            struct_ser.serialize_field("description", v)?;
-        }
-        if !self.image_url.is_empty() {
-            struct_ser.serialize_field("imageUrl", &self.image_url)?;
-        }
-        if self.is_active {
-            struct_ser.serialize_field("isActive", &self.is_active)?;
-        }
-        if self.created_at != 0 {
-            #[allow(clippy::needless_borrow)]
-            #[allow(clippy::needless_borrows_for_generic_args)]
-            struct_ser.serialize_field("createdAt", ToString::to_string(&self.created_at).as_str())?;
-        }
-        if self.updated_at != 0 {
-            #[allow(clippy::needless_borrow)]
-            #[allow(clippy::needless_borrows_for_generic_args)]
-            struct_ser.serialize_field("updatedAt", ToString::to_string(&self.updated_at).as_str())?;
-        }
-        struct_ser.end()
-    }
-}
-impl<'de> serde::Deserialize<'de> for CategoryView {
-    #[allow(deprecated)]
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        const FIELDS: &[&str] = &[
-            "id",
-            "parent_id",
-            "parentId",
-            "name",
-            "description",
-            "image_url",
-            "imageUrl",
-            "is_active",
-            "isActive",
-            "created_at",
-            "createdAt",
-            "updated_at",
-            "updatedAt",
-        ];
-
-        #[allow(clippy::enum_variant_names)]
-        enum GeneratedField {
-            Id,
-            ParentId,
-            Name,
-            Description,
-            ImageUrl,
-            IsActive,
-            CreatedAt,
-            UpdatedAt,
-        }
-        impl<'de> serde::Deserialize<'de> for GeneratedField {
-            fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
-            where
-                D: serde::Deserializer<'de>,
-            {
-                struct GeneratedVisitor;
-
-                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-                    type Value = GeneratedField;
-
-                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                        write!(formatter, "expected one of: {:?}", &FIELDS)
-                    }
-
-                    #[allow(unused_variables)]
-                    fn visit_str<E>(self, value: &str) -> std::result::Result<GeneratedField, E>
-                    where
-                        E: serde::de::Error,
-                    {
-                        match value {
-                            "id" => Ok(GeneratedField::Id),
-                            "parentId" | "parent_id" => Ok(GeneratedField::ParentId),
-                            "name" => Ok(GeneratedField::Name),
-                            "description" => Ok(GeneratedField::Description),
-                            "imageUrl" | "image_url" => Ok(GeneratedField::ImageUrl),
-                            "isActive" | "is_active" => Ok(GeneratedField::IsActive),
-                            "createdAt" | "created_at" => Ok(GeneratedField::CreatedAt),
-                            "updatedAt" | "updated_at" => Ok(GeneratedField::UpdatedAt),
-                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
-                        }
-                    }
-                }
-                deserializer.deserialize_identifier(GeneratedVisitor)
-            }
-        }
-        struct GeneratedVisitor;
-        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-            type Value = CategoryView;
-
-            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                formatter.write_str("struct projectsuit.category.v1.CategoryView")
-            }
-
-            fn visit_map<V>(self, mut map_: V) -> std::result::Result<CategoryView, V::Error>
-                where
-                    V: serde::de::MapAccess<'de>,
-            {
-                let mut id__ = None;
-                let mut parent_id__ = None;
-                let mut name__ = None;
-                let mut description__ = None;
-                let mut image_url__ = None;
-                let mut is_active__ = None;
-                let mut created_at__ = None;
-                let mut updated_at__ = None;
-                while let Some(k) = map_.next_key()? {
-                    match k {
-                        GeneratedField::Id => {
-                            if id__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("id"));
-                            }
-                            id__ = Some(map_.next_value()?);
-                        }
-                        GeneratedField::ParentId => {
-                            if parent_id__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("parentId"));
-                            }
-                            parent_id__ = Some(map_.next_value()?);
-                        }
-                        GeneratedField::Name => {
-                            if name__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("name"));
-                            }
-                            name__ = map_.next_value()?;
-                        }
-                        GeneratedField::Description => {
-                            if description__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("description"));
-                            }
-                            description__ = map_.next_value()?;
-                        }
-                        GeneratedField::ImageUrl => {
-                            if image_url__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("imageUrl"));
-                            }
-                            image_url__ = Some(map_.next_value()?);
-                        }
-                        GeneratedField::IsActive => {
-                            if is_active__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("isActive"));
-                            }
-                            is_active__ = Some(map_.next_value()?);
-                        }
-                        GeneratedField::CreatedAt => {
-                            if created_at__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("createdAt"));
-                            }
-                            created_at__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
-                        }
-                        GeneratedField::UpdatedAt => {
-                            if updated_at__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("updatedAt"));
-                            }
-                            updated_at__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
-                        }
-                    }
-                }
-                Ok(CategoryView {
-                    id: id__.unwrap_or_default(),
-                    parent_id: parent_id__.unwrap_or_default(),
-                    name: name__,
-                    description: description__,
-                    image_url: image_url__.unwrap_or_default(),
-                    is_active: is_active__.unwrap_or_default(),
-                    created_at: created_at__.unwrap_or_default(),
-                    updated_at: updated_at__.unwrap_or_default(),
-                })
-            }
-        }
-        deserializer.deserialize_struct("projectsuit.category.v1.CategoryView", FIELDS, GeneratedVisitor)
     }
 }
 impl serde::Serialize for CreateCategoryRequest {
@@ -615,12 +312,48 @@ impl serde::Serialize for CreateCategoryRequest {
     {
         use serde::ser::SerializeStruct;
         let mut len = 0;
-        if self.category.is_some() {
+        if self.parent_id.is_some() {
+            len += 1;
+        }
+        if self.code.is_some() {
+            len += 1;
+        }
+        if self.image_url.is_some() {
+            len += 1;
+        }
+        if self.icon_url.is_some() {
+            len += 1;
+        }
+        if self.sort_order.is_some() {
+            len += 1;
+        }
+        if self.is_active.is_some() {
+            len += 1;
+        }
+        if !self.translations.is_empty() {
             len += 1;
         }
         let mut struct_ser = serializer.serialize_struct("projectsuit.category.v1.CreateCategoryRequest", len)?;
-        if let Some(v) = self.category.as_ref() {
-            struct_ser.serialize_field("category", v)?;
+        if let Some(v) = self.parent_id.as_ref() {
+            struct_ser.serialize_field("parentId", v)?;
+        }
+        if let Some(v) = self.code.as_ref() {
+            struct_ser.serialize_field("code", v)?;
+        }
+        if let Some(v) = self.image_url.as_ref() {
+            struct_ser.serialize_field("imageUrl", v)?;
+        }
+        if let Some(v) = self.icon_url.as_ref() {
+            struct_ser.serialize_field("iconUrl", v)?;
+        }
+        if let Some(v) = self.sort_order.as_ref() {
+            struct_ser.serialize_field("sortOrder", v)?;
+        }
+        if let Some(v) = self.is_active.as_ref() {
+            struct_ser.serialize_field("isActive", v)?;
+        }
+        if !self.translations.is_empty() {
+            struct_ser.serialize_field("translations", &self.translations)?;
         }
         struct_ser.end()
     }
@@ -632,12 +365,29 @@ impl<'de> serde::Deserialize<'de> for CreateCategoryRequest {
         D: serde::Deserializer<'de>,
     {
         const FIELDS: &[&str] = &[
-            "category",
+            "parent_id",
+            "parentId",
+            "code",
+            "image_url",
+            "imageUrl",
+            "icon_url",
+            "iconUrl",
+            "sort_order",
+            "sortOrder",
+            "is_active",
+            "isActive",
+            "translations",
         ];
 
         #[allow(clippy::enum_variant_names)]
         enum GeneratedField {
-            Category,
+            ParentId,
+            Code,
+            ImageUrl,
+            IconUrl,
+            SortOrder,
+            IsActive,
+            Translations,
         }
         impl<'de> serde::Deserialize<'de> for GeneratedField {
             fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
@@ -659,7 +409,13 @@ impl<'de> serde::Deserialize<'de> for CreateCategoryRequest {
                         E: serde::de::Error,
                     {
                         match value {
-                            "category" => Ok(GeneratedField::Category),
+                            "parentId" | "parent_id" => Ok(GeneratedField::ParentId),
+                            "code" => Ok(GeneratedField::Code),
+                            "imageUrl" | "image_url" => Ok(GeneratedField::ImageUrl),
+                            "iconUrl" | "icon_url" => Ok(GeneratedField::IconUrl),
+                            "sortOrder" | "sort_order" => Ok(GeneratedField::SortOrder),
+                            "isActive" | "is_active" => Ok(GeneratedField::IsActive),
+                            "translations" => Ok(GeneratedField::Translations),
                             _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
                         }
                     }
@@ -679,387 +435,73 @@ impl<'de> serde::Deserialize<'de> for CreateCategoryRequest {
                 where
                     V: serde::de::MapAccess<'de>,
             {
-                let mut category__ = None;
+                let mut parent_id__ = None;
+                let mut code__ = None;
+                let mut image_url__ = None;
+                let mut icon_url__ = None;
+                let mut sort_order__ = None;
+                let mut is_active__ = None;
+                let mut translations__ = None;
                 while let Some(k) = map_.next_key()? {
                     match k {
-                        GeneratedField::Category => {
-                            if category__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("category"));
+                        GeneratedField::ParentId => {
+                            if parent_id__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("parentId"));
                             }
-                            category__ = map_.next_value()?;
+                            parent_id__ = map_.next_value()?;
+                        }
+                        GeneratedField::Code => {
+                            if code__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("code"));
+                            }
+                            code__ = map_.next_value()?;
+                        }
+                        GeneratedField::ImageUrl => {
+                            if image_url__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("imageUrl"));
+                            }
+                            image_url__ = map_.next_value()?;
+                        }
+                        GeneratedField::IconUrl => {
+                            if icon_url__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("iconUrl"));
+                            }
+                            icon_url__ = map_.next_value()?;
+                        }
+                        GeneratedField::SortOrder => {
+                            if sort_order__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("sortOrder"));
+                            }
+                            sort_order__ = 
+                                map_.next_value::<::std::option::Option<::pbjson::private::NumberDeserialize<_>>>()?.map(|x| x.0)
+                            ;
+                        }
+                        GeneratedField::IsActive => {
+                            if is_active__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("isActive"));
+                            }
+                            is_active__ = map_.next_value()?;
+                        }
+                        GeneratedField::Translations => {
+                            if translations__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("translations"));
+                            }
+                            translations__ = Some(map_.next_value()?);
                         }
                     }
                 }
                 Ok(CreateCategoryRequest {
-                    category: category__,
+                    parent_id: parent_id__,
+                    code: code__,
+                    image_url: image_url__,
+                    icon_url: icon_url__,
+                    sort_order: sort_order__,
+                    is_active: is_active__,
+                    translations: translations__.unwrap_or_default(),
                 })
             }
         }
         deserializer.deserialize_struct("projectsuit.category.v1.CreateCategoryRequest", FIELDS, GeneratedVisitor)
-    }
-}
-impl serde::Serialize for CreateCategoryResponse {
-    #[allow(deprecated)]
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        use serde::ser::SerializeStruct;
-        let mut len = 0;
-        if !self.id.is_empty() {
-            len += 1;
-        }
-        let mut struct_ser = serializer.serialize_struct("projectsuit.category.v1.CreateCategoryResponse", len)?;
-        if !self.id.is_empty() {
-            struct_ser.serialize_field("id", &self.id)?;
-        }
-        struct_ser.end()
-    }
-}
-impl<'de> serde::Deserialize<'de> for CreateCategoryResponse {
-    #[allow(deprecated)]
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        const FIELDS: &[&str] = &[
-            "id",
-        ];
-
-        #[allow(clippy::enum_variant_names)]
-        enum GeneratedField {
-            Id,
-        }
-        impl<'de> serde::Deserialize<'de> for GeneratedField {
-            fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
-            where
-                D: serde::Deserializer<'de>,
-            {
-                struct GeneratedVisitor;
-
-                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-                    type Value = GeneratedField;
-
-                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                        write!(formatter, "expected one of: {:?}", &FIELDS)
-                    }
-
-                    #[allow(unused_variables)]
-                    fn visit_str<E>(self, value: &str) -> std::result::Result<GeneratedField, E>
-                    where
-                        E: serde::de::Error,
-                    {
-                        match value {
-                            "id" => Ok(GeneratedField::Id),
-                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
-                        }
-                    }
-                }
-                deserializer.deserialize_identifier(GeneratedVisitor)
-            }
-        }
-        struct GeneratedVisitor;
-        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-            type Value = CreateCategoryResponse;
-
-            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                formatter.write_str("struct projectsuit.category.v1.CreateCategoryResponse")
-            }
-
-            fn visit_map<V>(self, mut map_: V) -> std::result::Result<CreateCategoryResponse, V::Error>
-                where
-                    V: serde::de::MapAccess<'de>,
-            {
-                let mut id__ = None;
-                while let Some(k) = map_.next_key()? {
-                    match k {
-                        GeneratedField::Id => {
-                            if id__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("id"));
-                            }
-                            id__ = Some(map_.next_value()?);
-                        }
-                    }
-                }
-                Ok(CreateCategoryResponse {
-                    id: id__.unwrap_or_default(),
-                })
-            }
-        }
-        deserializer.deserialize_struct("projectsuit.category.v1.CreateCategoryResponse", FIELDS, GeneratedVisitor)
-    }
-}
-impl serde::Serialize for DeleteCategoryRequest {
-    #[allow(deprecated)]
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        use serde::ser::SerializeStruct;
-        let mut len = 0;
-        if !self.id.is_empty() {
-            len += 1;
-        }
-        let mut struct_ser = serializer.serialize_struct("projectsuit.category.v1.DeleteCategoryRequest", len)?;
-        if !self.id.is_empty() {
-            struct_ser.serialize_field("id", &self.id)?;
-        }
-        struct_ser.end()
-    }
-}
-impl<'de> serde::Deserialize<'de> for DeleteCategoryRequest {
-    #[allow(deprecated)]
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        const FIELDS: &[&str] = &[
-            "id",
-        ];
-
-        #[allow(clippy::enum_variant_names)]
-        enum GeneratedField {
-            Id,
-        }
-        impl<'de> serde::Deserialize<'de> for GeneratedField {
-            fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
-            where
-                D: serde::Deserializer<'de>,
-            {
-                struct GeneratedVisitor;
-
-                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-                    type Value = GeneratedField;
-
-                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                        write!(formatter, "expected one of: {:?}", &FIELDS)
-                    }
-
-                    #[allow(unused_variables)]
-                    fn visit_str<E>(self, value: &str) -> std::result::Result<GeneratedField, E>
-                    where
-                        E: serde::de::Error,
-                    {
-                        match value {
-                            "id" => Ok(GeneratedField::Id),
-                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
-                        }
-                    }
-                }
-                deserializer.deserialize_identifier(GeneratedVisitor)
-            }
-        }
-        struct GeneratedVisitor;
-        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-            type Value = DeleteCategoryRequest;
-
-            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                formatter.write_str("struct projectsuit.category.v1.DeleteCategoryRequest")
-            }
-
-            fn visit_map<V>(self, mut map_: V) -> std::result::Result<DeleteCategoryRequest, V::Error>
-                where
-                    V: serde::de::MapAccess<'de>,
-            {
-                let mut id__ = None;
-                while let Some(k) = map_.next_key()? {
-                    match k {
-                        GeneratedField::Id => {
-                            if id__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("id"));
-                            }
-                            id__ = Some(map_.next_value()?);
-                        }
-                    }
-                }
-                Ok(DeleteCategoryRequest {
-                    id: id__.unwrap_or_default(),
-                })
-            }
-        }
-        deserializer.deserialize_struct("projectsuit.category.v1.DeleteCategoryRequest", FIELDS, GeneratedVisitor)
-    }
-}
-impl serde::Serialize for DeleteCategoryResponse {
-    #[allow(deprecated)]
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        use serde::ser::SerializeStruct;
-        let mut len = 0;
-        if self.success {
-            len += 1;
-        }
-        let mut struct_ser = serializer.serialize_struct("projectsuit.category.v1.DeleteCategoryResponse", len)?;
-        if self.success {
-            struct_ser.serialize_field("success", &self.success)?;
-        }
-        struct_ser.end()
-    }
-}
-impl<'de> serde::Deserialize<'de> for DeleteCategoryResponse {
-    #[allow(deprecated)]
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        const FIELDS: &[&str] = &[
-            "success",
-        ];
-
-        #[allow(clippy::enum_variant_names)]
-        enum GeneratedField {
-            Success,
-        }
-        impl<'de> serde::Deserialize<'de> for GeneratedField {
-            fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
-            where
-                D: serde::Deserializer<'de>,
-            {
-                struct GeneratedVisitor;
-
-                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-                    type Value = GeneratedField;
-
-                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                        write!(formatter, "expected one of: {:?}", &FIELDS)
-                    }
-
-                    #[allow(unused_variables)]
-                    fn visit_str<E>(self, value: &str) -> std::result::Result<GeneratedField, E>
-                    where
-                        E: serde::de::Error,
-                    {
-                        match value {
-                            "success" => Ok(GeneratedField::Success),
-                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
-                        }
-                    }
-                }
-                deserializer.deserialize_identifier(GeneratedVisitor)
-            }
-        }
-        struct GeneratedVisitor;
-        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-            type Value = DeleteCategoryResponse;
-
-            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                formatter.write_str("struct projectsuit.category.v1.DeleteCategoryResponse")
-            }
-
-            fn visit_map<V>(self, mut map_: V) -> std::result::Result<DeleteCategoryResponse, V::Error>
-                where
-                    V: serde::de::MapAccess<'de>,
-            {
-                let mut success__ = None;
-                while let Some(k) = map_.next_key()? {
-                    match k {
-                        GeneratedField::Success => {
-                            if success__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("success"));
-                            }
-                            success__ = Some(map_.next_value()?);
-                        }
-                    }
-                }
-                Ok(DeleteCategoryResponse {
-                    success: success__.unwrap_or_default(),
-                })
-            }
-        }
-        deserializer.deserialize_struct("projectsuit.category.v1.DeleteCategoryResponse", FIELDS, GeneratedVisitor)
-    }
-}
-impl serde::Serialize for GetCategoryRequest {
-    #[allow(deprecated)]
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        use serde::ser::SerializeStruct;
-        let mut len = 0;
-        if !self.id.is_empty() {
-            len += 1;
-        }
-        let mut struct_ser = serializer.serialize_struct("projectsuit.category.v1.GetCategoryRequest", len)?;
-        if !self.id.is_empty() {
-            struct_ser.serialize_field("id", &self.id)?;
-        }
-        struct_ser.end()
-    }
-}
-impl<'de> serde::Deserialize<'de> for GetCategoryRequest {
-    #[allow(deprecated)]
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        const FIELDS: &[&str] = &[
-            "id",
-        ];
-
-        #[allow(clippy::enum_variant_names)]
-        enum GeneratedField {
-            Id,
-        }
-        impl<'de> serde::Deserialize<'de> for GeneratedField {
-            fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
-            where
-                D: serde::Deserializer<'de>,
-            {
-                struct GeneratedVisitor;
-
-                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-                    type Value = GeneratedField;
-
-                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                        write!(formatter, "expected one of: {:?}", &FIELDS)
-                    }
-
-                    #[allow(unused_variables)]
-                    fn visit_str<E>(self, value: &str) -> std::result::Result<GeneratedField, E>
-                    where
-                        E: serde::de::Error,
-                    {
-                        match value {
-                            "id" => Ok(GeneratedField::Id),
-                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
-                        }
-                    }
-                }
-                deserializer.deserialize_identifier(GeneratedVisitor)
-            }
-        }
-        struct GeneratedVisitor;
-        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-            type Value = GetCategoryRequest;
-
-            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                formatter.write_str("struct projectsuit.category.v1.GetCategoryRequest")
-            }
-
-            fn visit_map<V>(self, mut map_: V) -> std::result::Result<GetCategoryRequest, V::Error>
-                where
-                    V: serde::de::MapAccess<'de>,
-            {
-                let mut id__ = None;
-                while let Some(k) = map_.next_key()? {
-                    match k {
-                        GeneratedField::Id => {
-                            if id__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("id"));
-                            }
-                            id__ = Some(map_.next_value()?);
-                        }
-                    }
-                }
-                Ok(GetCategoryRequest {
-                    id: id__.unwrap_or_default(),
-                })
-            }
-        }
-        deserializer.deserialize_struct("projectsuit.category.v1.GetCategoryRequest", FIELDS, GeneratedVisitor)
     }
 }
 impl serde::Serialize for GetCategoryResponse {
@@ -1161,30 +603,24 @@ impl serde::Serialize for ListCategoriesRequest {
     {
         use serde::ser::SerializeStruct;
         let mut len = 0;
-        if self.page != 0 {
+        if self.base_request.is_some() {
             len += 1;
         }
-        if self.limit != 0 {
+        if self.filter_by_parent_id.is_some() {
             len += 1;
         }
-        if !self.search.is_empty() {
-            len += 1;
-        }
-        if !self.parent_id.is_empty() {
+        if self.filter_by_is_root.is_some() {
             len += 1;
         }
         let mut struct_ser = serializer.serialize_struct("projectsuit.category.v1.ListCategoriesRequest", len)?;
-        if self.page != 0 {
-            struct_ser.serialize_field("page", &self.page)?;
+        if let Some(v) = self.base_request.as_ref() {
+            struct_ser.serialize_field("baseRequest", v)?;
         }
-        if self.limit != 0 {
-            struct_ser.serialize_field("limit", &self.limit)?;
+        if let Some(v) = self.filter_by_parent_id.as_ref() {
+            struct_ser.serialize_field("filterByParentId", v)?;
         }
-        if !self.search.is_empty() {
-            struct_ser.serialize_field("search", &self.search)?;
-        }
-        if !self.parent_id.is_empty() {
-            struct_ser.serialize_field("parentId", &self.parent_id)?;
+        if let Some(v) = self.filter_by_is_root.as_ref() {
+            struct_ser.serialize_field("filterByIsRoot", v)?;
         }
         struct_ser.end()
     }
@@ -1196,19 +632,19 @@ impl<'de> serde::Deserialize<'de> for ListCategoriesRequest {
         D: serde::Deserializer<'de>,
     {
         const FIELDS: &[&str] = &[
-            "page",
-            "limit",
-            "search",
-            "parent_id",
-            "parentId",
+            "base_request",
+            "baseRequest",
+            "filter_by_parent_id",
+            "filterByParentId",
+            "filter_by_is_root",
+            "filterByIsRoot",
         ];
 
         #[allow(clippy::enum_variant_names)]
         enum GeneratedField {
-            Page,
-            Limit,
-            Search,
-            ParentId,
+            BaseRequest,
+            FilterByParentId,
+            FilterByIsRoot,
         }
         impl<'de> serde::Deserialize<'de> for GeneratedField {
             fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
@@ -1230,10 +666,9 @@ impl<'de> serde::Deserialize<'de> for ListCategoriesRequest {
                         E: serde::de::Error,
                     {
                         match value {
-                            "page" => Ok(GeneratedField::Page),
-                            "limit" => Ok(GeneratedField::Limit),
-                            "search" => Ok(GeneratedField::Search),
-                            "parentId" | "parent_id" => Ok(GeneratedField::ParentId),
+                            "baseRequest" | "base_request" => Ok(GeneratedField::BaseRequest),
+                            "filterByParentId" | "filter_by_parent_id" => Ok(GeneratedField::FilterByParentId),
+                            "filterByIsRoot" | "filter_by_is_root" => Ok(GeneratedField::FilterByIsRoot),
                             _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
                         }
                     }
@@ -1253,47 +688,35 @@ impl<'de> serde::Deserialize<'de> for ListCategoriesRequest {
                 where
                     V: serde::de::MapAccess<'de>,
             {
-                let mut page__ = None;
-                let mut limit__ = None;
-                let mut search__ = None;
-                let mut parent_id__ = None;
+                let mut base_request__ = None;
+                let mut filter_by_parent_id__ = None;
+                let mut filter_by_is_root__ = None;
                 while let Some(k) = map_.next_key()? {
                     match k {
-                        GeneratedField::Page => {
-                            if page__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("page"));
+                        GeneratedField::BaseRequest => {
+                            if base_request__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("baseRequest"));
                             }
-                            page__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
+                            base_request__ = map_.next_value()?;
                         }
-                        GeneratedField::Limit => {
-                            if limit__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("limit"));
+                        GeneratedField::FilterByParentId => {
+                            if filter_by_parent_id__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("filterByParentId"));
                             }
-                            limit__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
+                            filter_by_parent_id__ = map_.next_value()?;
                         }
-                        GeneratedField::Search => {
-                            if search__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("search"));
+                        GeneratedField::FilterByIsRoot => {
+                            if filter_by_is_root__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("filterByIsRoot"));
                             }
-                            search__ = Some(map_.next_value()?);
-                        }
-                        GeneratedField::ParentId => {
-                            if parent_id__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("parentId"));
-                            }
-                            parent_id__ = Some(map_.next_value()?);
+                            filter_by_is_root__ = map_.next_value()?;
                         }
                     }
                 }
                 Ok(ListCategoriesRequest {
-                    page: page__.unwrap_or_default(),
-                    limit: limit__.unwrap_or_default(),
-                    search: search__.unwrap_or_default(),
-                    parent_id: parent_id__.unwrap_or_default(),
+                    base_request: base_request__,
+                    filter_by_parent_id: filter_by_parent_id__,
+                    filter_by_is_root: filter_by_is_root__,
                 })
             }
         }
@@ -1311,15 +734,15 @@ impl serde::Serialize for ListCategoriesResponse {
         if !self.categories.is_empty() {
             len += 1;
         }
-        if self.total != 0 {
+        if self.pagination.is_some() {
             len += 1;
         }
         let mut struct_ser = serializer.serialize_struct("projectsuit.category.v1.ListCategoriesResponse", len)?;
         if !self.categories.is_empty() {
             struct_ser.serialize_field("categories", &self.categories)?;
         }
-        if self.total != 0 {
-            struct_ser.serialize_field("total", &self.total)?;
+        if let Some(v) = self.pagination.as_ref() {
+            struct_ser.serialize_field("pagination", v)?;
         }
         struct_ser.end()
     }
@@ -1332,13 +755,13 @@ impl<'de> serde::Deserialize<'de> for ListCategoriesResponse {
     {
         const FIELDS: &[&str] = &[
             "categories",
-            "total",
+            "pagination",
         ];
 
         #[allow(clippy::enum_variant_names)]
         enum GeneratedField {
             Categories,
-            Total,
+            Pagination,
         }
         impl<'de> serde::Deserialize<'de> for GeneratedField {
             fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
@@ -1361,7 +784,7 @@ impl<'de> serde::Deserialize<'de> for ListCategoriesResponse {
                     {
                         match value {
                             "categories" => Ok(GeneratedField::Categories),
-                            "total" => Ok(GeneratedField::Total),
+                            "pagination" => Ok(GeneratedField::Pagination),
                             _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
                         }
                     }
@@ -1382,7 +805,7 @@ impl<'de> serde::Deserialize<'de> for ListCategoriesResponse {
                     V: serde::de::MapAccess<'de>,
             {
                 let mut categories__ = None;
-                let mut total__ = None;
+                let mut pagination__ = None;
                 while let Some(k) = map_.next_key()? {
                     match k {
                         GeneratedField::Categories => {
@@ -1391,19 +814,17 @@ impl<'de> serde::Deserialize<'de> for ListCategoriesResponse {
                             }
                             categories__ = Some(map_.next_value()?);
                         }
-                        GeneratedField::Total => {
-                            if total__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("total"));
+                        GeneratedField::Pagination => {
+                            if pagination__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("pagination"));
                             }
-                            total__ = 
-                                Some(map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?.0)
-                            ;
+                            pagination__ = map_.next_value()?;
                         }
                     }
                 }
                 Ok(ListCategoriesResponse {
                     categories: categories__.unwrap_or_default(),
-                    total: total__.unwrap_or_default(),
+                    pagination: pagination__,
                 })
             }
         }
@@ -1421,15 +842,51 @@ impl serde::Serialize for UpdateCategoryRequest {
         if !self.id.is_empty() {
             len += 1;
         }
-        if self.category.is_some() {
+        if self.parent_id.is_some() {
+            len += 1;
+        }
+        if self.code.is_some() {
+            len += 1;
+        }
+        if self.image_url.is_some() {
+            len += 1;
+        }
+        if self.icon_url.is_some() {
+            len += 1;
+        }
+        if self.sort_order.is_some() {
+            len += 1;
+        }
+        if self.is_active.is_some() {
+            len += 1;
+        }
+        if !self.translations_to_update.is_empty() {
             len += 1;
         }
         let mut struct_ser = serializer.serialize_struct("projectsuit.category.v1.UpdateCategoryRequest", len)?;
         if !self.id.is_empty() {
             struct_ser.serialize_field("id", &self.id)?;
         }
-        if let Some(v) = self.category.as_ref() {
-            struct_ser.serialize_field("category", v)?;
+        if let Some(v) = self.parent_id.as_ref() {
+            struct_ser.serialize_field("parentId", v)?;
+        }
+        if let Some(v) = self.code.as_ref() {
+            struct_ser.serialize_field("code", v)?;
+        }
+        if let Some(v) = self.image_url.as_ref() {
+            struct_ser.serialize_field("imageUrl", v)?;
+        }
+        if let Some(v) = self.icon_url.as_ref() {
+            struct_ser.serialize_field("iconUrl", v)?;
+        }
+        if let Some(v) = self.sort_order.as_ref() {
+            struct_ser.serialize_field("sortOrder", v)?;
+        }
+        if let Some(v) = self.is_active.as_ref() {
+            struct_ser.serialize_field("isActive", v)?;
+        }
+        if !self.translations_to_update.is_empty() {
+            struct_ser.serialize_field("translationsToUpdate", &self.translations_to_update)?;
         }
         struct_ser.end()
     }
@@ -1442,13 +899,31 @@ impl<'de> serde::Deserialize<'de> for UpdateCategoryRequest {
     {
         const FIELDS: &[&str] = &[
             "id",
-            "category",
+            "parent_id",
+            "parentId",
+            "code",
+            "image_url",
+            "imageUrl",
+            "icon_url",
+            "iconUrl",
+            "sort_order",
+            "sortOrder",
+            "is_active",
+            "isActive",
+            "translations_to_update",
+            "translationsToUpdate",
         ];
 
         #[allow(clippy::enum_variant_names)]
         enum GeneratedField {
             Id,
-            Category,
+            ParentId,
+            Code,
+            ImageUrl,
+            IconUrl,
+            SortOrder,
+            IsActive,
+            TranslationsToUpdate,
         }
         impl<'de> serde::Deserialize<'de> for GeneratedField {
             fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
@@ -1471,7 +946,13 @@ impl<'de> serde::Deserialize<'de> for UpdateCategoryRequest {
                     {
                         match value {
                             "id" => Ok(GeneratedField::Id),
-                            "category" => Ok(GeneratedField::Category),
+                            "parentId" | "parent_id" => Ok(GeneratedField::ParentId),
+                            "code" => Ok(GeneratedField::Code),
+                            "imageUrl" | "image_url" => Ok(GeneratedField::ImageUrl),
+                            "iconUrl" | "icon_url" => Ok(GeneratedField::IconUrl),
+                            "sortOrder" | "sort_order" => Ok(GeneratedField::SortOrder),
+                            "isActive" | "is_active" => Ok(GeneratedField::IsActive),
+                            "translationsToUpdate" | "translations_to_update" => Ok(GeneratedField::TranslationsToUpdate),
                             _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
                         }
                     }
@@ -1492,7 +973,13 @@ impl<'de> serde::Deserialize<'de> for UpdateCategoryRequest {
                     V: serde::de::MapAccess<'de>,
             {
                 let mut id__ = None;
-                let mut category__ = None;
+                let mut parent_id__ = None;
+                let mut code__ = None;
+                let mut image_url__ = None;
+                let mut icon_url__ = None;
+                let mut sort_order__ = None;
+                let mut is_active__ = None;
+                let mut translations_to_update__ = None;
                 while let Some(k) = map_.next_key()? {
                     match k {
                         GeneratedField::Id => {
@@ -1501,111 +988,64 @@ impl<'de> serde::Deserialize<'de> for UpdateCategoryRequest {
                             }
                             id__ = Some(map_.next_value()?);
                         }
-                        GeneratedField::Category => {
-                            if category__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("category"));
+                        GeneratedField::ParentId => {
+                            if parent_id__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("parentId"));
                             }
-                            category__ = map_.next_value()?;
+                            parent_id__ = map_.next_value()?;
+                        }
+                        GeneratedField::Code => {
+                            if code__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("code"));
+                            }
+                            code__ = map_.next_value()?;
+                        }
+                        GeneratedField::ImageUrl => {
+                            if image_url__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("imageUrl"));
+                            }
+                            image_url__ = map_.next_value()?;
+                        }
+                        GeneratedField::IconUrl => {
+                            if icon_url__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("iconUrl"));
+                            }
+                            icon_url__ = map_.next_value()?;
+                        }
+                        GeneratedField::SortOrder => {
+                            if sort_order__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("sortOrder"));
+                            }
+                            sort_order__ = 
+                                map_.next_value::<::std::option::Option<::pbjson::private::NumberDeserialize<_>>>()?.map(|x| x.0)
+                            ;
+                        }
+                        GeneratedField::IsActive => {
+                            if is_active__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("isActive"));
+                            }
+                            is_active__ = map_.next_value()?;
+                        }
+                        GeneratedField::TranslationsToUpdate => {
+                            if translations_to_update__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("translationsToUpdate"));
+                            }
+                            translations_to_update__ = Some(map_.next_value()?);
                         }
                     }
                 }
                 Ok(UpdateCategoryRequest {
                     id: id__.unwrap_or_default(),
-                    category: category__,
+                    parent_id: parent_id__,
+                    code: code__,
+                    image_url: image_url__,
+                    icon_url: icon_url__,
+                    sort_order: sort_order__,
+                    is_active: is_active__,
+                    translations_to_update: translations_to_update__.unwrap_or_default(),
                 })
             }
         }
         deserializer.deserialize_struct("projectsuit.category.v1.UpdateCategoryRequest", FIELDS, GeneratedVisitor)
-    }
-}
-impl serde::Serialize for UpdateCategoryResponse {
-    #[allow(deprecated)]
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        use serde::ser::SerializeStruct;
-        let mut len = 0;
-        if self.success {
-            len += 1;
-        }
-        let mut struct_ser = serializer.serialize_struct("projectsuit.category.v1.UpdateCategoryResponse", len)?;
-        if self.success {
-            struct_ser.serialize_field("success", &self.success)?;
-        }
-        struct_ser.end()
-    }
-}
-impl<'de> serde::Deserialize<'de> for UpdateCategoryResponse {
-    #[allow(deprecated)]
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        const FIELDS: &[&str] = &[
-            "success",
-        ];
-
-        #[allow(clippy::enum_variant_names)]
-        enum GeneratedField {
-            Success,
-        }
-        impl<'de> serde::Deserialize<'de> for GeneratedField {
-            fn deserialize<D>(deserializer: D) -> std::result::Result<GeneratedField, D::Error>
-            where
-                D: serde::Deserializer<'de>,
-            {
-                struct GeneratedVisitor;
-
-                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-                    type Value = GeneratedField;
-
-                    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                        write!(formatter, "expected one of: {:?}", &FIELDS)
-                    }
-
-                    #[allow(unused_variables)]
-                    fn visit_str<E>(self, value: &str) -> std::result::Result<GeneratedField, E>
-                    where
-                        E: serde::de::Error,
-                    {
-                        match value {
-                            "success" => Ok(GeneratedField::Success),
-                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
-                        }
-                    }
-                }
-                deserializer.deserialize_identifier(GeneratedVisitor)
-            }
-        }
-        struct GeneratedVisitor;
-        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
-            type Value = UpdateCategoryResponse;
-
-            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                formatter.write_str("struct projectsuit.category.v1.UpdateCategoryResponse")
-            }
-
-            fn visit_map<V>(self, mut map_: V) -> std::result::Result<UpdateCategoryResponse, V::Error>
-                where
-                    V: serde::de::MapAccess<'de>,
-            {
-                let mut success__ = None;
-                while let Some(k) = map_.next_key()? {
-                    match k {
-                        GeneratedField::Success => {
-                            if success__.is_some() {
-                                return Err(serde::de::Error::duplicate_field("success"));
-                            }
-                            success__ = Some(map_.next_value()?);
-                        }
-                    }
-                }
-                Ok(UpdateCategoryResponse {
-                    success: success__.unwrap_or_default(),
-                })
-            }
-        }
-        deserializer.deserialize_struct("projectsuit.category.v1.UpdateCategoryResponse", FIELDS, GeneratedVisitor)
     }
 }
