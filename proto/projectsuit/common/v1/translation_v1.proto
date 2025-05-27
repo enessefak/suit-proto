@@ -1,7 +1,0 @@
-syntax = "proto3";
-
-package projectsuit.common.v1;
-
-message Translation {
-  map<string, string> values = 1;
-}

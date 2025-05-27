@@ -1,0 +1,164 @@
+syntax = "proto3";
+
+package projectsuit.tax.v1;
+
+import "google/protobuf/timestamp.proto";
+import "projectsuit/common/v1/common.v1.proto";
+
+option go_package = "github.com/enessefak/suit-proto/gen/go/projectsuit/tax/v1;taxv1";
+option java_package = "com.projectsuit.tax.v1";
+option java_multiple_files = true;
+option java_outer_classname = "TaxProto";
+
+service TaxService {
+  // Tax Category Komutları
+  rpc CreateTaxCategory(CreateTaxCategoryRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdateTaxCategory(UpdateTaxCategoryRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc DeleteTaxCategory(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // Tax Rate Komutları
+  rpc CreateTaxRate(CreateTaxRateRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdateTaxRate(UpdateTaxRateRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc DeleteTaxRate(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // Tax Assignment/Rule Komutları
+  rpc AssignTaxRate(AssignTaxRateRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdateTaxAssignment(UpdateTaxAssignmentRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc RemoveTaxAssignment(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // Tax Category Sorguları
+  rpc GetTaxCategory(projectsuit.common.v1.GetByIdRequest) returns (GetTaxCategoryResponse);
+  rpc ListTaxCategories(ListTaxCategoriesRequest) returns (ListTaxCategoriesResponse);
+
+  // Tax Rate Sorguları
+  rpc GetTaxRate(projectsuit.common.v1.GetByIdRequest) returns (GetTaxRateResponse);
+  rpc ListTaxRates(ListTaxRatesRequest) returns (ListTaxRatesResponse);
+
+  // Tax Assignment Sorguları
+  rpc ListTaxAssignments(ListTaxAssignmentsRequest) returns (ListTaxAssignmentsResponse);
+  // rpc GetApplicableTaxRate(GetApplicableTaxRateRequest) returns (GetApplicableTaxRateResponse);
+}
+
+// --- Entity Mesajları ---
+message TaxCategory {
+  string id = 1; // UUID
+  string code = 2;
+  bool is_active = 3;
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp updated_at = 5;
+
+  string name = 20;
+  string description = 21;
+  repeated projectsuit.common.v1.TranslationOutput all_translations = 22;
+}
+
+message TaxRate {
+  string id = 1; // UUID
+  optional string code = 2;
+  string rate_percentage = 3; // NUMERIC -> string
+  string calculation_type = 4; // "PERCENTAGE_OF_NET", "FIXED_AMOUNT"
+  optional projectsuit.common.v1.Money fixed_amount = 5;
+  google.protobuf.Timestamp valid_from = 6;
+  optional google.protobuf.Timestamp valid_to = 7;
+  bool is_active = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+
+  string name = 20;
+  string description = 21;
+  repeated projectsuit.common.v1.TranslationOutput all_translations = 22;
+}
+
+message TaxAssignment {
+  string id = 1;
+  string tax_rate_id = 2;
+  TaxRate tax_rate_details = 3;
+  string tax_category_id = 4;
+  TaxCategory tax_category_details = 5;
+  optional string sales_channel_id = 6;
+  optional string warehouse_id = 7;
+  optional string country_code = 8;
+  optional string region_code = 9;
+  int32 priority = 10;
+  google.protobuf.Timestamp created_at = 11;
+  google.protobuf.Timestamp updated_at = 12;
+}
+
+// --- Komut Mesajları ---
+message CreateTaxCategoryRequest {
+  string code = 1;
+  optional bool is_active = 2;
+  repeated projectsuit.common.v1.TranslationInput translations = 3; // 'name', 'description'
+}
+message UpdateTaxCategoryRequest {
+  string id = 1;
+  optional string code = 2;
+  optional bool is_active = 3;
+  repeated projectsuit.common.v1.TranslationInput translations_to_update = 4;
+}
+message CreateTaxRateRequest {
+  optional string code = 1;
+  string rate_percentage = 2;
+  string calculation_type = 3;
+  optional projectsuit.common.v1.Money fixed_amount = 4;
+  google.protobuf.Timestamp valid_from = 5;
+  optional google.protobuf.Timestamp valid_to = 6;
+  optional bool is_active = 7;
+  repeated projectsuit.common.v1.TranslationInput translations = 8; // 'name', 'description'
+}
+message UpdateTaxRateRequest {
+  string id = 1;
+  optional string code = 2;
+  optional string rate_percentage = 3;
+  optional string calculation_type = 4;
+  optional projectsuit.common.v1.Money fixed_amount = 5;
+  optional google.protobuf.Timestamp valid_from = 6;
+  optional google.protobuf.Timestamp valid_to = 7;
+  optional bool is_active = 8;
+  repeated projectsuit.common.v1.TranslationInput translations_to_update = 9;
+}
+message AssignTaxRateRequest {
+  string tax_rate_id = 1;
+  string tax_category_id = 2;
+  optional string sales_channel_id = 3;
+  optional string warehouse_id = 4;
+  optional string country_code = 5;
+  optional string region_code = 6;
+  optional int32 priority = 7;
+}
+message UpdateTaxAssignmentRequest {
+  string assignment_id = 1;
+  optional string sales_channel_id = 2;
+  optional string warehouse_id = 3;
+  optional string country_code = 4;
+  optional string region_code = 5;
+  optional int32 priority = 6;
+}
+
+// --- Sorgu Mesajları ---
+message GetTaxCategoryResponse { TaxCategory tax_category = 1; }
+message ListTaxCategoriesRequest { projectsuit.common.v1.ListRequest base_request = 1; }
+message ListTaxCategoriesResponse {
+  repeated TaxCategory tax_categories = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}
+message GetTaxRateResponse { TaxRate tax_rate = 1; }
+message ListTaxRatesRequest {
+  projectsuit.common.v1.ListRequest base_request = 1;
+  optional bool filter_by_is_currently_valid = 2;
+}
+message ListTaxRatesResponse {
+  repeated TaxRate tax_rates = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}
+message ListTaxAssignmentsRequest {
+  projectsuit.common.v1.ListRequest base_request = 1;
+  optional string filter_by_tax_rate_id = 2;
+  optional string filter_by_tax_category_id = 3;
+  optional string filter_by_sales_channel_id = 4;
+  optional string filter_by_warehouse_id = 5;
+}
+message ListTaxAssignmentsResponse {
+    repeated TaxAssignment assignments = 1;
+    projectsuit.common.v1.PaginationResponse pagination = 2;
+}

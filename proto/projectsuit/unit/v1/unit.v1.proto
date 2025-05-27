@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package projectsuit.unit.v1;
+
+import "google/protobuf/timestamp.proto";
+import "projectsuit/common/v1/common.v1.proto";
+
+option go_package = "github.com/enessefak/suit-proto/gen/go/projectsuit/unit/v1;unitv1";
+option java_package = "com.projectsuit.unit.v1";
+option java_multiple_files = true;
+option java_outer_classname = "UnitProto";
+
+// Unit Service Tanımı
+service UnitService {
+  // Komutlar
+  rpc CreateUnit(CreateUnitRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdateUnit(UpdateUnitRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc DeleteUnit(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // Sorgular
+  rpc GetUnit(projectsuit.common.v1.GetByIdRequest) returns (GetUnitResponse);
+  rpc ListUnits(ListUnitsRequest) returns (ListUnitsResponse);
+}
+
+// Unit Entity Mesajı
+message Unit {
+  string id = 1; // UUID
+  string code = 2;
+  optional string base_unit_id = 3; // UUID
+  string conversion_factor = 4; // NUMERIC -> string
+  bool is_active = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+
+  // Sorgu yanıtında istenen locale'e göre çözümlenmiş alanlar
+  string name = 20; // Çevrilmiş birim adı (field_name='name' olan çeviri)
+  string short_name = 21; // Çevrilmiş kısa birim adı (field_name='short_name' olan çeviri, opsiyonel)
+
+  repeated projectsuit.common.v1.TranslationOutput all_translations = 22;
+}
+
+// --- Komut Mesajları ---
+message CreateUnitRequest {
+  string code = 1;
+  optional string base_unit_id = 2;
+  string conversion_factor = 3;
+  optional bool is_active = 4;
+  repeated projectsuit.common.v1.TranslationInput translations = 5; // 'name', 'short_name' için
+}
+
+message UpdateUnitRequest {
+  string id = 1;
+  optional string code = 2;
+  optional string base_unit_id = 3;
+  optional string conversion_factor = 4;
+  optional bool is_active = 5;
+  repeated projectsuit.common.v1.TranslationInput translations_to_update = 6;
+}
+
+// --- Sorgu Mesajları ---
+message GetUnitResponse {
+  Unit unit = 1;
+}
+
+message ListUnitsRequest {
+  projectsuit.common.v1.ListRequest base_request = 1;
+}
+
+message ListUnitsResponse {
+  repeated Unit units = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}

@@ -1,0 +1,302 @@
+syntax = "proto3";
+
+package projectsuit.product.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+import "projectsuit/common/v1/common.v1.proto";
+import "projectsuit/category/v1/category.v1.proto";
+import "projectsuit/unit/v1/unit.v1.proto";
+
+option go_package = "github.com/enessefak/suit-proto/gen/go/projectsuit/product/v1;productv1";
+option java_package = "com.projectsuit.product.v1";
+option java_multiple_files = true;
+option java_outer_classname = "ProductProto";
+
+service ProductService {
+  // Product Komutları
+  rpc CreateProduct(CreateProductRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdateProduct(UpdateProductRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc DeleteProduct(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc AddProductToCategory(ProductCategoryLinkRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc RemoveProductFromCategory(ProductCategoryLinkRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // Product Unit Komutları
+  rpc CreateProductUnit(CreateProductUnitRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdateProductUnit(UpdateProductUnitRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc DeleteProductUnit(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // Product Tag Komutları
+  rpc AddTagToProduct(AddTagToProductRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc RemoveTagFromProduct(RemoveTagFromProductRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // Product Option Komutları
+  rpc CreateProductOption(CreateProductOptionRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdateProductOption(UpdateProductOptionRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc DeleteProductOption(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc CreateProductOptionValue(CreateProductOptionValueRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdateProductOptionValue(UpdateProductOptionValueRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc DeleteProductOptionValue(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // Product Variant Komutları
+  rpc CreateProductVariant(CreateProductVariantRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdateProductVariant(UpdateProductVariantRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc DeleteProductVariant(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc AssignOptionValueToVariant(AssignOptionValueToVariantRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc RemoveOptionValueFromVariant(RemoveOptionValueFromVariantRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // Product Sorguları
+  rpc GetProduct(GetProductRequest) returns (GetProductResponse);
+  rpc ListProducts(ListProductsRequest) returns (ListProductsResponse);
+
+  // Varyant sorguları
+  rpc GetProductVariant(projectsuit.common.v1.GetByIdRequest) returns (GetProductVariantResponse);
+  rpc ListProductVariants(ListProductVariantsRequest) returns (ListProductVariantsResponse);
+}
+
+// --- Entity Mesajları (Sorgu Yanıtları İçin) ---
+
+message Product {
+  string id = 1; // UUID
+  string code = 2;
+  string product_type = 3;
+  bool is_active = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+
+  // Sorgu yanıtında çözümlenmiş alanlar
+  string name = 20;
+  string description = 21;
+  string short_description = 22;
+  string slug = 23;
+  string meta_title = 24;
+  string meta_description = 25;
+
+  repeated projectsuit.common.v1.TranslationOutput all_translations = 26;
+
+  // İlişkili veriler (sorgu isteğine göre doldurulur)
+  repeated projectsuit.category.v1.Category categories = 30;
+  repeated ProductUnit product_units = 31;
+  repeated ProductTag product_tags = 32;
+  repeated ProductOption product_options = 33;
+  repeated ProductVariant product_variants = 34;
+}
+
+message ProductUnit {
+  string id = 1;
+  projectsuit.unit.v1.Unit unit = 3;
+  optional string barcode = 4;
+  bool is_base_unit = 5;
+  string conversion_to_base_factor = 6;
+  bool is_sellable = 7;
+  bool is_purchasable = 8;
+  int32 sort_order = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+}
+
+message ProductTag {
+  string id = 1; // product_tags tablosunun ID'si
+  string tag_key = 3;
+  string tag_value_code = 4;
+  google.protobuf.Timestamp created_at = 5;
+
+  string display_value = 20; // tag_value_code'un çevrilmiş hali (field_name='display_value')
+  repeated projectsuit.common.v1.TranslationOutput all_translations = 21;
+}
+
+message ProductOption {
+  string id = 1;
+  string option_code = 3;
+  int32 sort_order = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+
+  string name = 20; // Seçenek adının çevirisi (field_name='name')
+  repeated projectsuit.common.v1.TranslationOutput all_translations = 21;
+  repeated ProductOptionValue option_values = 22;
+}
+
+message ProductOptionValue {
+  string id = 1;
+  string value_code = 3;
+  int32 sort_order = 4;
+  google.protobuf.Struct additional_data = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+
+  string name = 20; // Değerin çevirisi (field_name='name')
+  repeated projectsuit.common.v1.TranslationOutput all_translations = 21;
+}
+
+message ProductVariant {
+  string id = 1;
+  string sku = 3;
+  optional string barcode = 4;
+  bool is_active = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+
+  string display_name = 20; // Varyantın oluşturulmuş adı (örn: "Tişört - Kırmızı / XL")
+  repeated AssignedOptionValueInVariant assigned_options = 21;
+}
+
+message AssignedOptionValueInVariant {
+  string option_id = 1;
+  string option_code = 2;
+  string option_name = 3; // Çevrilmiş seçenek adı
+  string value_id = 4;
+  string value_code = 5;
+  string value_name = 6;   // Çevrilmiş seçenek değeri
+}
+
+// --- Komut Mesajları ---
+message CreateProductRequest {
+  string code = 1;
+  string product_type = 2;
+  optional bool is_active = 3;
+  repeated projectsuit.common.v1.TranslationInput translations = 4;
+  repeated string initial_category_ids = 5;
+}
+
+message UpdateProductRequest {
+  string id = 1;
+  optional string code = 2;
+  optional string product_type = 3;
+  optional bool is_active = 4;
+  repeated projectsuit.common.v1.TranslationInput translations_to_update = 5;
+}
+
+message ProductCategoryLinkRequest {
+  string product_id = 1;
+  string category_id = 2;
+}
+
+message CreateProductUnitRequest {
+  string product_id = 1;
+  string unit_id = 2;
+  optional string barcode = 3;
+  bool is_base_unit = 4;
+  string conversion_to_base_factor = 5;
+  optional bool is_sellable = 6;
+  optional bool is_purchasable = 7;
+  optional int32 sort_order = 8;
+}
+
+message UpdateProductUnitRequest {
+  string product_unit_id = 1;
+  optional string barcode = 2;
+  optional bool is_base_unit = 3;
+  optional string conversion_to_base_factor = 4;
+  optional bool is_sellable = 5;
+  optional bool is_purchasable = 6;
+  optional int32 sort_order = 7;
+}
+
+message AddTagToProductRequest {
+  string product_id = 1;
+  string tag_key = 2;
+  string tag_value_code = 3;
+  repeated projectsuit.common.v1.TranslationInput translations = 4; // field_name='display_value'
+}
+
+message RemoveTagFromProductRequest {
+  string product_tag_id = 1; // product_tags.id
+}
+
+message CreateProductOptionRequest {
+  string product_id = 1;
+  string option_code = 2;
+  optional int32 sort_order = 3;
+  repeated projectsuit.common.v1.TranslationInput translations = 4; // field_name='name'
+}
+
+message UpdateProductOptionRequest {
+  string option_id = 1;
+  optional string option_code = 2;
+  optional int32 sort_order = 3;
+  repeated projectsuit.common.v1.TranslationInput translations_to_update = 4;
+}
+
+message CreateProductOptionValueRequest {
+  string option_id = 1;
+  string value_code = 2;
+  optional int32 sort_order = 3;
+  optional google.protobuf.Struct additional_data = 4;
+  repeated projectsuit.common.v1.TranslationInput translations = 5; // field_name='name'
+}
+
+message UpdateProductOptionValueRequest {
+  string option_value_id = 1;
+  optional string value_code = 2;
+  optional int32 sort_order = 3;
+  optional google.protobuf.Struct additional_data = 4;
+  repeated projectsuit.common.v1.TranslationInput translations_to_update = 5;
+}
+
+message CreateProductVariantRequest {
+  string product_id = 1;
+  string sku = 2;
+  optional string barcode = 3;
+  optional bool is_active = 4;
+  repeated VariantOptionAssignmentInput initial_options = 5;
+}
+
+message VariantOptionAssignmentInput {
+  string option_id = 1;
+  string value_id = 2;
+}
+
+message UpdateProductVariantRequest {
+  string variant_id = 1;
+  optional string sku = 2;
+  optional string barcode = 3;
+  optional bool is_active = 4;
+}
+
+message AssignOptionValueToVariantRequest {
+  string variant_id = 1;
+  string option_id = 2;
+  string value_id = 3;
+}
+
+message RemoveOptionValueFromVariantRequest {
+  string variant_id = 1;
+  string option_id = 2;
+}
+
+// --- Sorgu Mesajları ---
+message GetProductRequest {
+  string id = 1; // Product ID
+  projectsuit.common.v1.LocaleInput locale_input = 2;
+  repeated string include_relations = 3; // "categories", "units", "tags", "options", "variants"
+}
+
+message GetProductResponse {
+  Product product = 1;
+}
+
+message ListProductsRequest {
+  projectsuit.common.v1.ListRequest base_request = 1;
+  optional string filter_by_category_id = 2;
+  optional string filter_by_product_type = 3;
+}
+
+message ListProductsResponse {
+  repeated Product products = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}
+
+message GetProductVariantResponse {
+    ProductVariant variant = 1;
+}
+
+message ListProductVariantsRequest {
+    projectsuit.common.v1.ListRequest base_request = 1;
+    optional string filter_by_product_id = 2;
+}
+
+message ListProductVariantsResponse {
+    repeated ProductVariant variants = 1;
+    projectsuit.common.v1.PaginationResponse pagination = 2;
+}

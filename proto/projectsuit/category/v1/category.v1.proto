@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package projectsuit.category.v1;
+
+import "google/protobuf/timestamp.proto";
+import "projectsuit/common/v1/common.v1.proto";
+
+option go_package = "github.com/enessefak/suit-proto/gen/go/projectsuit/category/v1;categoryv1";
+option java_package = "com.projectsuit.category.v1";
+option java_multiple_files = true;
+option java_outer_classname = "CategoryProto";
+
+service CategoryService {
+  // Komutlar
+  rpc CreateCategory(CreateCategoryRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdateCategory(UpdateCategoryRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc DeleteCategory(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // Sorgular
+  rpc GetCategory(projectsuit.common.v1.GetByIdRequest) returns (GetCategoryResponse);
+  rpc ListCategories(ListCategoriesRequest) returns (ListCategoriesResponse);
+}
+
+message Category {
+  string id = 1; // UUID
+  optional string parent_id = 2; // UUID
+  optional string code = 3;
+  optional string image_url = 4;
+  optional string icon_url = 5;
+  int32 sort_order = 6;
+  bool is_active = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+
+  // Sorgu yanıtında çözümlenmiş alanlar
+  string name = 20;        // field_name='name' olan çeviri
+  string description = 21; // field_name='description' olan çeviri
+  string slug = 22;        // field_name='slug' olan çeviri
+
+  repeated projectsuit.common.v1.TranslationOutput all_translations = 23;
+}
+
+// --- Komut Mesajları ---
+message CreateCategoryRequest {
+  optional string parent_id = 1;
+  optional string code = 2;
+  optional string image_url = 3;
+  optional string icon_url = 4;
+  optional int32 sort_order = 5;
+  optional bool is_active = 6;
+  repeated projectsuit.common.v1.TranslationInput translations = 7; // 'name', 'description', 'slug' için
+}
+
+message UpdateCategoryRequest {
+  string id = 1;
+  optional string parent_id = 2;
+  optional string code = 3;
+  optional string image_url = 4;
+  optional string icon_url = 5;
+  optional int32 sort_order = 6;
+  optional bool is_active = 7;
+  repeated projectsuit.common.v1.TranslationInput translations_to_update = 8;
+}
+
+// --- Sorgu Mesajları ---
+message GetCategoryResponse {
+  Category category = 1;
+}
+
+message ListCategoriesRequest {
+  projectsuit.common.v1.ListRequest base_request = 1;
+  optional string filter_by_parent_id = 2;
+  optional bool filter_by_is_root = 3;
+}
+
+message ListCategoriesResponse {
+  repeated Category categories = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}

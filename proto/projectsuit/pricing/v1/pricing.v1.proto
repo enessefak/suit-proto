@@ -1,0 +1,275 @@
+syntax = "proto3";
+
+package projectsuit.pricing.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+import "projectsuit/common/v1/common.v1.proto";
+import "projectsuit/product/v1/product.v1.proto";
+import "projectsuit/unit/v1/unit.v1.proto";
+
+option go_package = "github.com/enessefak/suit-proto/gen/go/projectsuit/pricing/v1;pricingv1";
+option java_package = "com.projectsuit.pricing.v1";
+option java_multiple_files = true;
+option java_outer_classname = "PricingProto";
+
+service PricingService {
+  // PriceList Komutları
+  rpc CreatePriceList(CreatePriceListRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdatePriceList(UpdatePriceListRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc DeletePriceList(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc AddItemToPriceList(AddItemToPriceListRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdatePriceListItem(UpdatePriceListItemRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc RemovePriceListItem(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc AssignPriceList(AssignPriceListRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdatePriceListAssignment(UpdatePriceListAssignmentRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc RemovePriceListAssignment(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // Promotion Komutları
+  rpc CreatePromotion(CreatePromotionRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdatePromotion(UpdatePromotionRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc DeletePromotion(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // Coupon Komutları
+  rpc CreateCoupon(CreateCouponRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdateCoupon(UpdateCouponRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc DeleteCoupon(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // PriceList Sorguları
+  rpc GetPriceList(projectsuit.common.v1.GetByIdRequest) returns (GetPriceListResponse);
+  rpc ListPriceLists(ListPriceListsRequest) returns (ListPriceListsResponse);
+
+  // Promotion Sorguları
+  rpc GetPromotion(projectsuit.common.v1.GetByIdRequest) returns (GetPromotionResponse);
+  rpc ListPromotions(ListPromotionsRequest) returns (ListPromotionsResponse);
+
+  // Coupon Sorguları
+  rpc GetCouponByCode(GetCouponByCodeRequest) returns (GetCouponResponse);
+  rpc ListCoupons(ListCouponsRequest) returns (ListCouponsResponse);
+}
+
+// --- Entity Mesajları ---
+message PriceList {
+  string id = 1;
+  string code = 2;
+  string currency_code = 3;
+  bool is_active = 4;
+  google.protobuf.Timestamp valid_from = 5;
+  optional google.protobuf.Timestamp valid_to = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+
+  string name = 20;
+  string description = 21;
+  repeated projectsuit.common.v1.TranslationOutput all_translations = 22;
+  repeated PriceListItem items = 30;
+  repeated PriceListAssignment assignments = 31;
+}
+
+message PriceListItem {
+  string id = 1;
+  string product_id = 3;
+  optional string variant_id = 4;
+  string unit_id = 5;
+  string price = 6; // NUMERIC -> string
+  optional projectsuit.product.v1.Product product_summary = 20;
+  optional projectsuit.product.v1.ProductVariant variant_summary = 21;
+  optional projectsuit.unit.v1.Unit unit_summary = 22;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+}
+
+message PriceListAssignment {
+  string id = 1;
+  optional string warehouse_id = 3;
+  optional string sales_channel_id = 4;
+  int32 priority = 5;
+  optional google.protobuf.Timestamp start_date = 6;
+  optional google.protobuf.Timestamp end_date = 7;
+  google.protobuf.Timestamp created_at = 8;
+}
+
+message Promotion {
+  string id = 1;
+  optional string code = 2;
+  string type = 3;
+  google.protobuf.Timestamp valid_from = 4;
+  optional google.protobuf.Timestamp valid_to = 5;
+  bool is_active = 6;
+  int32 priority = 7;
+  optional int32 max_usage_total = 8;
+  optional int32 max_usage_per_customer = 9;
+  bool is_exclusive = 10;
+  google.protobuf.Timestamp created_at = 11;
+  google.protobuf.Timestamp updated_at = 12;
+
+  string name = 20;
+  string description = 21;
+  string public_display_text = 22;
+  repeated projectsuit.common.v1.TranslationOutput all_translations = 23;
+  repeated PromotionRule rules = 30;
+  repeated PromotionAction actions = 31;
+}
+
+message PromotionRule {
+  string id = 1;
+  int32 rule_group_id = 3;
+  string rule_type = 4;
+  google.protobuf.Struct configuration = 5;
+  google.protobuf.Timestamp created_at = 6;
+}
+
+message PromotionAction {
+  string id = 1;
+  string action_type = 3;
+  google.protobuf.Struct configuration = 4;
+  google.protobuf.Timestamp created_at = 5;
+}
+
+message Coupon {
+  string id = 1;
+  string code = 2;
+  optional string promotion_id = 3;
+  google.protobuf.Timestamp valid_from = 4;
+  optional google.protobuf.Timestamp valid_to = 5;
+  optional int32 max_usage_total = 6;
+  optional int32 max_usage_per_customer = 7;
+  int32 current_usage_total = 8;
+  bool is_active = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+
+  string description = 20;
+  repeated projectsuit.common.v1.TranslationOutput all_translations = 21;
+}
+
+// --- Komut Mesajları ---
+message CreatePriceListRequest {
+  string code = 1;
+  string currency_code = 2;
+  optional bool is_active = 3;
+  optional google.protobuf.Timestamp valid_from = 4;
+  optional google.protobuf.Timestamp valid_to = 5;
+  repeated projectsuit.common.v1.TranslationInput translations = 6;
+}
+message UpdatePriceListRequest {
+  string id = 1;
+  optional string code = 2;
+  optional string currency_code = 3;
+  optional bool is_active = 4;
+  optional google.protobuf.Timestamp valid_from = 5;
+  optional google.protobuf.Timestamp valid_to = 6;
+  repeated projectsuit.common.v1.TranslationInput translations_to_update = 7;
+}
+message AddItemToPriceListRequest {
+  string price_list_id = 1;
+  string product_id = 2;
+  optional string variant_id = 3;
+  string unit_id = 4;
+  string price = 5;
+}
+message UpdatePriceListItemRequest {
+  string price_list_item_id = 1;
+  optional string price = 2;
+}
+message AssignPriceListRequest {
+  string price_list_id = 1;
+  optional string warehouse_id = 2;
+  optional string sales_channel_id = 3;
+  optional int32 priority = 4;
+  optional google.protobuf.Timestamp start_date = 5;
+  optional google.protobuf.Timestamp end_date = 6;
+}
+message UpdatePriceListAssignmentRequest {
+    string assignment_id = 1;
+    optional int32 priority = 2;
+    optional google.protobuf.Timestamp start_date = 3;
+    optional google.protobuf.Timestamp end_date = 4;
+}
+
+message CreatePromotionRequest {
+  optional string code = 1;
+  string type = 2;
+  google.protobuf.Timestamp valid_from = 3;
+  optional google.protobuf.Timestamp valid_to = 4;
+  optional bool is_active = 5;
+  optional int32 priority = 6;
+  optional int32 max_usage_total = 7;
+  optional int32 max_usage_per_customer = 8;
+  optional bool is_exclusive = 9;
+  repeated projectsuit.common.v1.TranslationInput translations = 10;
+  repeated CreatePromotionRuleInput rules = 11;
+  repeated CreatePromotionActionInput actions = 12;
+}
+message CreatePromotionRuleInput {
+    int32 rule_group_id = 1;
+    string rule_type = 2;
+    google.protobuf.Struct configuration = 3;
+}
+message CreatePromotionActionInput {
+    string action_type = 1;
+    google.protobuf.Struct configuration = 2;
+}
+message UpdatePromotionRequest {
+  string id = 1;
+  optional string code = 2;
+  optional string type = 3;
+  optional google.protobuf.Timestamp valid_from = 4;
+  optional google.protobuf.Timestamp valid_to = 5;
+  optional bool is_active = 6;
+  optional int32 priority = 7;
+  repeated projectsuit.common.v1.TranslationInput translations_to_update = 8;
+  // Rules ve Actions güncellemeleri için daha granüler komutlar veya bu mesajda listeler olabilir.
+}
+
+message CreateCouponRequest {
+  string code = 1;
+  optional string promotion_id = 2;
+  google.protobuf.Timestamp valid_from = 3;
+  optional google.protobuf.Timestamp valid_to = 4;
+  optional int32 max_usage_total = 5;
+  optional int32 max_usage_per_customer = 6;
+  optional bool is_active = 7;
+  repeated projectsuit.common.v1.TranslationInput translations = 8;
+}
+message UpdateCouponRequest {
+  string id = 1;
+  optional string code = 2;
+  optional string promotion_id = 3;
+  optional google.protobuf.Timestamp valid_from = 4;
+  optional google.protobuf.Timestamp valid_to = 5;
+  optional int32 max_usage_total = 6;
+  optional int32 max_usage_per_customer = 7;
+  optional bool is_active = 8;
+  repeated projectsuit.common.v1.TranslationInput translations_to_update = 9;
+}
+
+// --- Sorgu Mesajları ---
+message GetPriceListResponse { PriceList price_list = 1; }
+message ListPriceListsRequest { projectsuit.common.v1.ListRequest base_request = 1; }
+message ListPriceListsResponse {
+  repeated PriceList price_lists = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}
+message GetPromotionResponse { Promotion promotion = 1; }
+message ListPromotionsRequest {
+  projectsuit.common.v1.ListRequest base_request = 1;
+  optional bool filter_by_is_currently_valid = 2;
+}
+message ListPromotionsResponse {
+  repeated Promotion promotions = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}
+message GetCouponResponse { Coupon coupon = 1; }
+message GetCouponByCodeRequest {
+  string code = 1;
+  projectsuit.common.v1.LocaleInput locale_input = 2;
+}
+message ListCouponsRequest {
+  projectsuit.common.v1.ListRequest base_request = 1;
+  optional string filter_by_promotion_id = 2;
+}
+message ListCouponsResponse {
+  repeated Coupon coupons = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}

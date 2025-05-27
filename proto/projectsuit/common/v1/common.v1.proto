@@ -1,0 +1,124 @@
+syntax = "proto3";
+
+package projectsuit.common.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/enessefak/suit-proto/gen/go/projectsuit/common/v1;commonv1";
+option java_package = "com.projectsuit.common.v1";
+option java_multiple_files = true;
+option java_outer_classname = "CommonProto";
+
+// Sayfalama için istek mesajı
+message PaginationRequest {
+  int32 page_number = 1; // Sayfa numarası (1'den başlar)
+  int32 page_size = 2;   // Sayfa başına kayıt sayısı
+}
+
+// Sayfalama için yanıt mesajı
+message PaginationResponse {
+  int32 page_number = 1;
+  int32 page_size = 2;
+  int64 total_records = 3;
+  int32 total_pages = 4;
+}
+
+// Çeviri girişi için standart mesaj (Komutlarda kullanılır)
+message TranslationInput {
+  string locale = 1;       // örn: "tr-TR", "en-US"
+  string field_name = 2;   // örn: "name", "description"
+  string value = 3;        // Çevrilen değer
+}
+
+// Bir entity'nin çevirisini temsil eden standart mesaj (Sorgu yanıtlarında kullanılabilir)
+message TranslationOutput {
+  string locale = 1;
+  string field_name = 2;
+  string value = 3;
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp updated_at = 5;
+}
+
+// Adres bilgisi için mesaj
+message Address {
+  string street = 1;
+  string city = 2;
+  string postal_code = 3;
+  string country_code = 4; // ISO 3166-1 alpha-2
+  string district = 5;     // İlçe/Semt
+  string address_line_1 = 6;
+  string address_line_2 = 7;
+  string description = 8; // Adres tarifi vb.
+}
+
+// Para birimi ve tutar için (NUMERIC alanlar string olarak)
+message Money {
+  string amount = 1;   // örn: "19.99", "-5.00"
+  string currency_code = 2; // ISO 4217, örn: "TRY", "USD"
+}
+
+// Standart ID ile yanıt (Komut yanıtlarında sıkça kullanılır)
+message IdResponse {
+  string id = 1; // UUID
+}
+
+// Standart başarı/başarısızlık yanıtı (Komut yanıtlarında sıkça kullanılır)
+message MutateResponse {
+  bool success = 1;
+  string id = 2; // Etkilenen veya oluşturulan kaydın ID'si (opsiyonel)
+  string message = 3; // Başarı veya hata mesajı
+}
+
+// Tarih aralığı
+message DateRange {
+  google.protobuf.Timestamp start_date = 1;
+  google.protobuf.Timestamp end_date = 2;
+}
+
+// Genel filtreleme için (Sorgu isteklerinde kullanılır)
+message Filter {
+  string field = 1;       // Filtrelenecek alanın adı (örn: "code", "status", "product_type.code")
+  string operator = 2;    // "eq", "neq", "gt", "gte", "lt", "lte", "like", "ilike", "in", "nin", "is_null", "is_not_null"
+  string value = 3;       // Tek değer için (operatöre göre string, sayı, boolean veya tarih olabilir)
+  repeated string values = 4; // "in", "nin" operatörleri için çoklu değerler
+}
+
+// Sıralama için (Sorgu isteklerinde kullanılır)
+message SortBy {
+  string field = 1;       // Sıralanacak alanın adı
+  enum SortDirection {
+    ASC = 0;  // Artan sıralama
+    DESC = 1; // Azalan sıralama
+  }
+  SortDirection direction = 2;
+}
+
+// Sorgu isteklerinde locale belirtmek için
+message LocaleInput {
+  string locale = 1; // örn: "tr-TR". Boş bırakılırsa varsayılan dil kullanılır veya çevirisiz veri döner.
+}
+
+// Basit bir entity için Get isteği
+message GetByIdRequest {
+  string id = 1; // UUID
+  optional LocaleInput locale_input = 2; // İstenen dil için
+  repeated string include_relations = 3; // İlişkili verilerin dahil edilmesi için (örn: "variants", "category")
+}
+
+// Basit bir entity için Delete isteği (MutateResponse döner)
+message DeleteByIdRequest {
+  string id = 1; // UUID
+}
+
+// Listeleme istekleri için genel yapı
+message ListRequest {
+  optional PaginationRequest pagination = 1;
+  repeated Filter filters = 2;
+  repeated SortBy sorts = 3;
+  optional LocaleInput locale_input = 4; // İstenen dil için
+  optional string search_term = 5; // Genel arama terimi için
+  repeated string include_fields = 6; // Sadece belirli alanları dahil et (sparse fieldsets)
+  repeated string include_relations = 7; // Hangi ilişkili verilerin dahil edileceği
+}

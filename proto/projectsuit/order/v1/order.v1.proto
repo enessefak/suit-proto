@@ -1,0 +1,229 @@
+syntax = "proto3";
+
+package projectsuit.order.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto"; // OrderItem.product_snapshot için
+import "projectsuit/common/v1/common.v1.proto";
+import "projectsuit/product/v1/product.v1.proto";
+import "projectsuit/unit/v1/unit.v1.proto";
+import "projectsuit/pricing/v1/pricing.v1.proto"; // Promotion, Coupon
+import "projectsuit/customer/v1/customer.v1.proto";
+import "projectsuit/inventory/v1/inventory.v1.proto"; // Warehouse
+// import "projectsuit.payment.v1/payment.v1.proto"; // PaymentMethod ve Payment (aşağıda tanımlanacak)
+// Otel/Restoran için importlar
+import "projectsuit/restaurant/v1/restaurant.v1.proto";
+import "projectsuit/hotel/v1/hotel.v1.proto";
+// import "projectsuit.sales_channel.v1/sales_channel.v1.proto"; // sales_channel.v1.proto'dan gelecek
+
+// Geçici: payment.v1.proto henüz oluşturulmadığı için PaymentMethod'u burada tanımlıyoruz.
+// Gerçekte ayrı bir payment.v1.proto dosyasına taşınmalı.
+message PaymentMethod {
+  string id = 1;
+  string code = 2;
+  string type = 3;
+  bool is_active = 4;
+  string name = 20; // Çevrilmiş
+  repeated projectsuit.common.v1.TranslationOutput all_translations = 21;
+}
+
+
+option go_package = "github.com/enessefak/suit-proto/gen/go/projectsuit/order/v1;orderv1";
+option java_package = "com.projectsuit.order.v1";
+option java_multiple_files = true;
+option java_outer_classname = "OrderProto";
+
+service OrderService {
+  // Komutlar
+  rpc CreateOrder(CreateOrderRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdateOrderStatus(UpdateOrderStatusRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc AddItemToOrder(AddItemToOrderRequest) returns (projectsuit.common.v1.IdResponse); // OrderItem ID
+  rpc UpdateOrderItem(UpdateOrderItemRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc RemoveOrderItem(RemoveOrderItemRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc ApplyPromotionToOrder(ApplyPromotionToOrderRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc ApplyCouponToOrder(ApplyCouponToOrderRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc RecordPaymentForOrder(RecordPaymentForOrderRequest) returns (projectsuit.common.v1.IdResponse); // Payment ID
+
+  // Sorgular
+  rpc GetOrder(projectsuit.common.v1.GetByIdRequest) returns (GetOrderResponse);
+  rpc ListOrders(ListOrdersRequest) returns (ListOrdersResponse);
+}
+
+// --- Entity Mesajları ---
+message Order {
+  string id = 1; // UUID
+  string order_number = 2;
+  optional string customer_id = 3;
+  optional projectsuit.customer.v1.Customer customer_details = 4;
+
+  optional string sales_channel_id = 5;
+  // optional projectsuit.sales_channel.v1.SalesChannel sales_channel_details = 6;
+
+  optional string fulfillment_warehouse_id = 7;
+  optional projectsuit.inventory.v1.Warehouse fulfillment_warehouse_details = 8;
+
+  optional string point_of_sale_branch_id = 9; // Şube ID'si
+  optional projectsuit.inventory.v1.Warehouse point_of_sale_branch_details = 10; // Şube Detayı
+
+  string order_status = 11;
+  string payment_status = 12;
+  optional string shipping_status = 13;
+
+  projectsuit.common.v1.Money sub_total_amount = 14;
+  projectsuit.common.v1.Money discount_total_amount = 15;
+  projectsuit.common.v1.Money tax_total_amount = 16;
+  projectsuit.common.v1.Money shipping_fee_amount = 17;
+  projectsuit.common.v1.Money grand_total_amount = 18;
+
+  optional string notes = 19;
+  google.protobuf.Timestamp ordered_at = 20;
+  optional string created_by_user_id = 21;
+  google.protobuf.Timestamp created_at = 22;
+  google.protobuf.Timestamp updated_at = 23;
+
+  repeated OrderItem items = 30;
+  repeated OrderAppliedPromotion applied_promotions = 31;
+  repeated Payment payments_recorded = 32;
+
+  // Otel/Restoran
+  optional string order_session_id = 40;
+  optional projectsuit.restaurant.v1.OrderSession order_session_details = 41;
+  optional string reservation_id = 42;
+  optional projectsuit.hotel.v1.Reservation reservation_details = 43;
+  optional string hotel_service_zone_id = 44;
+  optional projectsuit.hotel.v1.HotelServiceZone hotel_service_zone_details = 45;
+  optional string delivery_room_id = 46;
+  optional projectsuit.hotel.v1.Room delivery_room_details = 47;
+}
+
+message OrderItem {
+  string id = 1;
+  string product_id = 3;
+  optional string variant_id = 4;
+  google.protobuf.Struct product_snapshot = 5;
+  string quantity = 6;
+  string unit_id = 7;
+  projectsuit.common.v1.Money unit_price = 8;
+  projectsuit.common.v1.Money line_sub_total_amount = 9;
+  projectsuit.common.v1.Money line_discount_amount = 10;
+  projectsuit.common.v1.Money line_tax_amount = 11;
+  projectsuit.common.v1.Money line_total_amount = 12;
+  optional string notes = 13;
+  google.protobuf.Timestamp created_at = 14;
+  google.protobuf.Timestamp updated_at = 15;
+
+  optional projectsuit.product.v1.Product product_summary = 20;
+  optional projectsuit.product.v1.ProductVariant variant_summary = 21;
+  optional projectsuit.unit.v1.Unit unit_summary = 22;
+  repeated OrderItemAppliedPromotion applied_promotions_to_item = 23;
+}
+
+message OrderAppliedPromotion {
+  string id = 1;
+  string promotion_id = 3;
+  optional string coupon_code_used = 4;
+  projectsuit.common.v1.Money discount_amount_applied = 5;
+  string description = 6;
+  optional projectsuit.pricing.v1.Promotion promotion_details = 20;
+}
+
+message OrderItemAppliedPromotion {
+    string id = 1;
+    string promotion_id = 3;
+    projectsuit.common.v1.Money discount_amount_applied = 4;
+    optional projectsuit.pricing.v1.Promotion promotion_details = 20;
+}
+
+message Payment {
+    string id = 1;
+    string payment_method_id = 3;
+    PaymentMethod payment_method_details = 4; // Geçici olarak burada tanımlı PaymentMethod kullanılıyor
+    projectsuit.common.v1.Money amount = 5;
+    string status = 6;
+    optional string transaction_reference = 7;
+    optional google.protobuf.Timestamp paid_at = 8;
+    google.protobuf.Timestamp created_at = 9;
+}
+
+// --- Komut Mesajları ---
+message CreateOrderRequest {
+  optional string customer_id = 1;
+  optional string sales_channel_id = 2;
+  optional string fulfillment_warehouse_id = 3;
+  optional string point_of_sale_branch_id = 4;
+  string currency_code = 5;
+  repeated CreateOrderItemInput items = 6;
+  optional string notes = 7;
+  optional string initial_order_status = 8;
+  optional string order_session_id = 20;
+  optional string reservation_id = 21;
+  optional string hotel_service_zone_id = 22;
+  optional string delivery_room_id = 23;
+}
+message CreateOrderItemInput {
+  string product_id = 1;
+  optional string variant_id = 2;
+  string quantity = 3;
+  string unit_id = 4;
+  optional string suggested_unit_price = 5;
+  optional string notes = 6;
+}
+message UpdateOrderStatusRequest {
+  string order_id = 1;
+  string new_status = 2;
+  optional string notes = 3;
+  optional string changed_by_user_id = 4;
+}
+message AddItemToOrderRequest {
+  string order_id = 1;
+  string product_id = 2;
+  optional string variant_id = 3;
+  string quantity = 4;
+  string unit_id = 5;
+  optional string suggested_unit_price = 6;
+  optional string notes = 7;
+}
+message UpdateOrderItemRequest {
+  string order_item_id = 1;
+  optional string quantity = 2;
+  optional string notes = 3;
+}
+message RemoveOrderItemRequest {
+  string order_id = 1;
+  string order_item_id = 2;
+}
+message ApplyPromotionToOrderRequest {
+    string order_id = 1;
+    string promotion_id = 2;
+}
+message ApplyCouponToOrderRequest {
+    string order_id = 1;
+    string coupon_code = 2;
+}
+message RecordPaymentForOrderRequest {
+    string order_id = 1;
+    string payment_method_id = 2;
+    projectsuit.common.v1.Money amount = 3;
+    optional string transaction_reference = 4;
+    optional google.protobuf.Timestamp paid_at = 5;
+    optional string status_override = 6;
+    optional string created_by_user_id = 7;
+}
+
+// --- Sorgu Mesajları ---
+message GetOrderResponse {
+  Order order = 1;
+}
+message ListOrdersRequest {
+  projectsuit.common.v1.ListRequest base_request = 1;
+  optional string filter_by_customer_id = 2;
+  optional string filter_by_order_status = 3;
+  optional string filter_by_payment_status = 4;
+  optional string filter_by_sales_channel_id = 5;
+  optional string filter_by_fulfillment_warehouse_id = 6;
+  optional projectsuit.common.v1.DateRange filter_by_ordered_date_range = 7;
+}
+message ListOrdersResponse {
+  repeated Order orders = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}

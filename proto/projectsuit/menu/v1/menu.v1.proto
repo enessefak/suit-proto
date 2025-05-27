@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+package projectsuit.menu.v1;
+
+import "google/protobuf/timestamp.proto";
+import "projectsuit/common/v1/common.v1.proto";
+import "projectsuit/product/v1/product.v1.proto";
+
+option go_package = "github.com/enessefak/suit-proto/gen/go/projectsuit/menu/v1;menuv1";
+option java_package = "com.projectsuit.menu.v1";
+option java_multiple_files = true;
+option java_outer_classname = "MenuProto";
+
+service MenuService {
+  // Menu Komutları
+  rpc CreateMenu(CreateMenuRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdateMenu(UpdateMenuRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc DeleteMenu(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // MenuItem Komutları
+  rpc AddItemToMenu(AddItemToMenuRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdateMenuItem(UpdateMenuItemRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc RemoveMenuItem(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // Menu Sorguları
+  rpc GetMenu(GetMenuRequest) returns (GetMenuResponse);
+  rpc ListMenus(ListMenusRequest) returns (ListMenusResponse);
+}
+
+// --- Entity Mesajları ---
+message Menu {
+  string id = 1; // UUID
+  string code = 2;
+  bool is_active = 3;
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp updated_at = 5;
+
+  string name = 20;        // field_name='name'
+  string description = 21; // field_name='description'
+  repeated projectsuit.common.v1.TranslationOutput all_translations = 22;
+  repeated MenuItem items = 30;
+}
+
+message MenuItem {
+  string id = 1; // UUID (menu_items.id)
+  optional string product_id = 3; // UUID
+  optional string variant_id = 4; // UUID
+  string quantity = 5; // NUMERIC -> string
+  bool optional_item = 6; // "optional" anahtar kelime olduğu için "optional_item"
+  int32 sort_order = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+
+  optional projectsuit.product.v1.Product product_details = 20;
+  optional projectsuit.product.v1.ProductVariant variant_details = 21;
+}
+
+// --- Komut Mesajları ---
+message CreateMenuRequest {
+  string code = 1;
+  optional bool is_active = 2;
+  repeated projectsuit.common.v1.TranslationInput translations = 3; // 'name', 'description'
+}
+message UpdateMenuRequest {
+  string id = 1;
+  optional string code = 2;
+  optional bool is_active = 3;
+  repeated projectsuit.common.v1.TranslationInput translations_to_update = 4;
+}
+message AddItemToMenuRequest {
+  string menu_id = 1;
+  optional string product_id = 2;
+  optional string variant_id = 3;
+  string quantity = 4;
+  optional bool optional_item = 5;
+  optional int32 sort_order = 6;
+}
+message UpdateMenuItemRequest {
+  string menu_item_id = 1; // menu_items.id
+  optional string quantity = 2;
+  optional bool optional_item = 3;
+  optional int32 sort_order = 4;
+}
+
+// --- Sorgu Mesajları ---
+message GetMenuRequest {
+  string id = 1; // Menu ID
+  projectsuit.common.v1.LocaleInput locale_input = 2;
+  bool include_items = 3;
+  bool include_item_details = 4;
+}
+message GetMenuResponse {
+  Menu menu = 1;
+}
+message ListMenusRequest {
+  projectsuit.common.v1.ListRequest base_request = 1;
+}
+message ListMenusResponse {
+  repeated Menu menus = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}

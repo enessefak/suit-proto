@@ -1,0 +1,146 @@
+syntax = "proto3";
+
+package projectsuit.sync.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+import "projectsuit/common/v1/common.v1.proto";
+
+import "projectsuit.unit.v1/unit.v1.proto";
+import "projectsuit.category.v1/category.v1.proto";
+import "projectsuit.product.v1/product.v1.proto";
+import "projectsuit.material.v1/material.v1.proto";
+import "projectsuit.tax.v1/tax.v1.proto";
+import "projectsuit.menu.v1/menu.v1.proto";
+import "projectsuit.pricing.v1/pricing.v1.proto";
+import "projectsuit.order.v1/order.v1.proto";
+import "projectsuit.customer.v1/customer.v1.proto";
+import "projectsuit.inventory.v1/inventory.v1.proto";
+import "projectsuit.device.v1/device.v1.proto";
+import "projectsuit.restaurant.v1/restaurant.v1.proto";
+import "projectsuit.hotel.v1/hotel.v1.proto";
+import "projectsuit.accounting.v1/accounting.v1.proto";
+import "projectsuit.payment.v1/payment.v1.proto"; // payment.v1.proto eklendi
+
+
+option go_package = "github.com/enessefak/suit-proto/gen/go/projectsuit/sync/v1;syncv1";
+option java_package = "com.projectsuit.sync.v1";
+option java_multiple_files = true;
+option java_outer_classname = "SyncProto";
+
+service SyncService {
+  rpc PullChanges(PullChangesRequest) returns (PullChangesResponse);
+  rpc PushChanges(PushChangesRequest) returns (PushChangesResponse);
+}
+
+message PullChangesRequest {
+  repeated string entity_types = 1;
+  google.protobuf.Timestamp last_sync_timestamp = 2;
+  string device_id = 3;
+  optional projectsuit.common.v1.PaginationRequest pagination = 4;
+}
+
+message PullChangesResponse {
+  google.protobuf.Timestamp new_sync_timestamp = 1;
+  repeated SyncedEntityData entities_changed = 2;
+  repeated DeletedEntityReference entities_deleted = 3;
+  bool has_more = 4;
+}
+
+message SyncedEntityData {
+  string entity_type = 1;
+  string entity_id = 2;
+  google.protobuf.Timestamp modified_at = 3;
+  EntityPayload payload = 4;
+}
+
+message DeletedEntityReference {
+  string entity_type = 1;
+  string entity_id = 2;
+  google.protobuf.Timestamp deleted_at = 3;
+}
+
+message EntityPayload {
+  oneof data {
+    projectsuit.unit.v1.Unit unit = 1;
+    projectsuit.category.v1.Category category = 2;
+    projectsuit.product.v1.Product product = 3;
+    projectsuit.product.v1.ProductUnit product_unit = 4;
+    projectsuit.product.v1.ProductTag product_tag = 5;
+    projectsuit.product.v1.ProductOption product_option = 6;
+    projectsuit.product.v1.ProductOptionValue product_option_value = 7;
+    projectsuit.product.v1.ProductVariant product_variant = 8;
+    projectsuit.material.v1.Material material = 9;
+    projectsuit.material.v1.ProductMaterial product_material = 10;
+    projectsuit.tax.v1.TaxCategory tax_category = 11;
+    projectsuit.tax.v1.TaxRate tax_rate = 12;
+    projectsuit.tax.v1.TaxAssignment tax_assignment = 13;
+    projectsuit.menu.v1.Menu menu = 14;
+    projectsuit.menu.v1.MenuItem menu_item = 15;
+    projectsuit.pricing.v1.PriceList price_list = 16;
+    projectsuit.pricing.v1.PriceListItem price_list_item = 17;
+    projectsuit.pricing.v1.PriceListAssignment price_list_assignment = 18;
+    projectsuit.pricing.v1.Promotion promotion = 19;
+    projectsuit.pricing.v1.Coupon coupon = 20;
+    projectsuit.order.v1.Order order = 21;
+    projectsuit.order.v1.OrderItem order_item = 22;
+    projectsuit.customer.v1.Customer customer = 23;
+    projectsuit.customer.v1.CustomerAddress customer_address = 24;
+    projectsuit.inventory.v1.Warehouse warehouse = 25;
+    projectsuit.inventory.v1.StockLevel stock_level = 26;
+    projectsuit.device.v1.Device device = 27;
+    projectsuit.restaurant.v1.FloorPlanSection floor_plan_section = 28;
+    projectsuit.restaurant.v1.RestaurantTable restaurant_table = 29;
+    projectsuit.restaurant.v1.OrderSession order_session = 30;
+    projectsuit.hotel.v1.HotelServiceZone hotel_service_zone = 31;
+    projectsuit.hotel.v1.RoomType room_type = 32;
+    projectsuit.hotel.v1.Room room = 33;
+    projectsuit.hotel.v1.Reservation reservation = 34;
+    projectsuit.accounting.v1.ChartOfAccount chart_of_account = 35;
+    projectsuit.accounting.v1.Vendor vendor = 36;
+    projectsuit.accounting.v1.ExpenseCategory expense_category = 37;
+    projectsuit.accounting.v1.Expense expense = 38;
+    projectsuit.payment.v1.PaymentMethod payment_method = 39;
+    projectsuit.payment.v1.Payment payment = 40; // Payment eklendi
+    google.protobuf.Struct generic_data = 100;
+  }
+}
+
+message PushChangesRequest {
+  string device_id = 1;
+  repeated ClientChangeItem changes = 2;
+}
+
+message ClientChangeItem {
+  string local_id = 1;
+  google.protobuf.Timestamp occurred_at = 2;
+  CommandPayload command = 3;
+}
+
+message CommandPayload {
+  oneof command_data {
+    // ProductService
+    projectsuit.product.v1.CreateProductRequest create_product = 1;
+    projectsuit.product.v1.UpdateProductRequest update_product = 2;
+    // ...tüm ProductService komutları ...
+
+    // OrderService
+    projectsuit.order.v1.CreateOrderRequest create_order = 50;
+    // ...tüm OrderService komutları ...
+
+    // Diğer tüm servislerin Create/Update/Delete vb. komut istek mesajları
+    // ...
+  }
+}
+
+message PushChangesResponse {
+  repeated ClientChangeResult results = 1;
+}
+
+message ClientChangeResult {
+  string local_id = 1;
+  bool success = 2;
+  optional string server_id = 3;
+  optional string error_message = 4;
+  optional google.protobuf.Timestamp processed_at = 5;
+}

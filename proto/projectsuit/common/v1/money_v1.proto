@@ -1,8 +1,0 @@
-syntax = "proto3";
-
-package projectsuit.common.v1;
-
-message Money {
-  string currency = 1;
-  double amount = 2;
-}

@@ -1,0 +1,104 @@
+syntax = "proto3";
+
+package projectsuit.payment.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+import "projectsuit/common/v1/common.v1.proto";
+// import "projectsuit.order.v1.Order"; // Eğer ödeme detayında sipariş bilgisi dönecekse
+
+option go_package = "github.com/enessefak/suit-proto/gen/go/projectsuit/payment/v1;paymentv1";
+option java_package = "com.projectsuit.payment.v1";
+option java_multiple_files = true;
+option java_outer_classname = "PaymentProto";
+
+service PaymentService {
+  // PaymentMethod Komutları
+  rpc CreatePaymentMethod(CreatePaymentMethodRequest) returns (projectsuit.common.v1.IdResponse);
+  rpc UpdatePaymentMethod(UpdatePaymentMethodRequest) returns (projectsuit.common.v1.MutateResponse);
+  rpc DeletePaymentMethod(projectsuit.common.v1.DeleteByIdRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // Payment Komutları (Genellikle order servisi üzerinden tetiklenir, ama doğrudan da olabilir)
+  // rpc CreatePayment(CreatePaymentRequest) returns (projectsuit.common.v1.IdResponse);
+  // rpc UpdatePaymentStatus(UpdatePaymentStatusRequest) returns (projectsuit.common.v1.MutateResponse);
+
+  // PaymentMethod Sorguları
+  rpc GetPaymentMethod(projectsuit.common.v1.GetByIdRequest) returns (GetPaymentMethodResponse);
+  rpc ListPaymentMethods(ListPaymentMethodsRequest) returns (ListPaymentMethodsResponse);
+
+  // Payment Sorguları
+  rpc GetPayment(projectsuit.common.v1.GetByIdRequest) returns (GetPaymentResponse);
+  rpc ListPayments(ListPaymentsRequest) returns (ListPaymentsResponse);
+}
+
+// --- Entity Mesajları ---
+message PaymentMethod {
+  string id = 1;
+  string code = 2;
+  string type = 3; // 'CASH', 'CREDIT_CARD', 'BANK_TRANSFER', 'WALLET', 'MEAL_CARD'
+  bool is_active = 4;
+  google.protobuf.Struct configuration = 5; // DÜZELTİLDİ: TranslationOutput yerine Struct
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+
+  string name = 20; // Çevrilmiş (field_name='name')
+  string user_guide = 21; // Çevrilmiş (field_name='user_guide')
+  repeated projectsuit.common.v1.TranslationOutput all_translations = 22;
+}
+
+message Payment {
+    string id = 1;
+    optional string order_id = 2; // UUID
+    optional string customer_id = 3; // UUID
+    string payment_method_id = 4; // UUID
+    projectsuit.common.v1.Money amount = 5;
+    string status = 6; // 'PENDING', 'AUTHORIZED', 'COMPLETED', 'FAILED', 'REFUNDED', 'VOIDED'
+    optional string transaction_reference = 7;
+    google.protobuf.Struct gateway_response = 8; // JSONB -> Struct
+    optional google.protobuf.Timestamp paid_at = 9;
+    optional string created_by_user_id = 10; // UUID
+    google.protobuf.Timestamp created_at = 11;
+
+    optional PaymentMethod payment_method_details = 20;
+    // optional projectsuit.order.v1.Order order_summary = 21;
+}
+
+
+// --- Komut Mesajları ---
+message CreatePaymentMethodRequest {
+  string code = 1;
+  string type = 2;
+  optional bool is_active = 3;
+  optional google.protobuf.Struct configuration = 4;
+  repeated projectsuit.common.v1.TranslationInput translations = 5; // 'name', 'user_guide'
+}
+message UpdatePaymentMethodRequest {
+  string id = 1;
+  optional string code = 2;
+  optional string type = 3;
+  optional bool is_active = 4;
+  optional google.protobuf.Struct configuration = 5;
+  repeated projectsuit.common.v1.TranslationInput translations_to_update = 6;
+}
+
+// --- Sorgu Mesajları ---
+message GetPaymentMethodResponse{ PaymentMethod payment_method = 1; }
+message ListPaymentMethodsRequest { projectsuit.common.v1.ListRequest base_request = 1; }
+message ListPaymentMethodsResponse {
+  repeated PaymentMethod payment_methods = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}
+
+message GetPaymentResponse{ Payment payment = 1; }
+message ListPaymentsRequest {
+  projectsuit.common.v1.ListRequest base_request = 1;
+  optional string filter_by_order_id = 2;
+  optional string filter_by_customer_id = 3;
+  optional string filter_by_status = 4;
+  optional string filter_by_payment_method_id = 5;
+  optional projectsuit.common.v1.DateRange filter_by_paid_date_range = 6;
+}
+message ListPaymentsResponse {
+  repeated Payment payments = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}
