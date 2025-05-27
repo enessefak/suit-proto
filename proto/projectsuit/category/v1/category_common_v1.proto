@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package projectsuit.category.v1;
+
+import "projectsuit/common/v1/translation_v1.proto";
+import "projectsuit/common/v1/common.proto";
+
+message CategoryInput {
+  projectsuit.common.v1.Translation name = 1;
+  projectsuit.common.v1.Translation description = 2;
+  string parent_id = 3;
+  string image_url = 4;
+  bool is_active = 5;
+}
+
+message Category {
+  string id = 1;
+  projectsuit.common.v1.Translation name = 2;
+  projectsuit.common.v1.Translation description = 3;
+  string parent_id = 4;
+  string image_url = 5;
+  bool is_active = 6;
+  int64 created_at = 7;
+  int64 updated_at = 8;
+}
+
+message CategoryView {
+  string id = 1;
+  string parent_id = 2;
+  projectsuit.common.v1.Translation name = 3;
+  projectsuit.common.v1.Translation description = 4;
+  string image_url = 5;
+  bool is_active = 6;
+  int64 created_at = 7;
+  int64 updated_at = 8;
+}

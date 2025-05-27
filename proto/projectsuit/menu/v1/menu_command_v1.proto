@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package projectsuit.menu.v1;
+
+import "projectsuit/menu/v1/menu_common_v1.proto";
+
+message CreateMenuRequest {
+  projectsuit.menu.v1.MenuInput menu = 1;
+}
+
+message CreateMenuResponse {
+  string id = 1;
+}
+
+message UpdateMenuRequest {
+  string id = 1;
+  projectsuit.menu.v1.MenuInput menu = 2;
+}
+
+message UpdateMenuResponse {
+  bool success = 1;
+}
+
+message DeleteMenuRequest {
+  string id = 1;
+}
+
+message DeleteMenuResponse {
+  bool success = 1;
+}
+
+service MenuCommandService {
+  rpc CreateMenu(CreateMenuRequest) returns (CreateMenuResponse);
+  rpc UpdateMenu(UpdateMenuRequest) returns (UpdateMenuResponse);
+  rpc DeleteMenu(DeleteMenuRequest) returns (DeleteMenuResponse);
+}

@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package projectsuit.category.v1;
+
+import "projectsuit/category/v1/category_common_v1.proto";
+
+service CategoryQueryService {
+  rpc GetCategory(GetCategoryRequest) returns (GetCategoryResponse) {}
+  rpc ListCategories(ListCategoriesRequest) returns (ListCategoriesResponse) {}
+}
+
+message GetCategoryRequest {
+  string id = 1;
+}
+
+message GetCategoryResponse {
+  projectsuit.category.v1.CategoryView category = 1;
+}
+
+message ListCategoriesRequest {
+  int32 page = 1;
+  int32 limit = 2;
+  string search = 3;
+  string parent_id = 4;
+}
+
+message ListCategoriesResponse {
+  repeated projectsuit.category.v1.CategoryView categories = 1;
+  int32 total = 2;
+}

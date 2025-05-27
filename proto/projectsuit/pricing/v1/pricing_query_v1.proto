@@ -1,0 +1,17 @@
+syntax = "proto3";
+package projectsuit.pricing.v1;
+
+
+import "projectsuit/pricing/v1/pricing_common_v1.proto";
+
+message GetPricingRuleRequest {
+  string id = 1;
+}
+
+message GetPricingRuleResponse {
+  PricingRule rule = 1;
+}
+
+service PricingQueryService {
+  rpc GetPricingRule(GetPricingRuleRequest) returns (GetPricingRuleResponse);
+}

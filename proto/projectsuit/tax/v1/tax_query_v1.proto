@@ -1,0 +1,18 @@
+
+syntax = "proto3";
+package projectsuit.tax.v1;
+
+
+import "projectsuit/tax/v1/tax_common_v1.proto";
+
+message GetTaxRateRequest {
+  string id = 1;
+}
+
+message GetTaxRateResponse {
+  TaxRate tax = 1;
+}
+
+service TaxQueryService {
+  rpc GetTaxRate(GetTaxRateRequest) returns (GetTaxRateResponse);
+}

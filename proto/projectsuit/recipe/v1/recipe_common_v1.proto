@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package projectsuit.recipe.v1;
+
+
+message RecipeItem {
+  string material_id = 1;
+  double quantity = 2;
+  string unit = 3;
+}
+
+message Recipe {
+  string id = 1;
+  string product_id = 2;
+  repeated RecipeItem items = 3;
+  bool is_active = 4;
+  int64 created_at = 5;
+  int64 updated_at = 6;
+}
+
+message RecipeInput {
+  string product_id = 1;
+  repeated RecipeItem items = 2;
+  bool is_active = 3;
+}
+
+message RecipeView {
+  string id = 1;
+  string product_id = 2;
+  repeated RecipeItem items = 3;
+  bool is_active = 4;
+  int64 created_at = 5;
+  int64 updated_at = 6;
+}

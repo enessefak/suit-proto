@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package projectsuit.product.v1;
+
+import "projectsuit/product/v1/recipe_common_v1.proto";
+import "projectsuit/common/v1/common.proto";
+
+service ProductRecipeQueryService {
+  rpc GetProductRecipe(GetProductRecipeRequest) returns (GetProductRecipeResponse);
+  rpc ListProductRecipes(ListProductRecipesRequest) returns (ListProductRecipesResponse);
+  rpc SearchProductRecipes(SearchProductRecipesRequest) returns (SearchProductRecipesResponse);
+}
+
+message GetProductRecipeRequest {
+  string id = 1;
+}
+
+message GetProductRecipeResponse {
+  projectsuit.product.v1.ProductRecipeView recipe = 1;
+}
+
+message ListProductRecipesRequest {
+  projectsuit.common.v1.PaginationRequest pagination = 1;
+}
+
+message ListProductRecipesResponse {
+  repeated projectsuit.product.v1.ProductRecipeView items = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}
+
+message SearchProductRecipesRequest {
+  string keyword = 1;
+  projectsuit.common.v1.PaginationRequest pagination = 2;
+}
+
+message SearchProductRecipesResponse {
+  repeated projectsuit.product.v1.ProductRecipeView items = 1;
+  projectsuit.common.v1.PaginationResponse pagination = 2;
+}

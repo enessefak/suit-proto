@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package projectsuit.product.v1;
+
+import "projectsuit/product/v1/recipe_common_v1.proto";
+
+service ProductRecipeCommandService {
+  rpc CreateProductRecipe(CreateProductRecipeRequest) returns (CreateProductRecipeResponse);
+  rpc UpdateProductRecipe(UpdateProductRecipeRequest) returns (UpdateProductRecipeResponse);
+  rpc DeleteProductRecipe(DeleteProductRecipeRequest) returns (DeleteProductRecipeResponse);
+}
+
+message CreateProductRecipeRequest {
+  projectsuit.product.v1.ProductRecipeInput recipe = 1;
+}
+
+message CreateProductRecipeResponse {
+  string id = 1;
+}
+
+message UpdateProductRecipeRequest {
+  string id = 1;
+  projectsuit.product.v1.ProductRecipeInput recipe = 2;
+}
+
+message UpdateProductRecipeResponse {
+  bool success = 1;
+}
+
+message DeleteProductRecipeRequest {
+  string id = 1;
+}
+
+message DeleteProductRecipeResponse {
+  bool success = 1;
+}

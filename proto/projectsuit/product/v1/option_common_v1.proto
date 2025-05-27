@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package projectsuit.product.v1;
+
+import "projectsuit/common/v1/translation_v1.proto";
+
+message ProductOptionValue {
+  string id = 1;
+  string value = 2;
+  projectsuit.common.v1.Translation translations = 3;
+}
+
+message ProductOption {
+  string id = 1;
+  projectsuit.common.v1.Translation name = 2;
+  repeated projectsuit.product.v1.ProductOptionValue values = 3;
+}

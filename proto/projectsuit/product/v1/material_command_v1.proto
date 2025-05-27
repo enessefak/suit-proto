@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package projectsuit.product.v1;
+
+import "projectsuit/product/v1/material_common_v1.proto";
+
+service ProductMaterialCommandService {
+  rpc CreateProductMaterial(CreateProductMaterialRequest) returns (CreateProductMaterialResponse);
+  rpc UpdateProductMaterial(UpdateProductMaterialRequest) returns (UpdateProductMaterialResponse);
+  rpc DeleteProductMaterial(DeleteProductMaterialRequest) returns (DeleteProductMaterialResponse);
+}
+
+message CreateProductMaterialRequest {
+  projectsuit.product.v1.ProductMaterialInput material = 1;
+}
+
+message CreateProductMaterialResponse {
+  string id = 1;
+}
+
+message UpdateProductMaterialRequest {
+  string id = 1;
+  projectsuit.product.v1.ProductMaterialInput material = 2;
+}
+
+message UpdateProductMaterialResponse {
+  bool success = 1;
+}
+
+message DeleteProductMaterialRequest {
+  string id = 1;
+}
+
+message DeleteProductMaterialResponse {
+  bool success = 1;
+}

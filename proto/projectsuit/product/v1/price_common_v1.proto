@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package projectsuit.product.v1;
+
+import "projectsuit/common/v1/money_v1.proto";
+
+message ProductPrice {
+  string unit_id = 1;
+  projectsuit.common.v1.Money price = 2;
+  string region = 3;
+}

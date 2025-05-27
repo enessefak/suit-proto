@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package projectsuit.product.v1;
+
+import "projectsuit/common/v1/translation_v1.proto";
+import "projectsuit/common/v1/money_v1.proto";
+import "projectsuit/common/v1/common.proto";
+
+message ProductMaterialInput {
+  string id = 1;
+  projectsuit.common.v1.Translation name = 2;
+  projectsuit.common.v1.Translation description = 3;
+  string unit = 4;
+  projectsuit.common.v1.Money cost = 5;
+  bool is_purchasable = 6;
+  bool is_producible = 7;
+  bool is_active = 8;
+}
+
+message ProductMaterialView {
+  string id = 1;
+  projectsuit.common.v1.Translation name = 2;
+  projectsuit.common.v1.Translation description = 3;
+  string unit = 4;
+  projectsuit.common.v1.Money cost = 5;
+  bool is_purchasable = 6;
+  bool is_producible = 7;
+  projectsuit.common.v1.Status status = 8;
+  int64 created_at = 9;
+  int64 updated_at = 10;
+}

@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package projectsuit.product.v1;
+
+import "projectsuit/product/v1/category_common_v1.proto";
+
+service ProductCategoryCommandService {
+  rpc CreateProductCategory(CreateProductCategoryRequest) returns (CreateProductCategoryResponse);
+  rpc UpdateProductCategory(UpdateProductCategoryRequest) returns (UpdateProductCategoryResponse);
+  rpc DeleteProductCategory(DeleteProductCategoryRequest) returns (DeleteProductCategoryResponse);
+}
+
+message CreateProductCategoryRequest {
+  projectsuit.product.v1.ProductCategoryInput category = 1;
+}
+
+message CreateProductCategoryResponse {
+  string id = 1;
+}
+
+message UpdateProductCategoryRequest {
+  string id = 1;
+  projectsuit.product.v1.ProductCategoryInput category = 2;
+}
+
+message UpdateProductCategoryResponse {
+  bool success = 1;
+}
+
+message DeleteProductCategoryRequest {
+  string id = 1;
+}
+
+message DeleteProductCategoryResponse {
+  bool success = 1;
+}
