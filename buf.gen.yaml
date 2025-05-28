@@ -6,19 +6,22 @@ plugins:
     opt:
       - bytes=.
       - compile_well_known_types
-      - extern_path=.google.protobuf=::pbjson_types
+      - extern_path=.google.protobuf.Timestamp=::pbjson_types::Timestamp
+      - extern_path=.google.protobuf.Struct=::pbjson_types::Struct
       - file_descriptor_set
 
   - remote: buf.build/community/neoeinstein-prost-serde:v0.3.1
     out: src/gen
     opt:
-      - extern_path=.google.protobuf=::pbjson_types
+      - extern_path=.google.protobuf.Timestamp=::pbjson_types::Timestamp
+      - extern_path=.google.protobuf.Struct=::pbjson_types::Struct
 
   - remote: buf.build/community/neoeinstein-tonic:v0.4.1
     out: src/gen
     opt:
       - compile_well_known_types
-      - extern_path=.google.protobuf=::pbjson_types
+      - extern_path=.google.protobuf.Timestamp=::pbjson_types::Timestamp
+      - extern_path=.google.protobuf.Struct=::pbjson_types::Struct
 
 inputs:
   - directory: proto
